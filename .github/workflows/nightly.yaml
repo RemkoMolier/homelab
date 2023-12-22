@@ -78,7 +78,7 @@ jobs:
       - uses: step-security/harden-runner@eb238b55efaa70779f274895e782ed17c84f2895 # v2.6.1
         with:
           egress-policy: audit
-      - uses: Mattraks/delete-workflow-runs@708edabfaf5f9b6357ce4c375d22c83834c87f7d # v2.0.5
+      - uses: Mattraks/delete-workflow-runs@39f0bbed25d76b34de5594dceab824811479e5de # v2.0.6
         with:
           retain_days: 30
           keep_minimum_runs: 6
