@@ -36,7 +36,7 @@ jobs:
       - run: |
           docker load --input /tmp/${{ inputs.artifact }}.tar
         if: ${{ inputs.artifact != '' }}
-      - uses: anchore/sbom-action@ace0b9722a703812d78949ee4ac5b90de1c0eba2
+      - uses: anchore/sbom-action@c7f031d9249a826a082ea14c79d3b686a51d485a
         with:
           image: ${{ inputs.image }}
           artifact-name: image.spdx.json
