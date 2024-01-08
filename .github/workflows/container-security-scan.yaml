@@ -47,7 +47,7 @@ jobs:
           image: ${{ inputs.image }}
           fail-build: false
           severity-cutoff: critical
-      - uses: github/codeql-action/upload-sarif@1813ca74c3faaa3a2da2070b9b8a0b3e7373a0d8 # v2
+      - uses: github/codeql-action/upload-sarif@8b7fcbfac2aae0e6c24d9f9ebd5830b1290b18e4 # v2
         with:
           sarif_file: ${{ steps.grype.outputs.sarif }}
           category: grype
@@ -56,7 +56,7 @@ jobs:
           image-ref: ${{ inputs.image }}
           format: sarif
           output: trivy-results.sarif
-      - uses: github/codeql-action/upload-sarif@1813ca74c3faaa3a2da2070b9b8a0b3e7373a0d8 # v2
+      - uses: github/codeql-action/upload-sarif@8b7fcbfac2aae0e6c24d9f9ebd5830b1290b18e4 # v2
         with:
           sarif_file: trivy-results.sarif
           category: trivy
