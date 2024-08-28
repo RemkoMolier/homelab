@@ -1,0 +1,18 @@
+---
+keys:
+  - &remko age1uyjwu3munqtxc3xvdvhtsd7d6cexjers3ed90h7wgw3j88xqa4esh2zqsl
+  - &production age13etaa3cakur045vllvkl6npfnfrj47an2xfppvhznzdysv3eq5xsgmpwdd
+  - &staging age163mxng0aq62et853gfhty3z57j3cch8nrxmslmswza9z90wl9c8sjds0wy
+
+creation_rules:
+  - path_regex: .*\.sops.\.env
+    key_groups:
+      - age:
+          - *remko
+  - path_regex: kubernetes/.*\.sops\.ya?ml
+    encrypted_regex: ^(data|stringData)$
+    key_groups:
+      - age:
+          - *remko
+          - *production
+          - *staging
