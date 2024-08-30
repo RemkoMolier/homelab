@@ -6,4 +6,5 @@ metadata:
   namespace: flux-system
 spec:
   interval: 15m
+  type: oci
   url: oci://ghcr.io/spegel-org/helm-charts
