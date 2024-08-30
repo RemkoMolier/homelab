@@ -27,6 +27,9 @@ RUN SOPS_LATEST_VERSION=$(curl -s "https://api.github.com/repos/getsops/sops/rel
 # Install Task
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
+# Install Yamlfmt
+RUN YAMLFMT_LATEST_VERSION=$(curl -s "https://api.github.com/repos/google/yamlfmt/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+');curl -s -L "https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_LATEST_VERSION}/yamlfmt_${YAMLFMT_LATEST_VERSION}_Linux_x86_64.tar.gz" | tar xvz -C /tmp/ yamlfmt; install /tmp/yamlfmt /usr/local/bin; rm -rf /tmp/yamlfmt
+
 
 USER vscode
 
