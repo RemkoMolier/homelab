@@ -1,0 +1,24 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+sortOptions:
+  order: fifo
+resources:
+  # (Re)install flux
+  - flux
+  # Add flux secrets
+  - secret.github-deploy-key.sops.yaml
+  - secret.sops-age.sops.yaml
+  # Setup GitOPS for cluster
+  - bootstrap
+  # Define all repositories used in cluster
+  - repositories
+  # Install all standalone CRDs
+  - crds
+  # Set clusterwide configuration used in Kustomizations
+  - configmap.cluster-settings.yaml
+  - secret.cluster-secrets.sops.yaml
+  # Install infrastructure
+  - kustomization.infrastructure.yaml
+  # Install apps
+  - kustomization.apps.yaml

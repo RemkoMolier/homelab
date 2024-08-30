@@ -1,0 +1,17 @@
+---
+version: "3"
+tasks:
+  all:
+    - task: yaml
+    - task: terraform
+  yaml:
+    desc: Format YAML
+    cmds:
+      - >-
+        yamlfmt -conf '.ci/yamlfmt/.yamlfmt.yaml' -dstar **/*.{yaml,yml}
+    ignore_error: true
+  terraform:
+    desc: Format Terraform
+    cmds:
+      - terraform fmt -recursive
+    ignore_error: true

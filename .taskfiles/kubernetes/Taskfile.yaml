@@ -1,0 +1,18 @@
+---
+version: "3"
+tasks:
+  install-flux:
+    desc: "Run 'flux install'"
+    cmds:
+      - flux install
+  install-secrets:
+    desc: "Install secrets used by the cluster"
+    dir: kubernetes/cluster/production
+    cmds:
+      - sops -d secret.github-deploy-key.sops.yaml | kubectl apply -f -
+      - sops -d secret.sops-age.sops.yaml | kubectl apply -f -
+  install-bootstrap:
+    desc: "Install initial flux configuration"
+    dir: kubernetes/cluster/production/bootstrap
+    cmds:
+      - kubectl kustomize . | kubectl apply -f -

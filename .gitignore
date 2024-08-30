@@ -1,0 +1,7 @@
+secrets
+.decrypted*
+.venv
+**/.terraform/*
+**/kubeconfig*
+**/talosconfig*
+**/terraform.tfstate*

@@ -1,12 +1,15 @@
 ---
-version: '3'
-
+version: "3"
 vars:
-  KUBERNETES_DIR: '{{.ROOT_DIR}}/kubernetes'
-
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
 env:
-  KUBECONFIG: '{{.KUBERNETES_DIR}}/kubeconfig'
-
+  KUBECONFIG: "{{.KUBERNETES_DIR}}/kubeconfig"
+includes:
+  format: .taskfiles/format
+  kubernetes: .taskfiles/kubernetes
+  pre-commit: .taskfiles/pre-commit
+  proxmox: .taskfiles/proxmox
+  sops: .taskfiles/sops
 tasks:
   default:
     silent: true

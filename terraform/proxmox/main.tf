@@ -1,0 +1,5 @@
+provider "proxmox" {
+}
+
+provider "talos" {
+}
