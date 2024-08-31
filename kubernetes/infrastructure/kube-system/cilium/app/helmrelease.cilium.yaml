@@ -4,6 +4,11 @@ kind: HelmRelease
 metadata:
   name: cilium
   namespace: kube-system
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
 spec:
   interval: 15m
   chart:
@@ -15,6 +20,17 @@ spec:
         name: cilium
         namespace: flux-system
       interval: 15m
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+  uninstall:
+    keepHistory: false
   valuesFrom:
     - kind: ConfigMap
       name: cilium-helm-values
