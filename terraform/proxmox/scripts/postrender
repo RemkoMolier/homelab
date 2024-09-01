@@ -1,0 +1,3 @@
+#!/bin/bash
+
+yq -y '.metadata.annotations."meta.helm.sh/release-name"="cilium" | .metadata.annotations."meta.helm.sh/release-namespace"="kube-system" | .metadata.labels."app.kubernetes.io/managed-by" = "Helm"' <&0

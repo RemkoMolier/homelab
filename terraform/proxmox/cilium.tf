@@ -14,4 +14,17 @@ data "helm_template" "cilium" {
   kube_version = var.kubernetes_version
   api_versions = []
   values       = [file("../../kubernetes/infrastructure/kube-system/cilium/app/values.yaml")]
+  /* see https://github.com/hashicorp/terraform-provider-helm/issues/1472
+  postrender {
+    binary_path = "${path.module}/scripts/postrender"
+  }
+  */
+}
+
+data "external" "cilium_manifest" {
+  program = ["bash", "${path.module}/scripts/external_postrender"]
+
+  query = {
+    input = data.helm_template.cilium.manifest
+  }
 }

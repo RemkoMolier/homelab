@@ -59,7 +59,7 @@ data "talos_machine_configuration" "controller" {
           {
             name = "cilium"
             contents = join("---\n", [
-              data.helm_template.cilium.manifest,
+              data.external.cilium_manifest.result.output,
             ])
           }
         ],

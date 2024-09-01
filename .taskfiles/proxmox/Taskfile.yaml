@@ -16,5 +16,9 @@ tasks:
     dir: terraform/proxmox
     cmds:
       - terraform apply  -auto-approve
+  output:
+    desc: "Run 'terraform output'"
+    dir: terraform/proxmox
+    cmds:
       - terraform output -raw kubeconfig > ../../kubernetes/kubeconfig
       - terraform output -raw talosconfig > ../../kubernetes/talosconfig

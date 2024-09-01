@@ -8,7 +8,7 @@ RUN wget -O- https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/sh
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
 
 
-# Install Terraform / Direnv / PreCommit / Age / Kubectl / helm / flux
+# Install Terraform / Direnv / PreCommit / Age / Kubectl / helm / flux / yq
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     age \
     kubectl \
     helm \
+    yq \
     && rm -rf /var/lib/apt/lists/* \
     && curl -s https://fluxcd.io/install.sh | bash
 

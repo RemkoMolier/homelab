@@ -1,20 +1,10 @@
-output "proxmox_nodes" {
-  value     = yamlencode(local.proxmox_nodes)
-  sensitive = false
-}
-
-output "proxmox_virtual_environment_datastores" {
-  value     = yamlencode(data.proxmox_virtual_environment_datastores.datastores)
-  sensitive = false
-}
-
-output "talos_nocloud_image_destinations" {
-  value     = yamlencode(local.talos_nocloud_image_destinations)
-  sensitive = false
-}
-
 output "proxmox_nodes_with_images" {
   value     = yamlencode(local.proxmox_nodes_with_images)
+  sensitive = false
+}
+
+output "cilium_manifest_adapted" {
+  value     = data.external.cilium_manifest.result
   sensitive = false
 }
 

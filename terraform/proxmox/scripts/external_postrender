@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Exit if any of the intermediate steps fail
+set -ex pipefail
+
+# Store script directory
+scripts=$(dirname "$0")
+
+jq -r ".input" | yamlfmt -in | ${scripts}/postrender | yamlfmt -in | jq -s -R '{ output: .}'
