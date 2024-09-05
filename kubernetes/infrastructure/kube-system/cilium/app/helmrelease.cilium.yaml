@@ -34,3 +34,20 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: cilium-helm-values
+  values:
+    hubble:
+      relay:
+        enabled: true
+      ui:
+        enabled: true
+        ingress:
+          enabled: true
+          annotations:
+            cert-manager.io/cluster-issuer: smallstep-certificates
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          hosts:
+            - hubble.${CLUSTER_DOMAIN}
+          tls:
+            - secretName: tls-cilium-hubble-ingress-tls
+              hosts:
+                - hubble.${CLUSTER_DOMAIN}

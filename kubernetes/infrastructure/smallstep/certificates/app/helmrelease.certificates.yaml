@@ -1,0 +1,55 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: certificates
+  namespace: smallstep
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: step-certificates
+      version: 1.26.2
+      sourceRef:
+        kind: HelmRepository
+        name: smallstep
+        namespace: flux-system
+      interval: 15m
+  valuesFrom:
+    - kind: ConfigMap
+      name: certificates-helm-values
+  values:
+    inject:
+      secrets:
+        ca_password: ${STEP_CERTIFICATES_PASSWORD}
+        provisioner_password: ${STEP_CERTIFICATES_PASSWORD}
+      config:
+        templates:
+          x509_leaf.tpl: |
+            {
+                "subject": {{ toJson .Subject }},
+            {{- if .SANs }}
+                "sans": {{ toJson .SANs }},
+            {{- end }}
+            {{- if typeIs "*rsa.PublicKey" .Insecure.CR.PublicKey }}
+                "keyUsage": ["keyEncipherment", "digitalSignature"],
+            {{- else }}
+                "keyUsage": ["digitalSignature"],
+            {{- end }}
+                "extKeyUsage": ["serverAuth", "clientAuth"],
+                "crlDistributionPoints": "https://ca.${CLUSTER_DOMAIN}/intermediate_ca.crl",
+                "issuingCertificateURL": "https://ca.${CLUSTER_DOMAIN}/intermediate_ca.crt"
+            }
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: smallstep-certificates
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      tls:
+        - hosts:
+            - ca.${CLUSTER_DOMAIN}
+          secretName: tls-certificates-ingress-http
+      hosts:
+        - host: ca.${CLUSTER_DOMAIN}
+          paths:
+            - path: /

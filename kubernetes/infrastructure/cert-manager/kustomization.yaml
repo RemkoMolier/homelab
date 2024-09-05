@@ -4,9 +4,5 @@ kind: Kustomization
 sortOptions:
   order: fifo
 resources:
+  - namespace.cert-manager.yaml
   - cert-manager
-  - flux-system
-  - kube-system
-  - traefik
-  - longhorn-system
-  - smallstep

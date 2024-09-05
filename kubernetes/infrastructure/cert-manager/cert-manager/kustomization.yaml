@@ -1,0 +1,8 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+sortOptions:
+  order: fifo
+resources:
+  - kustomization.cert-manager-cert-manager-app.yaml
+  - kustomization.cert-manager-cert-manager-issuers.yaml

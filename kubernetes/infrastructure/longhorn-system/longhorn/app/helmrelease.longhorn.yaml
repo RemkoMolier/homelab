@@ -19,5 +19,8 @@ spec:
     ingress:
       enabled: true
       annotations:
+        cert-manager.io/cluster-issuer: smallstep-certificates
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
       host: longhorn.${CLUSTER_DOMAIN}
+      tls: true
+      tlsSecret: tls-longhorn-ingress-http

@@ -3,9 +3,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - helmrepository.cilium.yaml
+  - helmrepository.jetstack.yaml
   - helmrepository.longhorn.yaml
   - helmrepository.postfinance.yaml
   - helmrepository.prometheus-community.yaml
+  - helmrepository.smallstep.yaml
   - helmrepository.spegel-org.yaml
   - helmrepository.traefik.yaml
   - helmrepository.weaveworks.yaml

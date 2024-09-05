@@ -2,20 +2,20 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: traefik-traefik-app
+  name: cert-manager-cert-manager-issuers
   namespace: flux-system
 spec:
   interval: 10m0s
   sourceRef:
     kind: GitRepository
     name: homelab
-  path: ./kubernetes/infrastructure/traefik/traefik/app
+  path: ./kubernetes/infrastructure/cert-manager/cert-manager/issuers
   prune: true
   wait: true
   timeout: 5m0s
   dependsOn:
-    - name: kube-system-cilium-config
     - name: cert-manager-cert-manager-app
+    - name: smallstep-certificates-app
   decryption:
     provider: sops
     secretRef:

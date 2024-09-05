@@ -1,0 +1,110 @@
+---
+# Helm template
+inject:
+  enabled: true
+  # Config contains the configuration files ca.json and defaults.json
+  config:
+    files:
+      ca.json:
+        root: /home/step/certs/root_ca.crt
+        federateRoots: []
+        crt: /home/step/certs/intermediate_ca.crt
+        key: /home/step/secrets/intermediate_ca_key
+        address: :9000
+        dnsNames:
+          - ca.${CLUSTER_DOMAIN}
+          - certificates-step-certificates.smallstep.svc.cluster.local
+        logger:
+          format: json
+        db:
+          type: badgerv2
+          dataSource: /home/step/db
+        authority:
+          enableAdmin: false
+          provisioners:
+            - {"type": "JWK", "name": "remko@molier.net", "key": {"use": "sig", "kty": "EC", "kid": "j70FrmovAvHderb_fiCl7jdyY6ojloXYo2kLmse6B6I", "crv": "P-256", "alg": "ES256", "x": "2FzxzB96iV_LMfqWJmoh-OhfHx6fNAA_P6JpqTyEod4", "y": "ouX2kW23MlL9poevIpzp-TXebOzvM25z84-4SgXraVM"}, "encryptedKey": "eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjYwMDAwMCwicDJzIjoiMHJRV0pRS0UxWUZOOFdabF9QMUNNZyJ9.e9H3torb2-xdWzZwV9a9Ht2REUemFTmXa9VhKcmezroqouZdY412uQ.q-1NFx4ZxC9-eChL.k6yICRbSAbKqzoyoA3l7ptmBu2dv3R9DBBZAeYq_RIH33k2Eq31Tn_XMo23odX2tOfIYW2zcjX4wUTujdvRNIiGXoGcSEnGe2T2UczlMtgCAFvv85i8Ue5URHtUPVlkjz__GuwDkbmk2VBvQTiu6YtiFIi5fskos5BRs9XUBygYg7X3G3ZDkAI0dJLBY7k0wWedOPfpO6CzxvnO_PjF98RROhjE2S6117iQUDeP9Gr-UEmyeJSoKmGCKnc1A3RqiGVvqGjct71MUn0Dx1-cU4A8C6P0KHb403bfWEuZTTuikIKobVD6CGOUivZp3tOOT5_2KuOYoZAaf5C877vU.QGpBMKLhLSVWhLte9GHExA", "options": {"x509": {"templateFile": "config/x509_leaf.tpl"}, "ssh": {}}}
+            - {"type": "ACME", "name": "acme", "claims": {"enableSSHCA": true, "disableRenewal": false, "allowRenewalAfterExpiry": false}, "options": {"x509": {"templateFile": "config/x509_leaf.tpl"}, "ssh": {}}}
+          claims:
+            minTLSCertDuration: 5m
+            maxTLSCertDuration: 26400h
+            defaultTLSCertDuration: 720h
+          policy:
+            x509:
+              allow:
+                dns: ["*.${CLUSTER_DOMAIN}"]
+                email: ["@${CLUSTER_DOMAIN}"]
+                "ip": ["192.168.0.0/16", "172.16.0.0/12", "10.0.0.0/8"]
+          backdate: 1m0s
+        tls:
+          cipherSuites:
+            - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+          minVersion: 1.2
+          maxVersion: 1.3
+          renegotiation: false
+      defaults.json:
+        ca-url: https://ca.homelab.molier.net
+        ca-config: /home/step/config/ca.json
+        fingerprint: c8ac6bf4679033347717eb5ac1f6a23713724b30261ee0f068dad4a28ec6027f
+        root: /home/step/certs/root_ca.crt
+  # Certificates contains the root and intermediate certificate and
+  # optionally the SSH host and user public keys
+  certificates:
+    # intermediate_ca contains the text of the intermediate CA Certificate
+    intermediate_ca: |
+      -----BEGIN CERTIFICATE-----
+      MIIB0DCCAXagAwIBAgIQEPvjxdeuDlD9TO695L3o2jAKBggqhkjOPQQDAjAyMRMw
+      EQYDVQQKEwpNb2xpZXIuTkVUMRswGQYDVQQDExJNb2xpZXIuTkVUIFJvb3QgQ0Ew
+      HhcNMjQwOTA1MTMzNTAzWhcNMzQwOTAzMTMzNTAzWjA6MRMwEQYDVQQKEwpNb2xp
+      ZXIuTkVUMSMwIQYDVQQDExpNb2xpZXIuTkVUIEludGVybWVkaWF0ZSBDQTBZMBMG
+      ByqGSM49AgEGCCqGSM49AwEHA0IABOYTqOjQaxdQ0XMuEAbUs6Nvft6b1+I7YMxR
+      xVmQi2Uwq5HD83UFUVf4yOgkeU8V91mszGxErG1K3n/qWWzPSSyjZjBkMA4GA1Ud
+      DwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQWBBTR56SRS8sl
+      jDY7hOskNRoYmFnVdjAfBgNVHSMEGDAWgBShBA8DdXRK5lrgvNW4BlwDpSBWOTAK
+      BggqhkjOPQQDAgNIADBFAiEAnhEA/I7nUPJdGnu5ikYUVa1ruJvViD6DUkQLG1Rb
+      jQwCICV3+APweAl8tn6eZl9n2dussiRpsINR3//E3I5SeUi6
+      -----END CERTIFICATE-----
+    # root_ca contains the text of the root CA Certificate
+    root_ca: |
+      -----BEGIN CERTIFICATE-----
+      MIIBqDCCAU2gAwIBAgIQKnr7gYx+iSm7efwty3cvMjAKBggqhkjOPQQDAjAyMRMw
+      EQYDVQQKEwpNb2xpZXIuTkVUMRswGQYDVQQDExJNb2xpZXIuTkVUIFJvb3QgQ0Ew
+      HhcNMjQwOTA1MTMzNTAyWhcNMzQwOTAzMTMzNTAyWjAyMRMwEQYDVQQKEwpNb2xp
+      ZXIuTkVUMRswGQYDVQQDExJNb2xpZXIuTkVUIFJvb3QgQ0EwWTATBgcqhkjOPQIB
+      BggqhkjOPQMBBwNCAAQ84Scs/tLtKCDrgTtP8sb46Fz6YKylNFLZuRfYAvnlrp08
+      yQB8C/y5OHPYB0uJ11mlUekCqDSd4HhtZEthegjno0UwQzAOBgNVHQ8BAf8EBAMC
+      AQYwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUoQQPA3V0SuZa4LzVuAZc
+      A6UgVjkwCgYIKoZIzj0EAwIDSQAwRgIhAIQW/4z7xIYzZTTnzYnqvt1m+NoKmV1O
+      vts1tYm4i75MAiEAx1+NsV6PYgh8GldBdhU+mHIZrdi9NULfFfpSuXz4DEo=
+      -----END CERTIFICATE-----
+  # Secrets contains the root and intermediate keys and optionally the SSH
+  # private keys
+  secrets:
+    # ca_password contains the password used to encrypt x509.intermediate_ca_key, ssh.host_ca_key and ssh.user_ca_key
+    # This value must be base64 encoded.
+    ca_password:
+    provisioner_password:
+    x509:
+      # intermediate_ca_key contains the contents of your encrypted intermediate CA key
+      intermediate_ca_key: |
+        -----BEGIN EC PRIVATE KEY-----
+        Proc-Type: 4,ENCRYPTED
+        DEK-Info: AES-256-CBC,6077761af3859d4e3803dac0190c552b
+
+        YsemMApSJcVMWiQqYMWv3GXG+hA+mKRyQka4mz9kE5QgoYlAtvrkhgkeJSZDPyqe
+        iEVlrYh+C3Z6A9T4o85Sgos/Lz1BL8yjDgf384dEJSHmw8PS2x0KyePf6g/rONcZ
+        6ry3lutK9LlVs0NxyCuPPaOdT3kMmyKYiTSrnD3CWEE=
+        -----END EC PRIVATE KEY-----
+      # root_ca_key contains the contents of your encrypted root CA key
+      # Note that this value can be omitted without impacting the functionality of step-certificates
+      # If supplied, this should be encrypted using a unique password that is not used for encrypting
+      # the intermediate_ca_key, ssh.host_ca_key or ssh.user_ca_key.
+      root_ca_key: |
+        -----BEGIN EC PRIVATE KEY-----
+        Proc-Type: 4,ENCRYPTED
+        DEK-Info: AES-256-CBC,02d31cffc7fe8472da47ee01744c2424
+
+        wzbgwkLq7WPm39kq1P6z7mzTwOZdfjZjvtpEkD2xUc7c19IsyVpY510dK5QxYl7O
+        Hz85vL/RFdlPjJcODGGZhixuRDqZ8A1UBfsKngXZq94OFvdD7Jbf35zF9VffOHGX
+        lB/vJjLjSaBP8kK80efUPdPo1BmVGQdXks36MKQxcW8=
+        -----END EC PRIVATE KEY-----

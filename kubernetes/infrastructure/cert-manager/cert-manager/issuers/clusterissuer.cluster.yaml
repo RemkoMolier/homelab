@@ -1,0 +1,24 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: smallstep-certificates
+spec:
+  acme:
+    # The ACME server URL
+    server: https://certificates-step-certificates.smallstep.svc.cluster.local/acme/acme/directory
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJxRENDQVUyZ0F3SUJBZ0lRS25yN2dZeCtpU203ZWZ3dHkzY3ZNakFLQmdncWhrak9QUVFEQWpBeU1STXcKRVFZRFZRUUtFd3BOYjJ4cFpYSXVUa1ZVTVJzd0dRWURWUVFERXhKTmIyeHBaWEl1VGtWVUlGSnZiM1FnUTBFdwpIaGNOTWpRd09UQTFNVE16TlRBeVdoY05NelF3T1RBek1UTXpOVEF5V2pBeU1STXdFUVlEVlFRS0V3cE5iMnhwClpYSXVUa1ZVTVJzd0dRWURWUVFERXhKTmIyeHBaWEl1VGtWVUlGSnZiM1FnUTBFd1dUQVRCZ2NxaGtqT1BRSUIKQmdncWhrak9QUU1CQndOQ0FBUTg0U2NzL3RMdEtDRHJnVHRQOHNiNDZGejZZS3lsTkZMWnVSZllBdm5scnAwOAp5UUI4Qy95NU9IUFlCMHVKMTFtbFVla0NxRFNkNEhodFpFdGhlZ2pubzBVd1F6QU9CZ05WSFE4QkFmOEVCQU1DCkFRWXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBVEFkQmdOVkhRNEVGZ1FVb1FRUEEzVjBTdVphNEx6VnVBWmMKQTZVZ1Zqa3dDZ1lJS29aSXpqMEVBd0lEU1FBd1JnSWhBSVFXLzR6N3hJWXpaVFRuellucXZ0MW0rTm9LbVYxTwp2dHMxdFltNGk3NU1BaUVBeDErTnNWNlBZZ2g4R2xkQmRoVSttSElacmRpOU5VTGZGZnBTdVh6NERFbz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    # Email address used for ACME registration
+    email: ${CLUSTER_NAME}@${CLUSTER_DOMAIN}
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: ${CLUSTER_NAME}-acme
+    # Using the DNS01 challenge provider instead of HTTP-01
+    solvers:
+      - http01:
+          ingress:
+            serviceType: ClusterIP
+            ingressTemplate:
+              metadata:
+                annotations:
+                  traefik.ingress.kubernetes.io/router.entrypoints: web

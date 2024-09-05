@@ -30,6 +30,8 @@ spec:
         enabled: true
         matchRule: "Host(`traefik.${CLUSTER_DOMAIN}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
         entryPoints: [websecure]
+        tls:
+          secretName: tls-traefik-dashboard-ingress-http
     globalArguments:
       - --global.checknewversion=false
       - --global.sendanonymoususage=false
@@ -53,3 +55,17 @@ spec:
     securityContext:
       seccompProfile:
         type: RuntimeDefault
+    extraObjects:
+      - apiVersion: cert-manager.io/v1
+        kind: Certificate
+        metadata:
+          name: tls-traefik-dashboard-ingress-http
+          namespace: traefik
+        spec:
+          commonName: traefik.${CLUSTER_DOMAIN}
+          secretName: tls-traefik-dashboard-ingress-http
+          dnsNames:
+            - traefik.${CLUSTER_DOMAIN}
+          issuerRef:
+            kind: ClusterIssuer
+            name: smallstep-certificates
