@@ -4,7 +4,4 @@ kind: Kustomization
 sortOptions:
   order: fifo
 resources:
-  - flux-system
-  - kube-system
-  - traefik
-  - longhorn-system
+  - weave-gitops

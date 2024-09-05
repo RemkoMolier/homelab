@@ -1,0 +1,12 @@
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "dmz-fixed"
+spec:
+  blocks:
+    - start: "172.16.5.1"
+      stop: "172.16.5.9"
+  serviceSelector:
+    matchExpressions:
+      - {key: ipam, operator: In, values: [fixed]}

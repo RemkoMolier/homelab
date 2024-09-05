@@ -1,0 +1,11 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+sortOptions:
+  order: fifo
+resources:
+  - ciliumloadbalancerippool.dmz-fixed.yaml
+  - ciliumloadbalancerippool.dmz-free.yaml
+  - ciliumbgppeerconfig.homelab.yaml
+  - ciliumbgpclusterconfig.homelab.yaml
+  - ciliumbgpadvertisement.homelab.yaml

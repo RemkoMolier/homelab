@@ -4,7 +4,5 @@ kind: Kustomization
 sortOptions:
   order: fifo
 resources:
-  - flux-system
-  - kube-system
-  - traefik
-  - longhorn-system
+  - kustomization.traefik-traefik-app.yaml
+  - kustomization.traefik-traefik-config.yaml

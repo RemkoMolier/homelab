@@ -1,0 +1,55 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: traefik
+      version: 30.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+      interval: 15m
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    # -- Providers
+    providers:
+      kubernetesCRD:
+        allowCrossNamespace: true
+    # -- Enable IngressRoute
+    ingressRoute:
+      dashboard:
+        enabled: true
+        matchRule: "Host(`traefik.${CLUSTER_DOMAIN}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
+        entryPoints: [websecure]
+    globalArguments:
+      - --global.checknewversion=false
+      - --global.sendanonymoususage=false
+    additionalArguments:
+      - --serversTransport.insecureSkipVerify=true
+      - --log.level=INFO
+    ports:
+      web:
+        redirectTo:
+          port: websecure
+          priority: 10
+          permanent: true
+    service:
+      annotations:
+        lbipam.cilium.io/ips: ${CLUSTER_INGRESS_IP}
+        lbipam.cilium.io/sharing-key: ingress.${CLUSTER_DOMAIN}
+        external-dns.alpha.kubernetes.io/hostname: ingress.${CLUSTER_DOMAIN}
+        lbipam.cilium.io/sharing-cross-namespace: ${CLUSTER_INGRESS_NAMESPACES}
+      labels:
+        ipam: fixed
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
