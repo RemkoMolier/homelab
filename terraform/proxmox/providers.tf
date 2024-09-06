@@ -38,5 +38,11 @@ terraform {
       source  = "hashicorp/external"
       version = "2.3.3"
     }
+    # see https://registry.terraform.io/providers/terraform-routeros/routeros
+    # see https://github.com/terraform-routeros/terraform-provider-routeros
+    routeros = {
+      source  = "terraform-routeros/routeros"
+      version = "1.61.2"
+    }
   }
 }
