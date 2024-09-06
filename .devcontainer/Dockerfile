@@ -1,5 +1,9 @@
 FROM mcr.microsoft.com/devcontainers/base:bookworm
 
+RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
+    echo "Acquire::http::No-Cache true;" >> /etc/apt/apt.conf.d/99custom && \
+    echo "Acquire::BrokenProxy    true;" >> /etc/apt/apt.conf.d/99custom
+
 RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
 RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
 RUN wget -O- https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | gpg --dearmor | tee /usr/share/keyrings/kubernetes-apt-keyring.gpg
@@ -9,7 +13,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/h
 
 
 # Install Terraform / Direnv / PreCommit / Age / Kubectl / helm / flux / yq
-RUN apt-get update && apt-get install -y \
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update && apt-get install -y \
     wget \
     unzip \
     terraform \
@@ -31,6 +35,8 @@ RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/loc
 # Install Yamlfmt
 RUN YAMLFMT_LATEST_VERSION=$(curl -s "https://api.github.com/repos/google/yamlfmt/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+');curl -s -L "https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_LATEST_VERSION}/yamlfmt_${YAMLFMT_LATEST_VERSION}_Linux_x86_64.tar.gz" | tar xvz -C /tmp/ yamlfmt; install /tmp/yamlfmt /usr/local/bin; rm -rf /tmp/yamlfmt
 
+# Install Step-ca
+RUN cd /tmp; wget https://dl.smallstep.com/cli/docs-ca-install/latest/step-cli_amd64.deb; sudo dpkg -i step-cli_amd64.deb; rm -rf step-cli_amd64.deb
 
 USER vscode
 

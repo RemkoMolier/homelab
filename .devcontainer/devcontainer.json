@@ -4,10 +4,17 @@
     "name": "Debian",
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
     "build": {
-        "dockerfile": "Dockerfile"
+        "dockerfile": "Dockerfile",
+        "args": {
+            "http_proxy": "${localEnv:http_proxy}",
+            "https_proxy": "${localEnv:https_proxy}",
+            "no_proxy": "${localEnv:no_proxy}"
+        }
     },
     // Features to add to the dev container. More info: https://containers.dev/features.
-    // "features": {},
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     // "forwardPorts": [],
     // Configure tool-specific properties.
@@ -26,7 +33,8 @@
                 "ms-azuretools.vscode-docker",
                 "hashicorp.terraform",
                 "ms-kubernetes-tools.vscode-kubernetes-tools",
-                "task.vscode-task"
+                "task.vscode-task",
+                "weaveworks.vscode-gitops-tools"
             ]
         }
     }
