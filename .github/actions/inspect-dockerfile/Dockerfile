@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.12-alpine
 
 # Install requirements into the image
 COPY requirements.txt /opt/app/requirements.txt
