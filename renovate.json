@@ -51,6 +51,17 @@
       "kubernetes/.+\\.ya?ml$"
     ]
   },
+  "packageRules": [
+    {
+      "description": [
+        "Don't pin digests for managers that don't need a digest"
+      ],
+      "matchManagers": [
+        "flux"
+      ],
+      "pinDigests": false
+    }
+  ],
   "timezone": "Europe/Berlin",
   "dependencyDashboardTitle": "Renovate Dashboard",
   "suppressNotifications": [
