@@ -9,6 +9,7 @@ includes:
   kubernetes: .taskfiles/kubernetes
   pre-commit: .taskfiles/pre-commit
   proxmox: .taskfiles/proxmox
+  renovate: .taskfiles/renovate
   sops: .taskfiles/sops
 tasks:
   default:

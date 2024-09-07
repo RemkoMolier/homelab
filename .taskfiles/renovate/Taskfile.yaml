@@ -1,0 +1,9 @@
+---
+version: "3"
+tasks:
+  run:
+    desc: Run renovate locally
+    env:
+      LOG_LEVEL: info
+    cmds:
+      - docker run -e LOG_LEVEL --rm -v "{{.ROOT_DIR}}:/repo" -w /repo renovate/renovate --platform=local
