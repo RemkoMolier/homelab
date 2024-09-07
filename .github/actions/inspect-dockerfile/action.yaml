@@ -1,0 +1,21 @@
+---
+name: "Inspect a dockerfile"
+description: "Inspect a dockerfile and retrieve all build arguments and their default values"
+inputs:
+  dockerfile:
+    description: "Path to the dockerfile"
+    required: true
+    default: "./Dockerfile"
+  prefix:
+    description: "Prefix for the build_arg to report as version"
+    required: false
+outputs:
+  base_image:
+    description: "Dockerfile base image"
+  build_args:
+    description: "Dockerfile build arguments"
+  version:
+    description: "Version"
+runs:
+  using: "docker"
+  image: "Dockerfile"
