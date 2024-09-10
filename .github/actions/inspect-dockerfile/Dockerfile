@@ -1,4 +1,4 @@
-FROM python:3.12-alpine@sha256:4dae8a34125c839fce52c0b4efa963b1be1ce7e84df8eb1a62136049010916da
+FROM python:3.12-alpine@sha256:e0e4d3db19333a970e7acfdcb8863efe065be6c3038ef5018694f98162bffec0
 
 # Install requirements into the image
 COPY requirements.txt /opt/app/requirements.txt
