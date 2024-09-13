@@ -173,4 +173,5 @@ spec:
                                                             1w        ; expire
                                                             1m        ; minimum
                                                             )
+            @           IN      NS    ns.${CLUSTER_DOMAIN}.
             ${CLUSTER_REVERSE_INGRESS_IP}     1w    IN      PTR   ns.${CLUSTER_DOMAIN}.
