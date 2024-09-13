@@ -102,7 +102,7 @@ spec:
         data:
           named.conf: |
             include "/etc/bind/tsig.key";
-            
+
             controls { };
 
             options {
@@ -156,21 +156,21 @@ spec:
           cluster.zone: |
             $TTL 1m
             @           IN      SOA   ns.${CLUSTER_DOMAIN}. noc.${CLUSTER_DOMAIN}.  (
-                                                            20240913180001; serial
-                                                            5m            ; refresh
-                                                            1m            ; retry
-                                                            1w            ; expire
-                                                            1m            ; minimum
+                                                            2024091301; serial
+                                                            5m        ; refresh
+                                                            1m        ; retry
+                                                            1w        ; expire
+                                                            1m        ; minimum
                                                             )
             @           IN      NS    ns
             ns    1w    IN      A     ${CLUSTER_INGRESS_IP}
           cluster-reverse.zone: |
             $TTL 1m
             @           IN      SOA   ns.${CLUSTER_DOMAIN}. noc.${CLUSTER_DOMAIN}.  (
-                                                            20240913180001; serial
-                                                            5m            ; refresh
-                                                            1m            ; retry
-                                                            1w            ; expire
-                                                            1m            ; minimum
+                                                            2024091301; serial
+                                                            5m        ; refresh
+                                                            1m        ; retry
+                                                            1w        ; expire
+                                                            1m        ; minimum
                                                             )
             ${CLUSTER_REVERSE_INGRESS_IP}     1w    IN      PTR   ns.${CLUSTER_DOMAIN}.
