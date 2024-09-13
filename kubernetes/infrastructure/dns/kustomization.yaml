@@ -4,10 +4,6 @@ kind: Kustomization
 sortOptions:
   order: fifo
 resources:
-  - cert-manager
-  - dns
-  - flux-system
-  - kube-system
-  - traefik
-  - longhorn-system
-  - smallstep
+  - namespace.dns.yaml
+  - bind
+  - external-dns
