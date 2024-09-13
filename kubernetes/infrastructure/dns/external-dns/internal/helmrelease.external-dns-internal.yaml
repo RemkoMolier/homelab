@@ -20,6 +20,10 @@ spec:
     crds: CreateReplace
   values:
     fullnameOverride: external-dns-internal
+    sources:
+      - service
+      - ingress
+      - traefik-proxy
     txtOwnerId: ${CLUSTER_NAME}
     domainFilters:
       - ${CLUSTER_DOMAIN}
@@ -27,8 +31,10 @@ spec:
     provider:
       name: rfc2136
     extraArgs:
+      - "--traefik-disable-legacy"
       - "--rfc2136-host=bind.dns.svc.cluster.local"
-      - "--rfc2136-port=9053"
+      - "--rfc2136-port=53"
+      - "--rfc2136-create-ptr"
       - "--rfc2136-zone=${CLUSTER_DOMAIN}"
       - "--rfc2136-zone=${CLUSTER_REVERSE_ZONE}.in-addr.arpa"
       - "--rfc2136-tsig-keyname=tsig-key"

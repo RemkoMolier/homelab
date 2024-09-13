@@ -24,10 +24,16 @@ spec:
     providers:
       kubernetesCRD:
         allowCrossNamespace: true
+      kubernetesIngress:
+        publishedService:
+          enabled: true
+        allowEmptyServices: true
     # -- Enable IngressRoute
     ingressRoute:
       dashboard:
         enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: traefik.${CLUSTER_DOMAIN}
         matchRule: "Host(`traefik.${CLUSTER_DOMAIN}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
         entryPoints: [websecure]
         tls:
