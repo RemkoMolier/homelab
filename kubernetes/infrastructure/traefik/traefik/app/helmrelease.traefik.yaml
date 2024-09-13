@@ -52,6 +52,8 @@ spec:
         lbipam.cilium.io/sharing-cross-namespace: ${CLUSTER_INGRESS_NAMESPACES}
       labels:
         ipam: fixed
+      spec:
+        externalTrafficPolicy: Cluster
     securityContext:
       seccompProfile:
         type: RuntimeDefault
