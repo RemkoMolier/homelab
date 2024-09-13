@@ -24,7 +24,7 @@ spec:
           bind:
             image:
               repository: ghcr.io/remkomolier/bind
-              tag: 9.18.27
+              tag: 9.18.27@sha256:6eed12c305e0a0544a7a59a4858884a6f1aaed342e6d7c1e69fb9f4610f53275
             args:
               - -c
               - /etc/bind/named.conf
