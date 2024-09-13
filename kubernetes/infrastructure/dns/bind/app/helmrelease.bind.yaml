@@ -102,6 +102,8 @@ spec:
         data:
           named.conf: |
             include "/etc/bind/tsig.key";
+            
+            controls { };
 
             options {
                 directory "/var/bind";
