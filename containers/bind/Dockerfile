@@ -6,12 +6,14 @@ LABEL org.opencontainers.image.description="BIND 9 provides software for Domain 
 # renovate: datasource=repology depName=alpine_3_20/bind versioning=loose
 ARG BIND_VERSION=9.18.27
 RUN apk add --update --no-cache \
-    bind~=${BIND_VERSION} \
-    bind-dnssec-tools~=${BIND_VERSION}
+        bind~=${BIND_VERSION} \
+        bind-dnssec-tools~=${BIND_VERSION}
 
-VOLUME /var/named /etc/bind
+VOLUME /etc/bind /var/bind
 
 EXPOSE 53/tcp 53/udp 953/tcp
 
+USER named:named
+
 ENTRYPOINT [ "/usr/sbin/named", "-u", "named" ]
-CMD ["-c","/etc/bind/named.conf","-g"]
+CMD ["-c","/etc/bind/named.conf.recursive","-g"]
