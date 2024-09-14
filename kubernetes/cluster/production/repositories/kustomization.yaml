@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - helmrepository.bjw-s.yaml
   - helmrepository.cilium.yaml
+  - helmrepository.cloudnative-pg.yaml
   - helmrepository.external-dns.yaml
   - helmrepository.jetstack.yaml
   - helmrepository.longhorn.yaml

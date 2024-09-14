@@ -10,4 +10,5 @@ resources:
   - kube-system
   - traefik
   - longhorn-system
+  - postgres
   - smallstep

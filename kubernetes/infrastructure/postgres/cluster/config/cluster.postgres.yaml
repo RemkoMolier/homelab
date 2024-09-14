@@ -1,0 +1,22 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: postgres
+  labels:
+    app.kubernetes.io/name: postgres
+spec:
+  # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql versioning=redhat
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.4-5
+  instances: 3
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 25Gi
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: postgres-superuser
+  postgresql:
+    parameters:
+      max_connections: "300"
+      shared_buffers: 512MB
