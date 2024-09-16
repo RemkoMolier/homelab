@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/base:bookworm@sha256:cd98f76771f949a9ffd714663d42a498b45e1a6493bc1d563cffa523d43d9bdb
+FROM mcr.microsoft.com/devcontainers/base:bookworm@sha256:37eec4b19c24313f2bf77f031b9045bc0275b697d8daaed399811f9c496df24e
 
 RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
     echo "Acquire::http::No-Cache true;" >> /etc/apt/apt.conf.d/99custom && \
