@@ -1,2 +1,2 @@
 dockerfile-parse==2.0.1
-github-custom-actions==2.0.1
+github-custom-actions==2.2.0
