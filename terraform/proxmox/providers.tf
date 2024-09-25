@@ -42,7 +42,7 @@ terraform {
     # see https://github.com/terraform-routeros/terraform-provider-routeros
     routeros = {
       source  = "terraform-routeros/routeros"
-      version = "1.62.0"
+      version = "1.63.0"
     }
   }
 }
