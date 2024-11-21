@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: step-certificates
-      version: 1.27.4
+      version: 1.28.1
       sourceRef:
         kind: HelmRepository
         name: smallstep
