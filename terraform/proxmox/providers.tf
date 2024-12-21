@@ -30,7 +30,7 @@ terraform {
     # see https://github.com/hashicorp/terraform-provider-helm
     helm = {
       source  = "hashicorp/helm"
-      version = "2.16.1"
+      version = "2.17.0"
     }
     # see https://registry.terraform.io/providers/hashicorp/external/
     # see https://github.com/hashicorp/terraform-provider-external
