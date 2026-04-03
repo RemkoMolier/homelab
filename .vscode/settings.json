@@ -1,0 +1,8 @@
+{
+  "[markdown]": {
+    "editor.defaultFormatter": null,
+    "editor.wordWrap": "on",
+    "editor.rulers": [],
+    "files.trimTrailingWhitespace": true
+  }
+}
