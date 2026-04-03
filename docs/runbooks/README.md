@@ -25,3 +25,4 @@ When you use a runbook, update this date and add post-incident notes if applicab
 
 | Runbook | Type | Severity | Owner | Last Verified |
 | --------- | ------ | ---------- | ------- | --------------- |
+| [Bootstrap MikroTik device](bootstrap-mikrotik-device.md) | Onboarding | Medium | Remko Molier | 2026-04-03 |
