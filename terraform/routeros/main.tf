@@ -1,30 +1,19 @@
 # MikroTik RouterOS infrastructure
 #
-# Two-phase approach:
-#   1. Bootstrap module — checks device reachability, provisions fresh devices
-#      via plain HTTP REST API (no routeros provider needed)
-#   2. RouterOS module — manages device configuration via the routeros provider
-#      over HTTPS (depends on bootstrap completing)
+# Architecture:
+#   - locals.tf      — shared VLAN and firewall zone definitions
+#   - providers.tf   — one provider alias per device
+#   - device-*.tf    — per-device module composition with port maps
+#   - modules/       — reusable modules by concern
 #
-# Certificates are issued by the intermediate CA (pki/intermediate-ca/) using
-# the tls provider. The CA keys are decrypted transparently by git-crypt.
-
-locals {
-  pki_dir = "${path.root}/../../pki"
-}
+# Two-phase lifecycle:
+#   1. Bootstrap module provisions fresh devices via HTTP REST API
+#   2. Device modules manage configuration via HTTPS (routeros provider)
+#
+# Certificates are issued by the intermediate CA (pki/intermediate-ca/)
+# using the tls provider. CA keys are decrypted transparently by git-crypt.
 
 module "bootstrap" {
   source  = "./modules/bootstrap"
   devices = var.routeros_devices
-}
-
-module "routeros" {
-  source     = "./modules/routeros"
-  devices    = var.routeros_devices
-
-  intermediate_ca_key_pem  = file("${local.pki_dir}/intermediate-ca/ca.key")
-  intermediate_ca_cert_pem = file("${local.pki_dir}/intermediate-ca/ca.crt")
-  root_ca_cert_pem         = file("${local.pki_dir}/root-ca/ca.crt")
-
-  depends_on = [module.bootstrap]
 }
