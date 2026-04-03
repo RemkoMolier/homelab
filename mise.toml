@@ -1,0 +1,6 @@
+[tools]
+node = "lts"
+"npm:markdownlint-cli2" = "latest"
+"npm:markdownlint-sentences-per-line" = "latest"
+"npm:@commitlint/cli" = "latest"
+"npm:@commitlint/config-conventional" = "latest"
