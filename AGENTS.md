@@ -12,6 +12,13 @@ Currently in the discovery phase.
 Tool versions are managed with [mise](https://mise.jdx.dev/).
 Run `./setup.sh` or install manually: `curl https://mise.run | sh && mise install`.
 
+## Infrastructure
+
+- **OpenTofu** (`terraform/`) — MikroTik and Horaco switch configuration
+- **Ansible** (`ansible/`) — TrueNAS SCALE configuration
+- **SOPS** — secrets encryption (GPG)
+- OpenTofu state is encrypted and committed to git
+
 ## Conventions
 
 - Prefer declarative configuration over imperative scripts

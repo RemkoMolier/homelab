@@ -15,6 +15,16 @@ Tool versions are managed with [mise](https://mise.jdx.dev/) — see [ADR-0006](
 - Install project tools: `mise install`
 - Or run `./setup.sh` to do both (used automatically on Claude web)
 
+## Infrastructure
+
+The repository manages homelab infrastructure with two tools — see [ADR-0008](docs/decisions/0008-split-tooling-opentofu-and-ansible.md):
+
+- **OpenTofu** (`terraform/`) — network device configuration (MikroTik, Horaco switches)
+- **Ansible** (`ansible/`) — TrueNAS SCALE configuration
+
+Secrets are encrypted with SOPS using GPG — see [ADR-0009](docs/decisions/0009-use-sops-for-secrets-management.md).
+OpenTofu state is encrypted with PBKDF2+AES-GCM and committed to git.
+
 ## Conventions
 
 - Prefer declarative configuration over imperative scripts
