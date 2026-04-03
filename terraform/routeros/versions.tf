@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/tls"
       version = "~> 4.0"
     }
+    restapi = {
+      source  = "Mastercard/restapi"
+      version = "~> 2.0"
+    }
   }
 
   encryption {
