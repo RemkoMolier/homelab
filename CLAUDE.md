@@ -7,11 +7,19 @@ Infrastructure-as-code repository for Remko's homelab.
 This project is in the **discovery phase**.
 Run `/research` to continue the structured research and implementation-planning process.
 
+## Setup
+
+Tool versions are managed with [mise](https://mise.jdx.dev/) — see [ADR-0006](docs/decisions/0006-use-mise-for-tool-version-management.md).
+
+- Install mise: `curl https://mise.run | sh`
+- Install project tools: `mise install`
+- Or run `./setup.sh` to do both (used automatically on Claude web)
+
 ## Conventions
 
 - Prefer declarative configuration over imperative scripts
 - Use semantic line breaks in markdown (one sentence per line) — see [ADR-0004](docs/decisions/0004-markdown-quality-standard.md)
-- Run `npx markdownlint-cli2` to check markdown quality (config in `.markdownlint-cli2.yaml`)
+- Run `mise exec -- markdownlint-cli2` to check markdown quality (config in `.markdownlint-cli2.yaml`)
 
 ### Commit discipline
 

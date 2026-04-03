@@ -22,3 +22,4 @@ Skip trivial or easily reversible choices.
 | [ADR-0003](0003-use-sre-style-runbooks-for-operations.md) | Use SRE-style runbooks for operational procedures | accepted | 2026-04-03 |
 | [ADR-0004](0004-markdown-quality-standard.md) | Enforce markdown quality with linting and semantic line breaks | accepted | 2026-04-03 |
 | [ADR-0005](0005-atomic-commits-with-conventional-labels.md) | Use atomic commits with conventional commit labels | accepted | 2026-04-03 |
+| [ADR-0006](0006-use-mise-for-tool-version-management.md) | Use mise for tool version management | accepted | 2026-04-03 |

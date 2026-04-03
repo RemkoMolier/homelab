@@ -7,6 +7,11 @@ Instructions for AI coding agents working on this repository.
 Infrastructure-as-code repository for a homelab.
 Currently in the discovery phase.
 
+## Setup
+
+Tool versions are managed with [mise](https://mise.jdx.dev/).
+Run `./setup.sh` or install manually: `curl https://mise.run | sh && mise install`.
+
 ## Conventions
 
 - Prefer declarative configuration over imperative scripts
