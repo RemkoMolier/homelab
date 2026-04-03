@@ -25,6 +25,16 @@ The repository manages homelab infrastructure with two tools — see [ADR-0008](
 Secrets are encrypted with SOPS using GPG — see [ADR-0009](docs/decisions/0009-use-sops-for-secrets-management.md).
 OpenTofu state is encrypted with PBKDF2+AES-GCM and committed to git.
 
+### PKI
+
+An internal CA issues TLS certificates for all homelab services — see [ADR-0010](docs/decisions/0010-internal-pki-with-offline-root-ca.md).
+
+- **Root CA** (`pki/root-ca/`) — offline, 20-year validity, used only to sign the intermediate
+- **Intermediate CA** (`pki/intermediate-ca/`) — used by OpenTofu's `tls` provider to issue device certificates on `tofu apply`
+- **git-crypt** encrypts private keys (`*.key` files) transparently — certificates (`*.crt`) are public
+- To bootstrap: `pki/scripts/init-root-ca.sh` then `pki/scripts/init-intermediate-ca.sh` (one-time)
+- Device certificates are managed as Terraform state — adding a device and running `tofu apply` creates and deploys its certificate
+
 ## Conventions
 
 - Prefer declarative configuration over imperative scripts
