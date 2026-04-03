@@ -26,3 +26,5 @@ When you use a runbook, update this date and add post-incident notes if applicab
 | Runbook | Type | Severity | Owner | Last Verified |
 | --------- | ------ | ---------- | ------- | --------------- |
 | [Bootstrap MikroTik device](bootstrap-mikrotik-device.md) | Onboarding | Medium | Remko Molier | 2026-04-03 |
+| [PKI operations](pki-operations.md) | Operations | High | Remko Molier | 2026-04-03 |
+| [git-crypt onboarding](git-crypt-onboarding.md) | Onboarding | Medium | Remko Molier | 2026-04-03 |

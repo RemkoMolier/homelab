@@ -12,6 +12,7 @@ related: []
 
 Prepare a new or factory-reset MikroTik device so that OpenTofu can manage it.
 The bootstrap module in `terraform/routeros/modules/bootstrap/` automates most of this process — it detects unreachable devices and provisions them via the default HTTP REST API.
+After bootstrap, the routeros module issues a TLS certificate from the internal intermediate CA and deploys the full device configuration.
 
 ## Symptoms
 
@@ -100,11 +101,15 @@ The bootstrap module will:
 1. Check if the device is reachable on HTTPS
 2. If not, connect via HTTP to the `bootstrap_ip`
 3. Create the `terraform` user group and user
-4. Generate and sign a self-signed certificate
+4. Generate a temporary self-signed certificate for initial api-ssl
 5. Enable `api-ssl` with the certificate
 6. Disable plain HTTP (`www` service)
 
-After bootstrap, the routeros module takes over and manages the full device configuration.
+The routeros module then takes over and:
+
+1. Issues a proper TLS certificate from the intermediate CA (`pki/intermediate-ca/`)
+2. Deploys it to the device, replacing the temporary bootstrap certificate
+3. Manages the full device configuration
 
 ### Step 4: Verify
 
