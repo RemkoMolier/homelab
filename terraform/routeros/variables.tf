@@ -12,10 +12,13 @@ variable "state_passphrase" {
 variable "routeros_devices" {
   description = "Map of MikroTik devices to manage"
   type = map(object({
-    hosturl  = string
-    username = string
-    password = string
-    insecure = optional(bool, false)
+    hosturl       = string
+    username      = string
+    password      = string
+    insecure      = optional(bool, false)
+    bootstrap_ip  = optional(string)
+    bootstrap_user = optional(string, "admin")
+    bootstrap_pass = optional(string, "")
   }))
   sensitive = true
 }
