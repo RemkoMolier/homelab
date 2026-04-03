@@ -1,0 +1,12 @@
+---
+- name: Configure TrueNAS SCALE
+  hosts: truenas
+  gather_facts: false
+  collections:
+    - arensb.truenas
+
+  tasks: []
+  # TODO: Add TrueNAS configuration tasks
+  #   - Datasets
+  #   - SMB/NFS shares
+  #   - Services

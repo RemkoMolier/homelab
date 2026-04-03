@@ -1,0 +1,6 @@
+all:
+  children:
+    truenas:
+      hosts:
+        truenas.home.molier.net:
+          ansible_host: 172.16.1.2
