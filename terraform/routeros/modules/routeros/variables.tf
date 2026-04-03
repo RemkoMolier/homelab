@@ -11,3 +11,19 @@ variable "devices" {
   }))
   sensitive = true
 }
+
+variable "intermediate_ca_key_pem" {
+  description = "Intermediate CA private key in PEM format (from git-crypt)"
+  type        = string
+  sensitive   = true
+}
+
+variable "intermediate_ca_cert_pem" {
+  description = "Intermediate CA certificate in PEM format"
+  type        = string
+}
+
+variable "root_ca_cert_pem" {
+  description = "Root CA certificate in PEM format"
+  type        = string
+}

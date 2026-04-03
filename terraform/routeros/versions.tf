@@ -6,6 +6,10 @@ terraform {
       source  = "terraform-routeros/routeros"
       version = "~> 1.99"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 
   encryption {
