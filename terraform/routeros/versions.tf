@@ -14,6 +14,10 @@ terraform {
       source  = "Mastercard/restapi"
       version = "~> 2.0"
     }
+    sops = {
+      source  = "carlpett/sops"
+      version = "~> 1.1"
+    }
   }
 
   encryption {

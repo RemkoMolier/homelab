@@ -18,11 +18,11 @@ variable "ports" {
   type = map(object({
     comment  = optional(string, "")
     disabled = optional(bool, false)
-    vlans    = optional(list(number), [])  # Tagged VLAN IDs on this port
-    pvid     = optional(number)            # Untagged VLAN (access port)
-    bond     = optional(string)            # Bond group name (if member)
+    vlans    = optional(list(number), []) # Tagged VLAN IDs on this port
+    pvid     = optional(number)           # Untagged VLAN (access port)
+    bond     = optional(string)           # Bond group name (if member)
     l2mtu    = optional(number)
-    speed    = optional(string)            # Force speed (e.g., "2.5G-baseX")
+    speed    = optional(string) # Force speed (e.g., "2.5G-baseX")
   }))
 }
 
@@ -32,8 +32,8 @@ variable "bonds" {
     mode    = optional(string, "802.3ad")
     comment = optional(string, "")
     mtu     = optional(number)
-    vlans   = optional(list(number), [])   # Tagged VLANs on the bond
-    pvid    = optional(number)             # Untagged VLAN (if access bond)
+    vlans   = optional(list(number), []) # Tagged VLANs on the bond
+    pvid    = optional(number)           # Untagged VLAN (if access bond)
   }))
   default = {}
 }

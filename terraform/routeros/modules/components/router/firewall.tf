@@ -13,8 +13,8 @@ resource "routeros_interface_list" "wan" {
   name = "wan"
 }
 
-resource "routeros_interface_list_member" "wan_pppoe" {
-  interface = "pppoe-out1"
+resource "routeros_interface_list_member" "wan_ether1" {
+  interface = var.wan_interface
   list      = routeros_interface_list.wan.name
 }
 
@@ -90,13 +90,13 @@ resource "routeros_ip_firewall_filter" "input_ntp" {
 }
 
 resource "routeros_ip_firewall_filter" "input_capsman" {
-  chain              = "input"
-  action             = "accept"
-  protocol           = "udp"
-  dst_port           = "5246-5247"
-  in_interface_list  = routeros_interface_list.zones["trusted"].name
-  comment            = "Accept CAPsMAN from management"
-  place_before       = routeros_ip_firewall_filter.input_drop_wan.id
+  chain             = "input"
+  action            = "accept"
+  protocol          = "udp"
+  dst_port          = "5246-5247"
+  in_interface_list = routeros_interface_list.zones["trusted"].name
+  comment           = "Accept CAPsMAN from management"
+  place_before      = routeros_ip_firewall_filter.input_drop_wan.id
 }
 
 resource "routeros_ip_firewall_filter" "input_drop_wan" {
@@ -150,9 +150,9 @@ resource "routeros_ip_firewall_filter" "forward_home_internet" {
 }
 
 resource "routeros_ip_firewall_filter" "forward_home_iot" {
-  chain             = "forward"
-  action            = "accept"
-  in_interface_list = routeros_interface_list.zones["home"].name
+  chain              = "forward"
+  action             = "accept"
+  in_interface_list  = routeros_interface_list.zones["home"].name
   out_interface_list = routeros_interface_list.zones["limited"].name
   comment            = "Home: access IoT/VoIP devices"
   place_before       = routeros_ip_firewall_filter.forward_home_cctv.id
@@ -186,9 +186,9 @@ resource "routeros_ip_firewall_filter" "forward_guest_internet" {
 }
 
 resource "routeros_ip_firewall_filter" "forward_drop_all" {
-  chain   = "forward"
-  action  = "drop"
-  log     = true
+  chain      = "forward"
+  action     = "drop"
+  log        = true
   log_prefix = "forward-drop"
-  comment = "Drop all other forward traffic"
+  comment    = "Drop all other forward traffic"
 }

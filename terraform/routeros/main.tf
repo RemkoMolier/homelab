@@ -14,6 +14,6 @@
 # using the tls provider. CA keys are decrypted transparently by git-crypt.
 
 module "bootstrap" {
-  source  = "./modules/bootstrap"
-  devices = var.routeros_devices
+  source  = "./modules/components/bootstrap"
+  devices = local.routeros_devices
 }

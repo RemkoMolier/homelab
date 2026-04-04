@@ -15,16 +15,10 @@ variable "firewall_zones" {
   type        = map(list(string))
 }
 
-variable "pppoe_interface" {
-  description = "WAN interface for PPPoE"
+variable "wan_interface" {
+  description = "WAN interface (DHCP from ISP)"
   type        = string
   default     = "ether1"
-}
-
-variable "pppoe_user" {
-  description = "PPPoE username"
-  type        = string
-  sensitive   = true
 }
 
 variable "dns_static_records" {

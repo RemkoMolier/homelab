@@ -9,16 +9,8 @@ variable "state_passphrase" {
   }
 }
 
-variable "routeros_devices" {
-  description = "Map of MikroTik devices to manage"
-  type = map(object({
-    hosturl       = string
-    username      = string
-    password      = string
-    insecure      = optional(bool, false)
-    bootstrap_ip  = optional(string)
-    bootstrap_user = optional(string, "admin")
-    bootstrap_pass = optional(string, "")
-  }))
-  sensitive = true
-}
+# All other config and secrets are in terraform.tfvars.sops.json:
+#   - Device IPs and hosturls are plaintext
+#   - Credentials and passwords are under the "secrets" key (SOPS-encrypted)
+# Decrypted via the sops provider in secrets.tf.
+# Access via: local.device_ips, local.routeros_devices, local.wifi_passwords

@@ -54,9 +54,9 @@ locals {
 # --- Bridge ---
 
 resource "routeros_interface_bridge" "this" {
-  name            = var.bridge_name
-  vlan_filtering  = true
-  frame_types     = "admit-only-vlan-tagged"
+  name           = var.bridge_name
+  vlan_filtering = true
+  frame_types    = "admit-only-vlan-tagged"
 }
 
 # --- Ethernet port settings ---

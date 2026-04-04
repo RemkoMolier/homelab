@@ -67,14 +67,14 @@ resource "routeros_interface_ethernet_switch_crs_egress_vlan_tag" "vlans" {
 resource "routeros_interface_ethernet_switch_crs_ingress_vlan_translation" "access" {
   for_each = local.access_ports
 
-  ports           = each.key
-  customer_vid    = 0
+  ports            = each.key
+  customer_vid     = 0
   new_customer_vid = each.value.pvid
 }
 
 # Default ingress translation for trunk ports (untagged → VLAN 1)
 resource "routeros_interface_ethernet_switch_crs_ingress_vlan_translation" "trunk_default" {
-  ports           = join(",", [for name, port in local.trunk_ports : name])
-  customer_vid    = 0
+  ports            = join(",", [for name, port in local.trunk_ports : name])
+  customer_vid     = 0
   new_customer_vid = 1
 }

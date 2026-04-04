@@ -3,6 +3,11 @@ variable "identity" {
   type        = string
 }
 
+variable "ip" {
+  description = "Static management IP address for the device"
+  type        = string
+}
+
 variable "timezone" {
   description = "Timezone for the device"
   type        = string

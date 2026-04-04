@@ -9,6 +9,11 @@ terraform {
   }
 }
 
+# --- System info ---
+
+data "routeros_system_routerboard" "this" {}
+
+
 # --- System ---
 
 resource "routeros_system_identity" "this" {
@@ -63,6 +68,14 @@ resource "routeros_ip_service" "www" {
 resource "routeros_ip_service" "api" {
   numbers  = "api"
   disabled = true
+}
+
+# --- Static management IP ---
+
+resource "routeros_ip_address" "management" {
+  address   = "${var.ip}/24"
+  interface = "default"
+  comment   = "Management IP (Terraform)"
 }
 
 # --- SSH hardening ---

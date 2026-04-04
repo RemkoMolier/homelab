@@ -1,5 +1,14 @@
-# CAPsMAN — centralized WiFi management for hAP AX2 access points.
-# SSIDs: HOME (VLAN 10), IOT (VLAN 30), CCTV (VLAN 50), GUEST (VLAN 100)
+# CAPsMAN controller — centralized WiFi management.
+# Defines SSIDs, security profiles, datapaths, and provisioning rules.
+# Runs on the RB5009. APs use the capsman-client component to connect.
+
+terraform {
+  required_providers {
+    routeros = {
+      source = "terraform-routeros/routeros"
+    }
+  }
+}
 
 # --- Datapaths (map SSID to VLAN) ---
 
@@ -33,6 +42,7 @@ resource "routeros_wifi_datapath" "guest" {
 resource "routeros_wifi_security" "home" {
   name                 = "home"
   authentication_types = ["wpa2-psk", "wpa3-psk"]
+  passphrase           = lookup(var.wifi_passwords, "home", null)
   ft                   = true
   ft_over_ds           = true
 }
@@ -40,6 +50,7 @@ resource "routeros_wifi_security" "home" {
 resource "routeros_wifi_security" "iot" {
   name                 = "iot"
   authentication_types = ["wpa2-psk"]
+  passphrase           = lookup(var.wifi_passwords, "iot", null)
   ft                   = true
   ft_over_ds           = true
 }
@@ -47,6 +58,7 @@ resource "routeros_wifi_security" "iot" {
 resource "routeros_wifi_security" "cctv" {
   name                 = "cctv"
   authentication_types = ["wpa2-psk", "wpa3-psk"]
+  passphrase           = lookup(var.wifi_passwords, "cctv", null)
   ft                   = true
   ft_over_ds           = true
 }
@@ -56,7 +68,7 @@ resource "routeros_wifi_security" "cctv" {
 resource "routeros_wifi_configuration" "home" {
   name     = "home-ax"
   ssid     = "HOME"
-  country  = "Germany"
+  country  = var.country
   mode     = "ap"
   datapath = routeros_wifi_datapath.home.name
   security = routeros_wifi_security.home.name
@@ -65,7 +77,7 @@ resource "routeros_wifi_configuration" "home" {
 resource "routeros_wifi_configuration" "iot" {
   name     = "iot-ax"
   ssid     = "IOT"
-  country  = "Germany"
+  country  = var.country
   mode     = "ap"
   datapath = routeros_wifi_datapath.iot.name
   security = routeros_wifi_security.iot.name
@@ -74,25 +86,25 @@ resource "routeros_wifi_configuration" "iot" {
 resource "routeros_wifi_configuration" "cctv" {
   name     = "cctv-ax"
   ssid     = "CCTV"
-  country  = "Germany"
+  country  = var.country
   mode     = "ap"
   datapath = routeros_wifi_datapath.cctv.name
   security = routeros_wifi_security.cctv.name
 }
 
 resource "routeros_wifi_configuration" "guest" {
-  name    = "guest-ax"
-  ssid    = "GUEST"
-  country = "Germany"
-  mode    = "ap"
+  name     = "guest-ax"
+  ssid     = "GUEST"
+  country  = var.country
+  mode     = "ap"
   datapath = routeros_wifi_datapath.guest.name
 }
 
-# --- CAPsMAN ---
+# --- CAPsMAN service ---
 
 resource "routeros_wifi_capsman" "this" {
   enabled    = true
-  interfaces = ["default"]
+  interfaces = [var.discovery_interface]
 }
 
 # --- Provisioning rules ---
