@@ -20,3 +20,5 @@ But if a standard is controversial, hard to reverse, or has meaningful alternati
 
 | Standard | Scope | Enforcement | Status | Decision |
 | ---------- | ------- | ------------- | -------- | ---------- |
+| [Markdown style](markdown-style.md) | All `*.md` files | markdownlint-cli2, lefthook | accepted | ADR-0004 |
+| [Commit discipline](commit-discipline.md) | All git commits | manual, /commit skill | accepted | ADR-0005 |
