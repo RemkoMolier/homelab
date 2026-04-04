@@ -15,7 +15,7 @@ variable "ports" {
     vlans    = optional(list(number), []) # Tagged VLAN IDs on this port
     pvid     = optional(number)           # Untagged VLAN (access port)
     trunk    = optional(string)           # Switch trunk group name (bond)
-    l2mtu    = optional(number)
+    l2mtu    = optional(number, 9204)
   }))
 }
 
