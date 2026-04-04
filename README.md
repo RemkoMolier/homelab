@@ -107,6 +107,10 @@ mise run lint:markdown     # markdown only
 mise run lint:terraform    # terraform only (fmt, validate, tflint, trivy)
 ```
 
+A pre-commit hook runs `mise run lint` automatically via [lefthook](https://github.com/evilmartians/lefthook).
+The hook is installed automatically when you enter the project directory (mise `enter` hook).
+To skip the hook in exceptional cases: `git commit --no-verify`.
+
 ### Conventions
 
 - Prefer declarative configuration over imperative scripts

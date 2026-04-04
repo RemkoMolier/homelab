@@ -27,3 +27,4 @@ Skip trivial or easily reversible choices.
 | [ADR-0008](0008-split-tooling-opentofu-and-ansible.md) | Use OpenTofu for network devices and Ansible for TrueNAS | accepted | 2026-04-03 |
 | [ADR-0009](0009-use-sops-for-secrets-management.md) | Use SOPS for secrets management | accepted | 2026-04-03 |
 | [ADR-0010](0010-internal-pki-with-offline-root-ca.md) | Use an internal PKI with an offline root CA | accepted | 2026-04-03 |
+| [ADR-0011](0011-use-lefthook-for-pre-commit-linting.md) | Use lefthook for pre-commit linting | accepted | 2026-04-04 |

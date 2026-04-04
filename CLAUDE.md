@@ -75,6 +75,7 @@ terraform/routeros/
 - Run `mise run lint` to check all quality (markdown + terraform)
 - Run `mise run lint:markdown` for markdown only
 - Run `mise run lint:terraform` for terraform only (fmt, validate, tflint, trivy)
+- Pre-commit hook runs `mise run lint` automatically via [lefthook](https://github.com/evilmartians/lefthook)
 
 ### Commit discipline
 
