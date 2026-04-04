@@ -68,6 +68,18 @@ terraform/routeros/
       switch-chip/                     cert + base + switch-chip
 ```
 
+### Per-device apply
+
+Each `device-*.tf` file contains a `terraform_data.<device>_apply` anchor that depends on the full device chain (bootstrap, hardware trunks, device module, enforcement).
+To apply a single device without affecting others:
+
+```bash
+cd terraform/routeros
+tofu apply -target='terraform_data.crs226_apply'
+```
+
+Available targets: `crs226_apply`, `crs309_apply`, `crs326_apply`, `hap_ax2_kitchen_apply`, `hap_ax2_musicroom_apply`, `rb5009_apply`.
+
 ## Conventions
 
 - Prefer declarative configuration over imperative scripts
