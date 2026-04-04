@@ -1,4 +1,6 @@
 creation_rules:
+  - path_regex: \.env\.sops\.(json|yaml)$
+    pgp: 1F476D92728DFC65F15E40464F3984ECAE4A5BAF
   - path_regex: \.sops\.(json|yaml)$
     pgp: 1F476D92728DFC65F15E40464F3984ECAE4A5BAF
     encrypted_regex: "^secrets$"

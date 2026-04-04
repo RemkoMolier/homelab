@@ -1,3 +1,9 @@
+[env]
+_.file = { path = ".env.sops.json", tools = true }
+
+[settings]
+sops.rops = false
+
 [tools]
 node = "lts"
 "npm:markdownlint-cli2" = "latest"
