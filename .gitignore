@@ -1,4 +1,5 @@
 .codex
 .mise/
+.terraform/
 *.tfplan
 work/

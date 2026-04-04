@@ -13,8 +13,13 @@ node = "lts"
 opentofu = "latest"
 "pipx:ansible-core" = "latest"
 sops = "latest"
+lefthook = "latest"
 tflint = "latest"
 trivy = "latest"
+
+[hooks.enter]
+shell = "bash"
+script = "lefthook install"
 
 [tasks.lint]
 description = "Run all linters"

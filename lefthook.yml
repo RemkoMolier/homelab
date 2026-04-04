@@ -1,0 +1,8 @@
+pre-commit:
+  commands:
+    lint-markdown:
+      glob: "*.md"
+      run: mise run lint:markdown
+    lint-terraform:
+      glob: "terraform/**/*.tf"
+      run: mise run lint:terraform
