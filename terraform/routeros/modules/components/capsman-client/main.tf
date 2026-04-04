@@ -3,9 +3,12 @@
 # This component just enables the client side.
 
 terraform {
+  required_version = ">= 1.7.0"
+
   required_providers {
     routeros = {
-      source = "terraform-routeros/routeros"
+      source  = "terraform-routeros/routeros"
+      version = "~> 1.99"
     }
   }
 }
@@ -16,7 +19,7 @@ resource "routeros_wifi_datapath" "cap" {
 }
 
 resource "routeros_wifi" "wifi1" {
-  name     = "wifi1"
+  name = "wifi1"
   configuration = {
     manager = "capsman"
   }
@@ -25,7 +28,7 @@ resource "routeros_wifi" "wifi1" {
 }
 
 resource "routeros_wifi" "wifi2" {
-  name     = "wifi2"
+  name = "wifi2"
   configuration = {
     manager = "capsman"
   }

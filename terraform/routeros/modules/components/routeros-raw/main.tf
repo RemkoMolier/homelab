@@ -6,9 +6,12 @@
 # existing resources before creating.
 
 terraform {
+  required_version = ">= 1.7.0"
+
   required_providers {
     restapi = {
-      source = "Mastercard/restapi"
+      source  = "Mastercard/restapi"
+      version = "~> 2.0"
     }
   }
 }

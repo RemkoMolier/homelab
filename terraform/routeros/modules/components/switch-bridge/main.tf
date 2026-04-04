@@ -2,9 +2,12 @@
 # Used by CRS309, CRS326, and hAP AX2 devices.
 
 terraform {
+  required_version = ">= 1.7.0"
+
   required_providers {
     routeros = {
-      source = "terraform-routeros/routeros"
+      source  = "terraform-routeros/routeros"
+      version = "~> 1.99"
     }
   }
 }
@@ -14,12 +17,6 @@ locals {
   bridge_ports = {
     for name, port in var.ports : name => port
     if !port.disabled && port.bond == null
-  }
-
-  # Collect bond member ports
-  bond_member_ports = {
-    for name, port in var.ports : name => port
-    if !port.disabled && port.bond != null
   }
 
   # Build trunk ports: ports with tagged VLANs and no pvid

@@ -6,9 +6,12 @@
 # generic routeros_rest resource if available.
 
 terraform {
+  required_version = ">= 1.7.0"
+
   required_providers {
     routeros = {
-      source = "terraform-routeros/routeros"
+      source  = "terraform-routeros/routeros"
+      version = "~> 1.99"
     }
   }
 }
@@ -25,12 +28,6 @@ locals {
     for name, port in var.ports : name => port
     if !port.disabled && port.pvid != null
   }
-
-  # All active port names for VLAN membership (trunks + trunk group members)
-  all_trunk_port_names = concat(
-    [for name, port in local.trunk_ports : name],
-    [for name, trunk in var.trunks : name],
-  )
 }
 
 # --- Switch VLAN table ---

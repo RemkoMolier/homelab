@@ -2,12 +2,16 @@
 # Composes: certificates + device-base + switch-bridge + capsman-client.
 
 terraform {
+  required_version = ">= 1.7.0"
+
   required_providers {
     routeros = {
-      source = "terraform-routeros/routeros"
+      source  = "terraform-routeros/routeros"
+      version = "~> 1.99"
     }
     tls = {
-      source = "hashicorp/tls"
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
     }
   }
 }

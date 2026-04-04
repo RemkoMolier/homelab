@@ -12,9 +12,12 @@
 # After bootstrap, the routeros provider can connect over HTTPS.
 
 terraform {
+  required_version = ">= 1.7.0"
+
   required_providers {
     external = {
-      source = "hashicorp/external"
+      source  = "hashicorp/external"
+      version = "~> 2.3"
     }
   }
 }
