@@ -2,4 +2,5 @@
 .mise/
 .terraform/
 *.tfplan
+*.tfstate*backup
 work/
