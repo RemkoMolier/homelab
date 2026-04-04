@@ -23,6 +23,7 @@ provider "restapi" {
 }
 
 # CRS226-24G-2S+RM — 24-port GbE switch (.13)
+# Uplink: sfp+1 → Horaco 10G (.20). sfpplus2 is empty.
 # Legacy switch-chip VLANs. Hardware trunk via restapi provider.
 
 module "crs226" {
@@ -38,7 +39,7 @@ module "crs226" {
   vlans                    = local.vlans
 
   ports = {
-    "ether1"       = { comment = "Trunk (administration)", vlans = local.all_vlan_ids }
+    "ether1"       = { comment = "Epyc IPMI (.31)", pvid = 1 }
     "ether2"       = { comment = "Disabled", disabled = true }
     "ether3"       = { comment = "Trunk1 - QNAP", trunk = "trunk1" }
     "ether4"       = { comment = "Trunk1 - QNAP", trunk = "trunk1" }
@@ -62,8 +63,8 @@ module "crs226" {
     "ether22"      = { comment = "CCTV access", pvid = 50 }
     "ether23"      = { comment = "Disabled", disabled = true }
     "ether24"      = { comment = "Disabled", disabled = true }
-    "sfp-sfpplus1" = { comment = "Trunk", vlans = local.all_vlan_ids }
-    "sfpplus2"     = { comment = "Trunk - crs309 (${module.crs309.model})", vlans = local.all_vlan_ids }
+    "sfp-sfpplus1" = { comment = "Trunk - Horaco 10G (.20)", vlans = local.all_vlan_ids }
+    "sfpplus2"     = { comment = "Disabled", disabled = true }
   }
 
   trunks = {

@@ -29,7 +29,7 @@ module "crs309" {
     "sfp-sfpplus5" = { comment = "Disabled", disabled = true }
     "sfp-sfpplus6" = { comment = "Disabled", disabled = true }
     "sfp-sfpplus7" = { comment = "Disabled", disabled = true }
-    "sfp-sfpplus8" = { comment = "Trunk - crs226 (${module.crs226.model})", vlans = local.all_vlan_ids }
+    "sfp-sfpplus8" = { comment = "Trunk - Horaco 10G (.20)", vlans = local.all_vlan_ids }
   }
 
   depends_on = [module.bootstrap]
