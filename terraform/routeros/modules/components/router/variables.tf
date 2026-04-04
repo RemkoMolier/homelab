@@ -21,6 +21,12 @@ variable "wan_interface" {
   default     = "ether1"
 }
 
+variable "dns_servers" {
+  description = "List of upstream DNS servers used by the router"
+  type        = list(string)
+  default     = ["172.16.1.1"]
+}
+
 variable "dns_static_records" {
   description = "Map of static DNS records"
   type = map(object({

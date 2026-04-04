@@ -3,11 +3,6 @@ variable "identity" {
   type        = string
 }
 
-variable "ip" {
-  description = "Static management IP address for the device"
-  type        = string
-}
-
 variable "timezone" {
   description = "Timezone for the device"
   type        = string
@@ -25,6 +20,30 @@ variable "ntp_servers" {
   ]
 }
 
+variable "dns_servers" {
+  description = "List of DNS servers used by the device"
+  type        = list(string)
+  default     = ["172.16.1.1"]
+}
+
+variable "manage_dns_settings" {
+  description = "Whether the shared device base should manage /ip dns on this device"
+  type        = bool
+  default     = true
+}
+
+variable "management_interface" {
+  description = "Bridge interface for the management VLAN"
+  type        = string
+  default     = "bridge1"
+}
+
+variable "management_vlan_id" {
+  description = "VLAN ID for management access"
+  type        = number
+  default     = 1
+}
+
 variable "management_subnet" {
   description = "Management subnet for restricting SSH and Winbox access"
   type        = string
@@ -38,6 +57,65 @@ variable "terraform_host" {
 }
 
 variable "certificate_name" {
-  description = "Name of the TLS certificate for api-ssl"
+  description = "Name of the TLS certificate for api-ssl and www-ssl"
   type        = string
+}
+
+variable "domain" {
+  description = "Domain suffix for certificate common name"
+  type        = string
+  default     = "home.molier.net"
+}
+
+variable "cert_pem" {
+  description = "CA-signed device certificate in PEM format"
+  type        = string
+  default     = null
+}
+
+variable "import_signed_certificate" {
+  description = "Whether to import the device certificate into RouterOS"
+  type        = bool
+  default     = false
+}
+
+variable "key_pem" {
+  description = "Device private key in PEM format"
+  type        = string
+  sensitive   = true
+  default     = null
+}
+
+variable "ca_cert_pem" {
+  description = "Intermediate CA certificate in PEM format"
+  type        = string
+  default     = null
+}
+
+variable "import_ca_certificate" {
+  description = "Whether to import the intermediate CA certificate into RouterOS"
+  type        = bool
+  default     = false
+}
+
+variable "root_ca_cert_pem" {
+  description = "Root CA certificate in PEM format"
+  type        = string
+  default     = null
+}
+
+variable "import_root_certificate" {
+  description = "Whether to import the root CA certificate into RouterOS"
+  type        = bool
+  default     = false
+}
+
+
+variable "users" {
+  description = "Map of user accounts to create on the device"
+  type = map(object({
+    password = string
+    group    = string
+  }))
+  default = {}
 }

@@ -21,6 +21,7 @@ module "cert" {
 
   device_name              = var.name
   device_ip                = var.ip
+  root_ca_cert_pem         = var.root_ca_cert_pem
   intermediate_ca_key_pem  = var.intermediate_ca_key_pem
   intermediate_ca_cert_pem = var.intermediate_ca_cert_pem
 }
@@ -28,11 +29,19 @@ module "cert" {
 module "base" {
   source = "../../components/device-base"
 
-  identity          = var.name
-  ip                = var.ip
-  certificate_name  = "api-cert"
-  management_subnet = var.management_subnet
-  terraform_host    = var.terraform_host
+  identity                  = var.name
+  certificate_name          = "signed-cert"
+  cert_pem                  = module.cert.cert_pem
+  import_signed_certificate = true
+  key_pem                   = module.cert.key_pem
+  ca_cert_pem               = module.cert.ca_cert_pem
+  import_ca_certificate     = true
+  root_ca_cert_pem          = module.cert.root_ca_cert_pem
+  import_root_certificate   = true
+  dns_servers               = var.dns_servers
+  management_subnet         = var.management_subnet
+  terraform_host            = var.terraform_host
+  users                     = var.users
 }
 
 module "switch" {

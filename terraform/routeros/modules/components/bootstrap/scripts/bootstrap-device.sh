@@ -53,7 +53,7 @@ echo "  Device reachable, starting bootstrap..."
 # 2. Create the terraform user group
 echo "  Creating terraform user group..."
 api_post "/user/group" \
-  '{"name":"terraform","policy":"api,read,write,policy,test,sensitive"}' \
+  '{"name":"terraform","policy":"api,read,write,policy,test,sensitive,web,rest-api"}' \
   || echo "  (group may already exist)"
 
 # 3. Create the terraform user

@@ -13,3 +13,8 @@ output "ca_cert_pem" {
   description = "The intermediate CA certificate in PEM format"
   value       = var.intermediate_ca_cert_pem
 }
+
+output "root_ca_cert_pem" {
+  description = "The root CA certificate in PEM format"
+  value       = var.root_ca_cert_pem
+}

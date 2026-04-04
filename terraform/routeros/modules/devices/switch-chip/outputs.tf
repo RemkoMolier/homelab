@@ -13,3 +13,8 @@ output "key_pem" {
   value       = module.cert.key_pem
   sensitive   = true
 }
+
+output "vlan_aware_ports" {
+  description = "Set of all VLAN-aware ports (for drop-if-invalid enforcement)"
+  value       = module.switch.vlan_aware_ports
+}

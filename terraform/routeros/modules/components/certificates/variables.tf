@@ -25,6 +25,11 @@ variable "intermediate_ca_cert_pem" {
   type        = string
 }
 
+variable "root_ca_cert_pem" {
+  description = "Root CA certificate in PEM format"
+  type        = string
+}
+
 variable "validity_hours" {
   description = "Certificate validity in hours"
   type        = number

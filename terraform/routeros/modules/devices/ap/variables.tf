@@ -41,14 +41,34 @@ variable "intermediate_ca_cert_pem" {
   type        = string
 }
 
+variable "root_ca_cert_pem" {
+  description = "Root CA certificate in PEM format"
+  type        = string
+}
+
 variable "management_subnet" {
   description = "Management subnet for restricting access"
   type        = string
   default     = "172.16.1.0/24"
 }
 
+variable "dns_servers" {
+  description = "List of DNS servers used by the device"
+  type        = list(string)
+  default     = ["172.16.1.1"]
+}
+
 variable "terraform_host" {
   description = "Terraform workstation IP for api-ssl restriction"
   type        = string
   default     = "172.16.1.245/32"
+}
+
+variable "users" {
+  description = "Map of user accounts to create on the device"
+  type = map(object({
+    password = string
+    group    = string
+  }))
+  default = {}
 }
