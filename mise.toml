@@ -7,3 +7,38 @@ node = "lts"
 opentofu = "latest"
 "pipx:ansible-core" = "latest"
 sops = "latest"
+tflint = "latest"
+trivy = "latest"
+
+[tasks.lint]
+description = "Run all linters"
+depends = ["lint:markdown", "lint:terraform"]
+
+[tasks."lint:markdown"]
+description = "Lint markdown files"
+run = "markdownlint-cli2 '**/*.md'"
+
+[tasks."lint:terraform"]
+description = "Lint and validate Terraform config"
+dir = "terraform/routeros"
+depends = ["lint:terraform:fmt", "lint:terraform:validate", "lint:terraform:tflint", "lint:terraform:trivy"]
+
+[tasks."lint:terraform:fmt"]
+description = "Check Terraform formatting"
+dir = "terraform/routeros"
+run = "tofu fmt -check -recursive"
+
+[tasks."lint:terraform:validate"]
+description = "Validate Terraform configuration"
+dir = "terraform/routeros"
+run = "tofu validate"
+
+[tasks."lint:terraform:tflint"]
+description = "Run TFLint"
+dir = "terraform/routeros"
+run = "tflint --recursive"
+
+[tasks."lint:terraform:trivy"]
+description = "Run Trivy security scan on Terraform"
+dir = "terraform/routeros"
+run = "trivy config ."
