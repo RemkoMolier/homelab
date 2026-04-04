@@ -25,8 +25,10 @@ module "rb5009" {
 
   name                     = "rb5009"
   ip                       = local.device_ips["rb5009"]
+  root_ca_cert_pem         = local.root_ca_cert_pem
   intermediate_ca_key_pem  = local.intermediate_ca_key_pem
   intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
+  users                    = local.users
 
   vlans          = local.vlans
   firewall_zones = local.firewall_zones
@@ -53,5 +55,19 @@ module "rb5009" {
     # TODO: Review and add remaining leases for Home, IoT, VoIP, CCTV VLANs
   }
 
-  depends_on = [module.bootstrap]
+  depends_on = [module.rb5009_bootstrap]
+}
+
+resource "terraform_data" "rb5009_apply" {
+  input = "rb5009"
+
+  depends_on = [
+    module.rb5009_bootstrap,
+    module.rb5009,
+  ]
+}
+
+module "rb5009_bootstrap" {
+  source  = "./modules/components/bootstrap"
+  devices = { rb5009 = nonsensitive(local.routeros_devices["rb5009"]) }
 }

@@ -17,17 +17,33 @@ module "hap_ax2_musicroom" {
 
   name                     = "hap-ax2-musicroom"
   ip                       = local.device_ips["hap-ax2-musicroom"]
+  root_ca_cert_pem         = local.root_ca_cert_pem
   intermediate_ca_key_pem  = local.intermediate_ca_key_pem
   intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
   vlans                    = local.vlans
+  users                    = local.users
 
   ports = {
-    "ether1" = { comment = "Trunk - crs326 (${module.crs326.model})", vlans = local.all_vlan_ids }
+    "ether1" = { comment = "Trunk - crs326 (${local.device_models["crs326"]})", vlans = local.all_vlan_ids }
     "ether2" = { comment = "Disabled", disabled = true }
     "ether3" = { comment = "Disabled", disabled = true }
     "ether4" = { comment = "Disabled", disabled = true }
     "ether5" = { comment = "Disabled", disabled = true }
   }
 
-  depends_on = [module.bootstrap]
+  depends_on = [module.hap_ax2_musicroom_bootstrap]
+}
+
+resource "terraform_data" "hap_ax2_musicroom_apply" {
+  input = "hap-ax2-musicroom"
+
+  depends_on = [
+    module.hap_ax2_musicroom_bootstrap,
+    module.hap_ax2_musicroom,
+  ]
+}
+
+module "hap_ax2_musicroom_bootstrap" {
+  source  = "./modules/components/bootstrap"
+  devices = { "hap-ax2-musicroom" = nonsensitive(local.routeros_devices["hap-ax2-musicroom"]) }
 }

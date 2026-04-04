@@ -16,14 +16,16 @@ module "crs326" {
 
   name                     = "crs326"
   ip                       = local.device_ips["crs326"]
+  root_ca_cert_pem         = local.root_ca_cert_pem
   intermediate_ca_key_pem  = local.intermediate_ca_key_pem
   intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
   vlans                    = local.vlans
+  users                    = local.users
 
   ports = {
     "ether1"       = { comment = "Trunk", vlans = local.all_vlan_ids }
     "ether2"       = { comment = "Disabled", disabled = true }
-    "ether3"       = { comment = "Trunk - hap-ax2-musicroom (${module.hap_ax2_musicroom.model})", vlans = local.all_vlan_ids }
+    "ether3"       = { comment = "Trunk - hap-ax2-musicroom (${local.device_models["hap-ax2-musicroom"]})", vlans = local.all_vlan_ids }
     "ether4"       = { comment = "Disabled", disabled = true }
     "ether5"       = { comment = "Bond C2758", bond = "c2758" }
     "ether6"       = { comment = "Bond C2758", bond = "c2758" }
@@ -56,5 +58,19 @@ module "crs326" {
     }
   }
 
-  depends_on = [module.bootstrap]
+  depends_on = [module.crs326_bootstrap]
+}
+
+resource "terraform_data" "crs326_apply" {
+  input = "crs326"
+
+  depends_on = [
+    module.crs326_bootstrap,
+    module.crs326,
+  ]
+}
+
+module "crs326_bootstrap" {
+  source  = "./modules/components/bootstrap"
+  devices = { crs326 = nonsensitive(local.routeros_devices["crs326"]) }
 }

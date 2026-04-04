@@ -13,7 +13,3 @@
 # Certificates are issued by the intermediate CA (pki/intermediate-ca/)
 # using the tls provider. CA keys are decrypted transparently by git-crypt.
 
-module "bootstrap" {
-  source  = "./modules/components/bootstrap"
-  devices = nonsensitive(local.routeros_devices)
-}

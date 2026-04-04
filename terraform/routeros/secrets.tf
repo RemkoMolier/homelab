@@ -30,4 +30,5 @@ locals {
   }
 
   wifi_passwords = local.secrets["wifi_passwords"]
+  users          = local.secrets["users"]
 }

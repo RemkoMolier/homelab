@@ -3,8 +3,19 @@
 
 locals {
   pki_dir                  = "${path.root}/../../pki"
+  root_ca_cert_pem         = file("${local.pki_dir}/root-ca/ca.crt")
   intermediate_ca_key_pem  = file("${local.pki_dir}/intermediate-ca/ca.key")
   intermediate_ca_cert_pem = file("${local.pki_dir}/intermediate-ca/ca.crt")
+  # Static model labels keep port comments readable without adding
+  # cross-device graph dependencies between root modules.
+  device_models = {
+    rb5009              = "RB5009UG+S+IN"
+    crs309              = "CRS309-1G-8S+IN"
+    crs326              = "CRS326-24G-2S+RM"
+    crs226              = "CRS226-24G-2S+RM"
+    "hap-ax2-kitchen"   = "hAP ax2"
+    "hap-ax2-musicroom" = "hAP ax2"
+  }
 
   vlans = {
     management = {
