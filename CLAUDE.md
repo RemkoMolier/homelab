@@ -12,8 +12,11 @@ Run `/research` to continue the structured research and implementation-planning 
 Tool versions are managed with [mise](https://mise.jdx.dev/) — see [ADR-0006](docs/decisions/0006-use-mise-for-tool-version-management.md).
 
 - Install mise: `curl https://mise.run | sh`
+- Activate mise in your shell rc: `eval "$(mise activate bash)"` or `eval "$(mise activate zsh)"`
 - Install project tools: `mise install`
 - Or run `./setup.sh` to do both (used automatically on Claude web)
+- Secrets from `.env.sops.json` are decrypted and loaded automatically by mise (`sops.rops = false` for GPG support)
+- Edit secrets: `sops .env.sops.json`
 
 ## Infrastructure
 
@@ -24,9 +27,10 @@ The repository manages homelab infrastructure with two tools — see [ADR-0008](
 
 ### Secrets
 
-- **SOPS** encrypts secrets in `*.sops.json` / `*.sops.yaml` files — see [ADR-0009](docs/decisions/0009-use-sops-for-secrets-management.md)
-- Only keys named `secrets` are encrypted (`encrypted_regex: "^secrets$"` in `.sops.yaml`)
-- Non-secret config (IPs, hosturls) stays plaintext alongside encrypted credentials
+- **SOPS** encrypts secrets in `*.sops.json` / `*.sops.yaml` / `.env.sops.json` files — see [ADR-0009](docs/decisions/0009-use-sops-for-secrets-management.md)
+- Infrastructure config uses `encrypted_regex: "^secrets$"` — only keys named `secrets` are encrypted
+- Environment secrets (`.env.sops.json`) encrypt all keys and are loaded by mise natively
+- Non-secret config (IPs, hostnames) stays plaintext alongside encrypted credentials
 - **git-crypt** encrypts CA private keys (`pki/**/*.key`) transparently
 - OpenTofu state is encrypted with PBKDF2+AES-GCM and committed to git
 

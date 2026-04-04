@@ -4,13 +4,14 @@ date: 2026-04-03
 decision-makers: Remko Molier
 ---
 
-# Use mise for tool version management
+# Use mise for tool version and environment management
 
 ## Context and Problem Statement
 
 The homelab repository needs specific versions of CLI tools (currently markdownlint-cli2 and commitlint, later IaC tools like Terraform and kubectl).
 Without version pinning, contributors and AI agents may use different tool versions, causing inconsistent results.
 The solution must work across local development, CI, and Claude web — where Docker and devcontainers are not available.
+Additionally, SOPS-encrypted secrets need to be loaded into the shell automatically when entering the project directory.
 
 ## Decision Drivers
 
@@ -40,7 +41,7 @@ A setup script bootstraps mise automatically on Claude web sessions.
 - Good, because `mise.toml` is readable and non-blocking — the repo works without mise
 - Good, because single-binary installation takes seconds, ideal for ephemeral environments
 - Good, because asdf-compatible — can export `.tool-versions` if needed
-- Good, because built-in task runner and env var management reduce the need for make/direnv
+- Good, because built-in task runner and env var management replace make and direnv
 - Bad, because an additional tool to install beyond what the OS provides
 - Neutral, because the npm backend for linting tools may not handle custom markdownlint plugins — a package.json fallback is available if needed
 
@@ -100,9 +101,17 @@ Use package.json devDependencies for all tools.
 - Bad, because cannot manage non-Node.js tools (Terraform, kubectl)
 - Bad, because requires Node.js even when the project tools are not Node-based
 
+## Environment Variable Management
+
+Mise's `[env]` directive with `_.file` natively decrypts SOPS-encrypted files.
+With `sops.rops = false`, mise shells out to the `sops` binary, which supports GPG encryption — matching the project's existing SOPS setup.
+Secrets are stored in `.env.sops.json` and loaded automatically when entering the project directory.
+This eliminates the need for direnv or helper scripts.
+
 ## More Information
 
 - [mise documentation](https://mise.jdx.dev/)
+- [mise SOPS integration](https://mise.jdx.dev/environments/secrets/sops.html)
 - [mise GitHub repository](https://github.com/jdx/mise)
 - [mise npm backend](https://mise.jdx.dev/dev-tools/backends/npm.html)
 - [mise comparison to asdf](https://mise.jdx.dev/dev-tools/comparison-to-asdf.html)

@@ -59,8 +59,8 @@ After cloning the repository:
 git-crypt unlock
 ```
 
-This uses your GPG private key to decrypt the symmetric git-crypt key.
-All `.key` files are transparently decrypted in your working directory.
+`git-crypt unlock` uses your GPG private key to decrypt CA private keys.
+Secrets from `.env.sops.json` are loaded automatically by mise (no extra step needed).
 
 If you get a GPG error, ensure your private key is imported:
 
