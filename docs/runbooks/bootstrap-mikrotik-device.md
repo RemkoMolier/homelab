@@ -11,7 +11,7 @@ related: []
 ## Overview
 
 Prepare a new or factory-reset MikroTik device so that OpenTofu can manage it.
-The bootstrap module in `terraform/routeros/modules/bootstrap/` automates most of this process — it detects unreachable devices and provisions them via the default HTTP REST API.
+The bootstrap component in `terraform/routeros/modules/components/bootstrap/` automates most of this process — it detects unreachable devices and provisions them via the default HTTP REST API.
 After bootstrap, the routeros module issues a TLS certificate from the internal intermediate CA and deploys the full device configuration.
 
 ## Symptoms

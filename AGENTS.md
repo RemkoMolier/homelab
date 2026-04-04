@@ -16,10 +16,11 @@ Run `./setup.sh` or install manually: `curl https://mise.run | sh && mise instal
 
 - **OpenTofu** (`terraform/`) — MikroTik and Horaco switch configuration
 - **Ansible** (`ansible/`) — TrueNAS SCALE configuration
-- **SOPS** — secrets encryption (GPG)
-- **git-crypt** — encrypts CA private keys (`pki/**/*.key`) transparently
+- **SOPS** — encrypts `secrets` keys in `*.sops.json` / `*.sops.yaml` files (GPG)
+- **git-crypt** — encrypts CA private keys (`pki/**/*.key`)
 - OpenTofu state is encrypted and committed to git
 - Device TLS certificates are issued by the intermediate CA via OpenTofu's `tls` provider
+- Modules are split into `components/` (building blocks) and `devices/` (compositions)
 
 ## Conventions
 

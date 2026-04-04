@@ -22,8 +22,13 @@ The repository manages homelab infrastructure with two tools — see [ADR-0008](
 - **OpenTofu** (`terraform/`) — network device configuration (MikroTik, Horaco switches)
 - **Ansible** (`ansible/`) — TrueNAS SCALE configuration
 
-Secrets are encrypted with SOPS using GPG — see [ADR-0009](docs/decisions/0009-use-sops-for-secrets-management.md).
-OpenTofu state is encrypted with PBKDF2+AES-GCM and committed to git.
+### Secrets
+
+- **SOPS** encrypts secrets in `*.sops.json` / `*.sops.yaml` files — see [ADR-0009](docs/decisions/0009-use-sops-for-secrets-management.md)
+- Only keys named `secrets` are encrypted (`encrypted_regex: "^secrets$"` in `.sops.yaml`)
+- Non-secret config (IPs, hosturls) stays plaintext alongside encrypted credentials
+- **git-crypt** encrypts CA private keys (`pki/**/*.key`) transparently
+- OpenTofu state is encrypted with PBKDF2+AES-GCM and committed to git
 
 ### PKI
 
@@ -31,15 +36,41 @@ An internal CA issues TLS certificates for all homelab services — see [ADR-001
 
 - **Root CA** (`pki/root-ca/`) — offline, 20-year validity, used only to sign the intermediate
 - **Intermediate CA** (`pki/intermediate-ca/`) — used by OpenTofu's `tls` provider to issue device certificates on `tofu apply`
-- **git-crypt** encrypts private keys (`*.key` files) transparently — certificates (`*.crt`) are public
-- To bootstrap: `pki/scripts/init-root-ca.sh` then `pki/scripts/init-intermediate-ca.sh` (one-time)
-- Device certificates are managed as Terraform state — adding a device and running `tofu apply` creates and deploys its certificate
+- To bootstrap PKI: `pki/scripts/init-root-ca.sh` then `pki/scripts/init-intermediate-ca.sh` (one-time)
+
+### OpenTofu structure
+
+```text
+terraform/routeros/
+  device-*.tf                        Per-device: provider + module call + port map
+  locals.tf                          Shared VLANs, firewall zones, domain
+  secrets.tf                         SOPS decryption + credential merging
+  terraform.tfvars.sops.json         Device config (plaintext) + secrets (encrypted)
+  modules/
+    components/                      Building blocks
+      bootstrap/                       HTTP bootstrap for fresh devices
+      capsman-client/                  WiFi radios + controller discovery
+      capsman-controller/              SSIDs, security, provisioning rules
+      certificates/                    TLS cert from intermediate CA
+      device-base/                     Identity, IP, NTP, services, hardening
+      router/                          Firewall, NAT, DNS, DHCP, VRRP, PXE
+      routeros-raw/                    REST API escape hatch (restapi provider)
+      switch-bridge/                   Bridge VLAN filtering from port maps
+      switch-chip/                     Legacy CRS2xx switch-chip VLANs
+    devices/                         Compositions
+      ap/                              cert + base + switch-bridge + capsman-client
+      router/                          cert + base + router + capsman-controller
+      switch/                          cert + base + switch-bridge
+      switch-chip/                     cert + base + switch-chip
+```
 
 ## Conventions
 
 - Prefer declarative configuration over imperative scripts
 - Use semantic line breaks in markdown (one sentence per line) — see [ADR-0004](docs/decisions/0004-markdown-quality-standard.md)
-- Run `mise exec -- markdownlint-cli2` to check markdown quality (config in `.markdownlint-cli2.yaml`)
+- Run `mise run lint` to check all quality (markdown + terraform)
+- Run `mise run lint:markdown` for markdown only
+- Run `mise run lint:terraform` for terraform only (fmt, validate, tflint, trivy)
 
 ### Commit discipline
 
