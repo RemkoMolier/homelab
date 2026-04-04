@@ -15,5 +15,5 @@
 
 module "bootstrap" {
   source  = "./modules/components/bootstrap"
-  devices = local.routeros_devices
+  devices = nonsensitive(local.routeros_devices)
 }

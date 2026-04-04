@@ -16,17 +16,21 @@ resource "routeros_wifi_datapath" "cap" {
 }
 
 resource "routeros_wifi" "wifi1" {
-  name                  = "wifi1"
-  configuration_manager = "capsman"
-  datapath              = routeros_wifi_datapath.cap.name
-  disabled              = false
+  name     = "wifi1"
+  configuration = {
+    manager = "capsman"
+  }
+  datapath = routeros_wifi_datapath.cap.name
+  disabled = false
 }
 
 resource "routeros_wifi" "wifi2" {
-  name                  = "wifi2"
-  configuration_manager = "capsman"
-  datapath              = routeros_wifi_datapath.cap.name
-  disabled              = false
+  name     = "wifi2"
+  configuration = {
+    manager = "capsman"
+  }
+  datapath = routeros_wifi_datapath.cap.name
+  disabled = false
 }
 
 resource "routeros_wifi_cap" "this" {

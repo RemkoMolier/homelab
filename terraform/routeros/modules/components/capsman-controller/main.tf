@@ -109,22 +109,22 @@ resource "routeros_wifi_capsman" "this" {
 
 # --- Provisioning rules ---
 
-resource "routeros_wifi_provisioning" "2ghz" {
+resource "routeros_wifi_provisioning" "band_2ghz" {
   action               = "create-dynamic-enabled"
   master_configuration = routeros_wifi_configuration.home.name
-  slave_configurations = join(",", [
+  slave_configurations = [
     routeros_wifi_configuration.iot.name,
     routeros_wifi_configuration.cctv.name,
     routeros_wifi_configuration.guest.name,
-  ])
-  supported_bands = "2ghz-ax"
+  ]
+  supported_bands = ["2ghz-ax"]
   name_format     = "2GHz ax wifi-%I"
 }
 
-resource "routeros_wifi_provisioning" "5ghz" {
+resource "routeros_wifi_provisioning" "band_5ghz" {
   action               = "create-dynamic-enabled"
   master_configuration = routeros_wifi_configuration.home.name
-  slave_configurations = routeros_wifi_configuration.guest.name
-  supported_bands      = "5ghz-ax"
+  slave_configurations = [routeros_wifi_configuration.guest.name]
+  supported_bands      = ["5ghz-ax"]
   name_format          = "5GHz ax wifi-%I"
 }

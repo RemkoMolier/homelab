@@ -64,6 +64,7 @@ resource "routeros_interface_bridge" "this" {
 resource "routeros_interface_ethernet" "ports" {
   for_each = var.ports
 
+  name         = each.key
   factory_name = each.key
   comment      = each.value.comment
   disabled     = each.value.disabled

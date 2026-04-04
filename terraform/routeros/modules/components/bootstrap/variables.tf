@@ -9,5 +9,4 @@ variable "devices" {
     bootstrap_user = optional(string, "admin")
     bootstrap_pass = optional(string, "")
   }))
-  sensitive = true
 }
