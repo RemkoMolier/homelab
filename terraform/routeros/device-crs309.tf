@@ -8,21 +8,8 @@ provider "routeros" {
 
 # CRS309-1G-8S+IN — 10G core switch (.11)
 
-module "crs309" {
-  source = "./modules/devices/switch"
-  providers = {
-    routeros = routeros.crs309
-  }
-
-  name                     = "crs309"
-  ip                       = local.device_ips["crs309"]
-  root_ca_cert_pem         = local.root_ca_cert_pem
-  intermediate_ca_key_pem  = local.intermediate_ca_key_pem
-  intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
-  vlans                    = local.vlans
-  users                    = local.users
-
-  ports = {
+locals {
+  crs309_ports = {
     "ether1"       = { comment = "Trunk (unused)", vlans = local.all_vlan_ids }
     "sfp-sfpplus1" = { comment = "Trunk - rb5009 (${local.device_models["rb5009"]})", vlans = local.all_vlan_ids }
     "sfp-sfpplus2" = { comment = "Trunk - crs326 (${local.device_models["crs326"]})", vlans = local.all_vlan_ids }
@@ -33,6 +20,83 @@ module "crs309" {
     "sfp-sfpplus7" = { comment = "Disabled", disabled = true }
     "sfp-sfpplus8" = { comment = "Trunk - Horaco 10G (.20)", vlans = local.all_vlan_ids }
   }
+
+  crs309_trunk_ports = {
+    for name, port in local.crs309_ports : name => port
+    if !lookup(port, "disabled", false) && length(lookup(port, "vlans", [])) > 0 && lookup(port, "pvid", null) == null
+  }
+
+  crs309_access_ports = {
+    for name, port in local.crs309_ports : name => port
+    if !lookup(port, "disabled", false) && lookup(port, "pvid", null) != null
+  }
+}
+
+# Import bootstrap-created resources into Terraform state.
+# Remove these blocks after the first successful apply.
+import {
+  to = module.crs309.module.base.routeros_interface_vlan.management
+  id = "name=mgmt"
+}
+
+import {
+  to = module.crs309.module.base.routeros_interface_list.management
+  id = "name=mgmt-list"
+}
+
+import {
+  to = module.crs309.module.base.routeros_interface_list_member.management_default
+  id = "interface=mgmt"
+}
+
+import {
+  to = module.crs309.module.switch.routeros_interface_bridge.this
+  id = "name=bridge1"
+}
+
+import {
+  for_each = local.crs309_trunk_ports
+  to       = module.crs309.module.switch.routeros_interface_bridge_port.trunk[each.key]
+  id       = "interface=${each.key}"
+}
+
+import {
+  for_each = local.crs309_access_ports
+  to       = module.crs309.module.switch.routeros_interface_bridge_port.access[each.key]
+  id       = "interface=${each.key}"
+}
+
+import {
+  to = module.crs309.module.switch.routeros_interface_bridge_vlan.vlans["management"]
+  id = "*1"
+}
+
+import {
+  to = module.crs309.module.base.routeros_system_user_group.terraform
+  id = "name=terraform"
+}
+
+import {
+  to = module.crs309.module.base.routeros_system_user.admin
+  id = "name=admin"
+}
+
+module "crs309" {
+  source = "./modules/devices/switch"
+  providers = {
+    routeros = routeros.crs309
+  }
+
+  name                     = "crs309"
+  default_l2mtu            = 10218
+  ip                       = local.device_ips["crs309"]
+  root_ca_cert_pem         = local.root_ca_cert_pem
+  intermediate_ca_key_pem  = local.intermediate_ca_key_pem
+  intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
+  terraform_user_name      = local.routeros_devices["crs309"].username
+  vlans                    = local.vlans
+  users                    = local.users
+  ports                    = local.crs309_ports
 
   depends_on = [module.crs309_bootstrap]
 }
@@ -47,6 +111,10 @@ resource "terraform_data" "crs309_apply" {
 }
 
 module "crs309_bootstrap" {
-  source  = "./modules/components/bootstrap"
-  devices = { crs309 = nonsensitive(local.routeros_devices["crs309"]) }
+  source = "./modules/components/bootstrap"
+  devices = {
+    crs309 = merge(nonsensitive(local.routeros_devices["crs309"]), {
+      ip = local.device_ips["crs309"]
+    })
+  }
 }

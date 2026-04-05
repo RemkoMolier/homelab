@@ -19,52 +19,58 @@ locals {
 
   vlans = {
     management = {
-      id      = 1
-      name    = "default"
-      comment = "Management"
-      subnet  = "172.16.1.0/24"
-      gateway = "172.16.1.1"
-      pool    = "172.16.1.200-172.16.1.249"
+      id             = 1
+      name           = "default"
+      comment        = "Management"
+      subnet         = "172.16.1.0/24"
+      gateway        = "172.16.1.1"
+      router_address = "172.16.1.10/24"
+      pool           = "172.16.1.200-172.16.1.249"
     }
     home = {
-      id      = 10
-      name    = "home"
-      comment = "Home"
-      subnet  = "172.16.10.0/24"
-      gateway = "172.16.10.1"
-      pool    = "172.16.10.100-172.16.10.249"
+      id             = 10
+      name           = "home"
+      comment        = "Home"
+      subnet         = "172.16.10.0/24"
+      gateway        = "172.16.10.1"
+      router_address = "172.16.10.254/24"
+      pool           = "172.16.10.100-172.16.10.249"
     }
     iot = {
-      id      = 30
-      name    = "iot"
-      comment = "IoT"
-      subnet  = "172.16.30.0/24"
-      gateway = "172.16.30.1"
-      pool    = "172.16.30.100-172.16.30.249"
+      id             = 30
+      name           = "iot"
+      comment        = "IoT"
+      subnet         = "172.16.30.0/24"
+      gateway        = "172.16.30.1"
+      router_address = "172.16.30.254/24"
+      pool           = "172.16.30.100-172.16.30.249"
     }
     voip = {
-      id      = 40
-      name    = "voip"
-      comment = "VoIP"
-      subnet  = "172.16.40.0/24"
-      gateway = "172.16.40.1"
-      pool    = "172.16.40.100-172.16.40.249"
+      id             = 40
+      name           = "voip"
+      comment        = "VoIP"
+      subnet         = "172.16.40.0/24"
+      gateway        = "172.16.40.1"
+      router_address = "172.16.40.254/24"
+      pool           = "172.16.40.100-172.16.40.249"
     }
     cctv = {
-      id      = 50
-      name    = "cctv"
-      comment = "CCTV"
-      subnet  = "192.168.1.0/24"
-      gateway = "192.168.1.1"
-      pool    = "192.168.1.100-192.168.1.249"
+      id             = 50
+      name           = "cctv"
+      comment        = "CCTV"
+      subnet         = "192.168.1.0/24"
+      gateway        = "192.168.1.1"
+      router_address = "192.168.1.254/24"
+      pool           = "192.168.1.100-192.168.1.249"
     }
     guest = {
-      id      = 100
-      name    = "guest"
-      comment = "Guest"
-      subnet  = "10.1.0.0/24"
-      gateway = "10.1.0.1"
-      pool    = "10.1.0.10-10.1.0.249"
+      id             = 100
+      name           = "guest"
+      comment        = "Guest"
+      subnet         = "10.1.0.0/24"
+      gateway        = "10.1.0.1"
+      router_address = "10.1.0.254/24"
+      pool           = "10.1.0.10-10.1.0.249"
     }
   }
 
