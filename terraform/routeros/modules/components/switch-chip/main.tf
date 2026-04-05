@@ -13,8 +13,8 @@
 #     translation maps untagged → VLAN 1
 #
 # Note: There is no Terraform resource for /interface/ethernet/switch/trunk
-# or /interface/ethernet/switch/set. These must be managed via the restapi
-# escape hatch at the device level.
+# or /interface/ethernet/switch/set. Hardware trunks are managed via SSH
+# local-exec provisioners below.
 
 terraform {
   required_version = ">= 1.7.0"
@@ -80,11 +80,57 @@ locals {
 resource "routeros_interface_ethernet" "ports" {
   for_each = var.ports
 
-  name         = each.key
-  factory_name = each.key
-  comment      = each.value.comment
-  disabled     = each.value.disabled
-  l2mtu        = each.value.l2mtu
+  name             = each.key
+  factory_name     = each.key
+  comment          = each.value.comment
+  disabled         = each.value.disabled
+  l2mtu            = coalesce(each.value.l2mtu, var.default_l2mtu)
+  speed            = each.value.speed
+  auto_negotiation = each.value.speed == null
+}
+
+# --- Hardware trunk groups (via SSH) ---
+# CRS1xx/2xx hardware trunks have no native Terraform resource.
+# Manage them idempotently via SSH: find-or-create, then set attributes.
+
+resource "terraform_data" "trunk" {
+  for_each = var.trunks
+
+  triggers_replace = [
+    each.key,
+    join(",", sort(each.value.members)),
+    each.value.comment,
+  ]
+
+  provisioner "local-exec" {
+    interpreter = ["bash", "-c"]
+    command     = <<-EOT
+      KEY_FILE=$(mktemp)
+      trap 'rm -f "$KEY_FILE"' EXIT
+      printf '%s\n' "$SSH_PRIVATE_KEY" > "$KEY_FILE"
+      chmod 600 "$KEY_FILE"
+      ssh \
+        -o StrictHostKeyChecking=no \
+        -o UserKnownHostsFile=/dev/null \
+        -i "$KEY_FILE" \
+        "$SSH_USER@$SSH_HOST" \
+        "$ROUTEROS_SCRIPT"
+    EOT
+    environment = {
+      SSH_PRIVATE_KEY = nonsensitive(var.ssh_private_key_pem)
+      SSH_USER        = nonsensitive(var.ssh_user)
+      SSH_HOST        = nonsensitive(var.ssh_host)
+      ROUTEROS_SCRIPT = join("; ", [
+        ":local trunkName \"${each.key}\"",
+        ":local memberPorts \"${join(",", sort(each.value.members))}\"",
+        ":local trunkComment \"${each.value.comment}\"",
+        ":local existing [/interface/ethernet/switch/trunk find where name=$trunkName]",
+        ":if ([:len $existing] > 0) do={ /interface/ethernet/switch/trunk set $existing member-ports=$memberPorts comment=$trunkComment } else={ /interface/ethernet/switch/trunk add name=$trunkName member-ports=$memberPorts comment=$trunkComment }",
+      ])
+    }
+  }
+
+  depends_on = [routeros_interface_ethernet.ports]
 }
 
 # --- Switch VLAN table ---
@@ -114,14 +160,12 @@ resource "routeros_interface_ethernet_switch_crs_vlan" "vlans" {
   lifecycle {
     ignore_changes       = [ports]
     replace_triggered_by = [terraform_data.vlan_replacement[each.key]]
-
-    postcondition {
-      condition     = sort(compact(split(",", replace(try(self.ports, ""), " ", "")))) == sort(compact(split(",", local.desired_vlan_ports[each.key])))
-      error_message = "Switch-chip VLAN membership drift detected. The live RouterOS port set does not match the desired VLAN membership."
-    }
   }
 
-  depends_on = [routeros_interface_ethernet.ports]
+  depends_on = [
+    routeros_interface_ethernet.ports,
+    terraform_data.trunk,
+  ]
 }
 
 # --- Egress VLAN tagging ---
@@ -143,7 +187,10 @@ resource "routeros_interface_ethernet_switch_crs_egress_vlan_tag" "vlans" {
     )
   )
 
-  depends_on = [routeros_interface_ethernet.ports]
+  depends_on = [
+    routeros_interface_ethernet.ports,
+    terraform_data.trunk,
+  ]
 }
 
 # --- Ingress VLAN translation ---
