@@ -16,7 +16,12 @@ locals {
   # Collect all active (non-disabled, non-bond-member) ports for bridge membership
   bridge_ports = {
     for name, port in var.ports : name => port
-    if !port.disabled && port.bond == null
+    if !port.disabled && port.bond == null && port.bridge
+  }
+
+  unassigned_ports = {
+    for name, port in var.ports : name => port
+    if port.disabled || port.bond != null || !port.bridge
   }
 
   # Build trunk ports: ports with tagged VLANs and no pvid
@@ -50,10 +55,13 @@ locals {
 
 # --- Bridge ---
 
+# The bootstrap .rsc pre-configures VLAN 1 on the bridge with filtering
+# enabled, so Terraform can safely apply with vlan_filtering=true from
+# the start without losing management connectivity.
 resource "routeros_interface_bridge" "this" {
   name           = var.bridge_name
   vlan_filtering = true
-  frame_types    = "admit-only-vlan-tagged"
+  frame_types    = var.bridge_frame_types
 }
 
 # --- Ethernet port settings ---
@@ -61,14 +69,54 @@ resource "routeros_interface_bridge" "this" {
 resource "routeros_interface_ethernet" "ports" {
   for_each = var.ports
 
-  name         = each.key
-  factory_name = each.key
-  comment      = each.value.comment
-  disabled     = each.value.disabled
-  l2mtu        = each.value.l2mtu
+  name             = each.key
+  factory_name     = each.key
+  comment          = each.value.comment
+  disabled         = each.value.disabled
+  l2mtu            = coalesce(each.value.l2mtu, var.default_l2mtu)
+  speed            = each.value.speed
+  auto_negotiation = each.value.speed == null
 }
 
 # --- Bond interfaces ---
+
+resource "terraform_data" "ensure_unassigned_bridge_ports" {
+  triggers_replace = [
+    jsonencode(sort(keys(local.unassigned_ports))),
+    var.bridge_name,
+  ]
+
+  provisioner "local-exec" {
+    interpreter = ["bash", "-c"]
+    command     = <<-EOT
+      KEY_FILE=$(mktemp)
+      trap 'rm -f "$KEY_FILE"' EXIT
+      printf '%s\n' "$SSH_PRIVATE_KEY" > "$KEY_FILE"
+      chmod 600 "$KEY_FILE"
+      ssh \
+        -o StrictHostKeyChecking=no \
+        -o UserKnownHostsFile=/dev/null \
+        -i "$KEY_FILE" \
+        "$SSH_USER@$SSH_HOST" \
+        "$ROUTEROS_SCRIPT"
+    EOT
+    environment = {
+      SSH_PRIVATE_KEY = nonsensitive(var.ssh_private_key_pem)
+      SSH_USER        = nonsensitive(var.ssh_user)
+      SSH_HOST        = nonsensitive(var.ssh_host)
+      ROUTEROS_SCRIPT = join("; ", [
+        ":local bridge \"${var.bridge_name}\"",
+        ":local ifaces [:toarray \"${join(",", sort(keys(local.unassigned_ports)))}\"]",
+        ":foreach iface in=$ifaces do={ :local ids [/interface/bridge/port/find where bridge=$bridge interface=$iface]; :if ([:len $ids] > 0) do={ /interface/bridge/port/remove $ids } }",
+      ])
+    }
+  }
+
+  depends_on = [
+    routeros_interface_bridge_port.trunk,
+    routeros_interface_bridge_port.access,
+  ]
+}
 
 resource "routeros_interface_bonding" "bonds" {
   for_each = var.bonds
@@ -80,6 +128,10 @@ resource "routeros_interface_bonding" "bonds" {
   slaves = [
     for name, port in var.ports : name
     if port.bond == each.key
+  ]
+
+  depends_on = [
+    terraform_data.ensure_unassigned_bridge_ports
   ]
 }
 
@@ -111,15 +163,8 @@ resource "routeros_interface_bridge_port" "bonds" {
   bridge    = routeros_interface_bridge.this.name
   interface = each.key
   comment   = each.value.comment
-}
 
-# --- Management VLAN ---
-
-resource "routeros_interface_vlan" "management" {
-  comment   = "Management (VLAN 1)"
-  interface = routeros_interface_bridge.this.name
-  name      = "default"
-  vlan_id   = 1
+  depends_on = [routeros_interface_bonding.bonds]
 }
 
 # --- Bridge VLAN table ---
@@ -137,4 +182,10 @@ resource "routeros_interface_bridge_vlan" "vlans" {
   )
 
   untagged = local.vlan_untagged_ports[each.key]
+
+  depends_on = [
+    routeros_interface_bridge_port.trunk,
+    routeros_interface_bridge_port.access,
+    routeros_interface_bridge_port.bonds,
+  ]
 }
