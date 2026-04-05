@@ -53,6 +53,17 @@ For each group, determine:
 Present the plan to the user with `AskUserQuestion` before executing.
 Show each planned commit with its type, scope, files, and description.
 
+### Step 2.5: Pre-commit Lint
+
+Before creating any commits, run the full lint suite once:
+
+```bash
+mise run lint
+```
+
+If lint fails, fix the issues (e.g., run `tofu fmt -recursive` for formatting) and include the fixes in the appropriate commit group.
+Do not proceed with commits until lint passes.
+
 ### Step 3: Execute Commits
 
 For each group, in dependency order (foundational changes first):
