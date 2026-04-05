@@ -1,5 +1,9 @@
 # Device wrapper for CAPsMAN-managed WiFi access points.
 # Composes: certificates + device-base + switch-bridge + capsman-client.
+#
+# The bootstrap .rsc script pre-configures the management VLAN (VLAN 1)
+# with bridge VLAN filtering, so Terraform can apply the full config in
+# a single pass without losing connectivity.
 
 terraform {
   required_version = ">= 1.7.0"
@@ -41,14 +45,23 @@ module "base" {
   dns_servers               = var.dns_servers
   management_subnet         = var.management_subnet
   terraform_host            = var.terraform_host
+  terraform_user_name       = var.terraform_user_name
   users                     = var.users
+  device_ip                 = var.ip
+  default_route             = var.default_route
 }
 
 module "switch" {
   source = "../../components/switch-bridge"
 
-  vlans = var.vlans
-  ports = var.ports
+  vlans              = var.vlans
+  ports              = var.ports
+  default_l2mtu      = var.default_l2mtu
+  bridge_frame_types = "admit-all"
+
+  ssh_host            = var.ip
+  ssh_user            = var.terraform_user_name
+  ssh_private_key_pem = module.base.terraform_ssh_private_key_pem
 
   depends_on = [module.base]
 }

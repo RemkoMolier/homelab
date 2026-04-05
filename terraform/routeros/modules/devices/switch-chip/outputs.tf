@@ -14,6 +14,12 @@ output "key_pem" {
   sensitive   = true
 }
 
+output "terraform_ssh_private_key_pem" {
+  description = "Per-device SSH private key for the bootstrap Terraform user"
+  value       = module.base.terraform_ssh_private_key_pem
+  sensitive   = true
+}
+
 output "vlan_aware_ports" {
   description = "Set of all VLAN-aware ports (for drop-if-invalid enforcement)"
   value       = module.switch.vlan_aware_ports

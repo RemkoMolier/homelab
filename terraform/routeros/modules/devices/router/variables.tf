@@ -11,12 +11,13 @@ variable "ip" {
 variable "vlans" {
   description = "Map of VLAN definitions"
   type = map(object({
-    id      = number
-    name    = string
-    comment = string
-    subnet  = string
-    gateway = string
-    pool    = string
+    id             = number
+    name           = string
+    comment        = string
+    subnet         = string
+    gateway        = string
+    router_address = string
+    pool           = string
   }))
 }
 
@@ -86,10 +87,52 @@ variable "terraform_host" {
   default     = "172.16.1.245/32"
 }
 
-variable "wan_interface" {
-  description = "WAN interface"
+variable "terraform_user_name" {
+  description = "Bootstrap Terraform user that should receive an SSH public key"
   type        = string
-  default     = "ether1"
+  default     = "terraform"
+}
+
+variable "ports" {
+  description = "Map of port configurations"
+  type = map(object({
+    comment  = optional(string, "")
+    disabled = optional(bool, false)
+    vlans    = optional(list(number), [])
+    pvid     = optional(number)
+    bond     = optional(string)
+    bridge   = optional(bool, true)
+    l2mtu    = optional(number)
+    speed    = optional(string)
+  }))
+  default = {}
+}
+
+variable "bonds" {
+  description = "Map of bond (LACP) groups"
+  type = map(object({
+    mode    = optional(string, "802.3ad")
+    comment = optional(string, "")
+    mtu     = optional(number)
+    vlans   = optional(list(number), [])
+    pvid    = optional(number)
+  }))
+  default = {}
+}
+
+variable "default_l2mtu" {
+  description = "Default L2 MTU for all ports on this device"
+  type        = number
+  default     = null
+}
+
+variable "wan_interfaces" {
+  description = "Map of WAN interfaces with DHCP client and/or masquerade"
+  type = map(object({
+    dhcp_client = optional(bool, true)
+    masquerade  = optional(bool, true)
+  }))
+  default = {}
 }
 
 variable "users" {

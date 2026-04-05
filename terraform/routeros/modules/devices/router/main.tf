@@ -42,7 +42,30 @@ module "base" {
   manage_dns_settings       = false
   management_subnet         = var.management_subnet
   terraform_host            = var.terraform_host
+  terraform_user_name       = var.terraform_user_name
   users                     = var.users
+  wan_interfaces            = var.wan_interfaces
+  device_ip                 = var.ip
+  default_route             = null
+}
+
+module "switch" {
+  source = "../../components/switch-bridge"
+
+  vlans = { for k, v in var.vlans : k => {
+    id      = v.id
+    name    = v.name
+    comment = v.comment
+  } }
+  ports         = var.ports
+  bonds         = var.bonds
+  default_l2mtu = var.default_l2mtu
+
+  ssh_host            = var.ip
+  ssh_user            = var.terraform_user_name
+  ssh_private_key_pem = module.base.terraform_ssh_private_key_pem
+
+  depends_on = [module.base]
 }
 
 module "router" {
@@ -50,12 +73,15 @@ module "router" {
 
   vlans              = var.vlans
   firewall_zones     = var.firewall_zones
-  wan_interface      = var.wan_interface
-  dns_servers        = var.dns_servers
+  wan_interfaces     = var.wan_interfaces
   dns_static_records = var.dns_static_records
   dhcp_leases        = var.dhcp_leases
 
-  depends_on = [module.base]
+  ssh_host            = var.ip
+  ssh_user            = var.terraform_user_name
+  ssh_private_key_pem = module.base.terraform_ssh_private_key_pem
+
+  depends_on = [module.switch]
 }
 
 module "capsman" {
@@ -63,5 +89,5 @@ module "capsman" {
 
   wifi_passwords = var.wifi_passwords
 
-  depends_on = [module.base]
+  depends_on = [module.router]
 }

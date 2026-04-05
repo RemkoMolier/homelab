@@ -13,3 +13,9 @@ output "key_pem" {
   value       = module.cert.key_pem
   sensitive   = true
 }
+
+output "terraform_ssh_private_key_pem" {
+  description = "Per-device SSH private key for the bootstrap Terraform user"
+  value       = module.base.terraform_ssh_private_key_pem
+  sensitive   = true
+}

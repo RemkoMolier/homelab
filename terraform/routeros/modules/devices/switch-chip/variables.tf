@@ -25,8 +25,21 @@ variable "ports" {
     vlans    = optional(list(number), [])
     pvid     = optional(number)
     trunk    = optional(string)
-    l2mtu    = optional(number, 9204)
+    l2mtu    = optional(number)
+    speed    = optional(string)
   }))
+}
+
+variable "default_l2mtu" {
+  description = "Default L2 MTU for all ports on this device"
+  type        = number
+  default     = null
+}
+
+variable "default_route" {
+  description = "Default route gateway. Null removes the bootstrap route."
+  type        = string
+  default     = "172.16.1.1"
 }
 
 variable "trunks" {
@@ -72,6 +85,12 @@ variable "terraform_host" {
   description = "Terraform workstation IP for api-ssl restriction"
   type        = string
   default     = "172.16.1.245/32"
+}
+
+variable "terraform_user_name" {
+  description = "Bootstrap Terraform user that should receive an SSH public key"
+  type        = string
+  default     = "terraform"
 }
 
 variable "users" {

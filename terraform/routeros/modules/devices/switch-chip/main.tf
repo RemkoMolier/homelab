@@ -41,26 +41,23 @@ module "base" {
   dns_servers               = var.dns_servers
   management_subnet         = var.management_subnet
   terraform_host            = var.terraform_host
+  terraform_user_name       = var.terraform_user_name
   users                     = var.users
+  device_ip                 = var.ip
+  default_route             = var.default_route
 }
 
 module "switch" {
   source = "../../components/switch-chip"
 
-  vlans  = var.vlans
-  ports  = var.ports
-  trunks = var.trunks
+  vlans         = var.vlans
+  ports         = var.ports
+  trunks        = var.trunks
+  default_l2mtu = var.default_l2mtu
+
+  ssh_host            = var.ip
+  ssh_user            = var.terraform_user_name
+  ssh_private_key_pem = module.base.terraform_ssh_private_key_pem
 
   depends_on = [module.base]
-}
-
-# Move the management IP from bridge1 (bootstrap) to the mgmt VLAN interface.
-# This must happen AFTER the switch-chip VLAN config is applied, because
-# the mgmt interface needs VLAN 1 on switch1-cpu to receive traffic.
-resource "routeros_ip_address" "management" {
-  address   = "${var.ip}/24"
-  interface = "mgmt"
-  comment   = "Management"
-
-  depends_on = [module.switch]
 }
