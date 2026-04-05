@@ -9,6 +9,10 @@ terraform {
       source  = "terraform-routeros/routeros"
       version = "~> 1.99"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 }
 
@@ -70,6 +74,7 @@ resource "routeros_ip_service" "www_ssl" {
   numbers     = "www-ssl"
   port        = 443
   disabled    = false
+  address     = var.management_subnet
   certificate = var.certificate_name
 
   depends_on = [
@@ -130,14 +135,44 @@ resource "routeros_system_user" "users" {
   password = each.value.password
 }
 
+# --- Disable default admin account ---
+
+resource "routeros_system_user" "admin" {
+  name     = "admin"
+  group    = "full"
+  disabled = true
+
+  depends_on = [
+    routeros_system_user.users,
+    routeros_system_user_group.terraform,
+  ]
+}
+
+# --- Terraform SSH key ---
+
+resource "tls_private_key" "terraform_ssh" {
+  algorithm = "ED25519"
+}
+
+resource "routeros_system_user_sshkeys" "terraform" {
+  user    = var.terraform_user_name
+  key     = tls_private_key.terraform_ssh.public_key_openssh
+  comment = "Terraform"
+}
+
+# Grant SSH access to the terraform group only after the key is in place.
+# Bootstrap creates this group without the ssh policy so password-only
+# SSH is never possible for the terraform user.
+resource "routeros_system_user_group" "terraform" {
+  name   = "terraform"
+  policy = toset(["api", "ftp", "read", "write", "policy", "test", "sensitive", "web", "rest-api", "ssh"])
+
+  depends_on = [routeros_system_user_sshkeys.terraform]
+}
+
 # --- Management VLAN interface ---
-# On CRS1xx/2xx with switch-chip VLANs, the switch chip delivers tagged
-# VLAN 1 traffic to the CPU via switch1-cpu. A VLAN interface on the bridge
-# decapsulates it so the CPU can process management traffic.
-#
-# Bootstrap creates the IP on bridge1 (works without VLAN config).
-# Terraform creates the mgmt VLAN interface here; the IP is moved to it
-# by the device composition AFTER switch-chip VLANs are fully applied.
+# Bootstrap creates this interface and places the management IP on it.
+# Terraform imports and manages it from here.
 
 resource "routeros_interface_vlan" "management" {
   name      = "mgmt"
@@ -185,13 +220,14 @@ resource "routeros_system_certificate" "root_ca" {
 # --- SSH hardening ---
 
 resource "routeros_ip_ssh_server" "this" {
-  strong_crypto = true
+  strong_crypto               = true
+  always_allow_password_login = false
 }
 
 # --- Discovery and MAC server ---
 
 resource "routeros_interface_list" "management" {
-  name = "management"
+  name = "mgmt-list"
 }
 
 resource "routeros_interface_list_member" "management_default" {
@@ -209,4 +245,64 @@ resource "routeros_tool_mac_server_winbox" "this" {
 
 resource "routeros_ip_neighbor_discovery_settings" "this" {
   discover_interface_list = routeros_interface_list.management.name
+}
+
+# --- WAN interfaces ---
+
+resource "routeros_ip_dhcp_client" "wan" {
+  for_each = { for k, v in var.wan_interfaces : k => v if v.dhcp_client }
+
+  interface         = each.key
+  add_default_route = "yes"
+  comment           = "WAN DHCP"
+}
+
+# --- Default route ---
+# Manages the bootstrap static default route.
+# If default_route is set, update it to the desired gateway.
+# If null, remove the bootstrap route (e.g., when WAN DHCP provides one).
+
+resource "terraform_data" "default_route" {
+  count = var.device_ip != null ? 1 : 0
+
+  triggers_replace = [var.default_route]
+
+  provisioner "local-exec" {
+    interpreter = ["bash", "-c"]
+    command     = <<-EOT
+      KEY_FILE=$(mktemp)
+      trap 'rm -f "$KEY_FILE"' EXIT
+      printf '%s\n' "$SSH_PRIVATE_KEY" > "$KEY_FILE"
+      chmod 600 "$KEY_FILE"
+      ssh \
+        -o StrictHostKeyChecking=no \
+        -o UserKnownHostsFile=/dev/null \
+        -i "$KEY_FILE" \
+        "$SSH_USER@$SSH_HOST" \
+        "$ROUTEROS_SCRIPT"
+    EOT
+    environment = {
+      SSH_PRIVATE_KEY = nonsensitive(tls_private_key.terraform_ssh.private_key_pem)
+      SSH_USER        = nonsensitive(var.terraform_user_name)
+      SSH_HOST        = nonsensitive(var.device_ip)
+      ROUTEROS_SCRIPT = var.default_route != null ? join("; ", [
+        ":local ids [/ip/route/find where dst-address=\"0.0.0.0/0\" comment=\"Default gateway\"]",
+        ":if ([:len $ids] > 0) do={ /ip/route/set $ids gateway=${var.default_route} } else={ /ip/route/add dst-address=0.0.0.0/0 gateway=${var.default_route} comment=\"Default gateway\" }",
+        ]) : join("; ", [
+        ":local ids [/ip/route/find where dst-address=\"0.0.0.0/0\" comment=\"Default gateway\"]",
+        ":if ([:len $ids] > 0) do={ /ip/route/remove $ids }",
+      ])
+    }
+  }
+
+  depends_on = [routeros_system_user_group.terraform]
+}
+
+resource "routeros_ip_firewall_nat" "masquerade" {
+  for_each = { for k, v in var.wan_interfaces : k => v if v.masquerade }
+
+  chain         = "srcnat"
+  action        = "masquerade"
+  out_interface = each.key
+  comment       = "Masquerade outbound traffic (${each.key})"
 }

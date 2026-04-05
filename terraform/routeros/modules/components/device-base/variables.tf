@@ -56,6 +56,12 @@ variable "terraform_host" {
   default     = "172.16.1.245/32"
 }
 
+variable "terraform_user_name" {
+  description = "Bootstrap Terraform user that should receive an SSH public key"
+  type        = string
+  default     = "terraform"
+}
+
 variable "certificate_name" {
   description = "Name of the TLS certificate for api-ssl and www-ssl"
   type        = string
@@ -110,6 +116,27 @@ variable "import_root_certificate" {
   default     = false
 }
 
+
+variable "wan_interfaces" {
+  description = "Map of WAN interfaces with DHCP client and/or masquerade"
+  type = map(object({
+    dhcp_client = optional(bool, true)
+    masquerade  = optional(bool, true)
+  }))
+  default = {}
+}
+
+variable "device_ip" {
+  description = "Device management IP (for SSH access during provisioning)"
+  type        = string
+  default     = null
+}
+
+variable "default_route" {
+  description = "Default route gateway. Set to a gateway IP to manage a static default route, or null to remove the bootstrap route."
+  type        = string
+  default     = null
+}
 
 variable "users" {
   description = "Map of user accounts to create on the device"
