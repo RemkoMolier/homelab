@@ -5,7 +5,9 @@ resource "routeros_interface_vrrp" "vlans" {
   for_each = var.vlans
 
   name      = "vrrp${each.value.id}"
-  interface = each.value.name
+  interface = local.vlan_interfaces[each.key]
   vrid      = each.value.id
   comment   = "VRRP (VLAN ${each.value.id})"
+
+  depends_on = [routeros_interface_vlan.vlans]
 }

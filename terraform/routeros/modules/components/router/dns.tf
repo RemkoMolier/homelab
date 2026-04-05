@@ -2,7 +2,6 @@
 
 resource "routeros_ip_dns" "this" {
   allow_remote_requests = true
-  servers               = var.dns_servers
 }
 
 resource "routeros_ip_dns_record" "static" {
