@@ -5,4 +5,4 @@ pre-commit:
       run: mise run lint:markdown
     lint-terraform:
       glob: "terraform/**/*.tf"
-      run: mise run lint:terraform
+      run: mise run lint:terraform:fmt
