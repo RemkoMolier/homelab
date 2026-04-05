@@ -8,10 +8,12 @@
 #   TF_USER        — Terraform user to create
 #   TF_PASS        — Terraform user password
 #   DEVICE_NAME    — Device identifier for logging
+#   MGMT_SUBNET    — Subnet allowed to reach management services (default: 172.16.1.0/24)
 set -euo pipefail
 
 API="http://${BOOTSTRAP_IP}/rest"
 AUTH="${BOOTSTRAP_USER}:${BOOTSTRAP_PASS}"
+MGMT_SUBNET="${MGMT_SUBNET:-172.16.1.0/24}"
 
 echo "Bootstrapping ${DEVICE_NAME} at ${BOOTSTRAP_IP}..."
 
@@ -52,19 +54,19 @@ echo "  Device reachable, starting bootstrap..."
 
 # 2. Create the terraform user group
 echo "  Creating terraform user group..."
-api_post "/user/group" \
+api_post "/user/group/add" \
   '{"name":"terraform","policy":"api,read,write,policy,test,sensitive,web,rest-api"}' \
   || echo "  (group may already exist)"
 
 # 3. Create the terraform user
 echo "  Creating terraform user..."
-api_post "/user" \
+api_post "/user/add" \
   "{\"name\":\"${TF_USER}\",\"group\":\"terraform\",\"password\":\"${TF_PASS}\"}" \
   || echo "  (user may already exist)"
 
 # 4. Generate a self-signed certificate for api-ssl
 echo "  Creating self-signed certificate..."
-api_post "/certificate" \
+api_post "/certificate/add" \
   "{\"name\":\"api-cert\",\"common-name\":\"${BOOTSTRAP_IP}\",\"key-size\":\"2048\"}" \
   || echo "  (certificate may already exist)"
 
@@ -77,14 +79,38 @@ api_post "/certificate/sign" \
 # Wait for signing to complete
 sleep 2
 
-# 5. Enable api-ssl with the certificate
+# 5. Enable HTTPS services with the certificate
 echo "  Enabling api-ssl..."
 api_patch "/ip/service/api-ssl" \
-  '{"disabled":"false","certificate":"api-cert"}'
+  "{\"disabled\":\"false\",\"certificate\":\"api-cert\",\"address\":\"${MGMT_SUBNET}\"}"
 
-# 6. Disable plain HTTP (www) — the device is now only reachable via HTTPS
+echo "  Enabling www-ssl..."
+api_patch "/ip/service/www-ssl" \
+  "{\"disabled\":\"false\",\"certificate\":\"api-cert\",\"address\":\"${MGMT_SUBNET}\"}"
+
+echo "  Restricting SSH..."
+api_patch "/ip/service/ssh" \
+  "{\"disabled\":\"false\",\"address\":\"${MGMT_SUBNET}\"}"
+
+echo "  Restricting Winbox..."
+api_patch "/ip/service/winbox" \
+  "{\"disabled\":\"false\",\"address\":\"${MGMT_SUBNET}\"}"
+
+# 6. Disable insecure services
 echo "  Disabling plain HTTP..."
 api_patch "/ip/service/www" \
+  '{"disabled":"true"}'
+
+echo "  Disabling plain API..."
+api_patch "/ip/service/api" \
+  '{"disabled":"true"}'
+
+echo "  Disabling Telnet..."
+api_patch "/ip/service/telnet" \
+  '{"disabled":"true"}'
+
+echo "  Disabling FTP..."
+api_patch "/ip/service/ftp" \
   '{"disabled":"true"}'
 
 echo "  Bootstrap complete for ${DEVICE_NAME}"

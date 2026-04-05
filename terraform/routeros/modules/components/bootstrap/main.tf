@@ -1,15 +1,18 @@
-# Bootstrap module — prepares fresh MikroTik devices for Terraform management.
+# Bootstrap module — generates .rsc scripts for MikroTik device provisioning.
 #
-# For each device, checks if the HTTPS API is reachable. If not, and a
-# bootstrap_ip is configured, provisions the device via the plain HTTP REST
-# API (which is enabled by default on factory-reset devices).
+# For each device, generates a bootstrap.rsc from a template and writes it
+# to work/{device}/bootstrap.rsc. The user uploads this to the device and runs:
+#   /system/reset-configuration run-after-reset=bootstrap.rsc
 #
-# Bootstrap steps:
-#   1. Create the terraform user group and user
-#   2. Generate a self-signed certificate for api-ssl
-#   3. Enable api-ssl, disable www (plain HTTP)
+# The .rsc script sets up the bare minimum for Terraform to connect:
+#   1. Bridge with all ports
+#   2. Management IP on the mgmt VLAN interface
+#   3. Terraform user group and user
+#   4. Self-signed certificate for www-ssl and api-ssl
+#   5. Restrict enabled services to the management subnet
+#   6. Default gateway
 #
-# After bootstrap, the routeros provider can connect over HTTPS.
+# After reset, the routeros provider connects over HTTPS.
 
 terraform {
   required_version = ">= 1.7.0"
@@ -18,6 +21,10 @@ terraform {
     external = {
       source  = "hashicorp/external"
       version = "~> 2.3"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5"
     }
   }
 }
@@ -34,28 +41,28 @@ data "external" "device_status" {
   }
 }
 
-# Bootstrap devices that are not yet reachable on HTTPS.
-# Only runs for devices that have a bootstrap_ip configured and are not yet
-# bootstrapped. The resource is stored in state, so it only runs once per
-# device. To re-bootstrap a reset device, taint this resource.
-resource "terraform_data" "bootstrap" {
-  for_each = {
-    for k, v in var.devices : k => v
-    if v.bootstrap_ip != null && data.external.device_status[k].result.reachable == "false"
+# Generate the bootstrap .rsc script for each device.
+locals {
+  bootstrap_scripts = {
+    for k, v in var.devices : k => templatefile("${path.module}/templates/bootstrap.rsc.tftpl", {
+      device_name          = k
+      device_ip            = v.ip
+      prefix_length        = v.prefix_length
+      management_subnet    = v.management_subnet
+      gateway              = v.gateway
+      tf_user              = v.username
+      tf_pass              = v.password
+      bridge_protocol_mode = v.bridge_protocol_mode
+      vlan_mode            = v.vlan_mode
+    })
   }
+}
 
-  input = each.key
+# Write the bootstrap script to work/{device}/bootstrap.rsc for each device.
+resource "local_sensitive_file" "bootstrap" {
+  for_each = var.devices
 
-  provisioner "local-exec" {
-    command = "bash ${path.module}/scripts/bootstrap-device.sh"
-
-    environment = {
-      BOOTSTRAP_IP   = each.value.bootstrap_ip
-      BOOTSTRAP_USER = each.value.bootstrap_user
-      BOOTSTRAP_PASS = each.value.bootstrap_pass
-      TF_USER        = each.value.username
-      TF_PASS        = each.value.password
-      DEVICE_NAME    = each.key
-    }
-  }
+  content         = local.bootstrap_scripts[each.key]
+  filename        = "${path.root}/../../work/bootstrap/${each.key}/bootstrap.rsc"
+  file_permission = "0600"
 }
