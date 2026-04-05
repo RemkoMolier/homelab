@@ -14,5 +14,5 @@ variable "country" {
 variable "discovery_interface" {
   description = "Interface for CAPsMAN AP discovery"
   type        = string
-  default     = "default"
+  default     = "mgmt"
 }

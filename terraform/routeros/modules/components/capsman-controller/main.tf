@@ -33,6 +33,12 @@ resource "routeros_wifi_datapath" "cctv" {
   vlan_id = 50
 }
 
+resource "routeros_wifi_datapath" "voip" {
+  name    = "voip-ax"
+  bridge  = "bridge1"
+  vlan_id = 40
+}
+
 resource "routeros_wifi_datapath" "guest" {
   name             = "guest-ax"
   bridge           = "bridge1"
@@ -46,24 +52,32 @@ resource "routeros_wifi_security" "home" {
   name                 = "home"
   authentication_types = ["wpa2-psk", "wpa3-psk"]
   passphrase           = lookup(var.wifi_passwords, "home", null)
-  ft                   = true
-  ft_over_ds           = true
+  ft                   = false
+  ft_over_ds           = false
 }
 
 resource "routeros_wifi_security" "iot" {
   name                 = "iot"
   authentication_types = ["wpa2-psk"]
   passphrase           = lookup(var.wifi_passwords, "iot", null)
-  ft                   = true
-  ft_over_ds           = true
+  ft                   = false
+  ft_over_ds           = false
+}
+
+resource "routeros_wifi_security" "voip" {
+  name                 = "voip"
+  authentication_types = ["wpa2-psk", "wpa3-psk"]
+  passphrase           = lookup(var.wifi_passwords, "voip", null)
+  ft                   = false
+  ft_over_ds           = false
 }
 
 resource "routeros_wifi_security" "cctv" {
   name                 = "cctv"
   authentication_types = ["wpa2-psk", "wpa3-psk"]
   passphrase           = lookup(var.wifi_passwords, "cctv", null)
-  ft                   = true
-  ft_over_ds           = true
+  ft                   = false
+  ft_over_ds           = false
 }
 
 # --- Configurations (SSID + datapath + security) ---
@@ -73,8 +87,8 @@ resource "routeros_wifi_configuration" "home" {
   ssid     = "HOME"
   country  = var.country
   mode     = "ap"
-  datapath = routeros_wifi_datapath.home.name
-  security = routeros_wifi_security.home.name
+  datapath = { config = routeros_wifi_datapath.home.name }
+  security = { config = routeros_wifi_security.home.name }
 }
 
 resource "routeros_wifi_configuration" "iot" {
@@ -82,8 +96,8 @@ resource "routeros_wifi_configuration" "iot" {
   ssid     = "IOT"
   country  = var.country
   mode     = "ap"
-  datapath = routeros_wifi_datapath.iot.name
-  security = routeros_wifi_security.iot.name
+  datapath = { config = routeros_wifi_datapath.iot.name }
+  security = { config = routeros_wifi_security.iot.name }
 }
 
 resource "routeros_wifi_configuration" "cctv" {
@@ -91,8 +105,18 @@ resource "routeros_wifi_configuration" "cctv" {
   ssid     = "CCTV"
   country  = var.country
   mode     = "ap"
-  datapath = routeros_wifi_datapath.cctv.name
-  security = routeros_wifi_security.cctv.name
+  datapath = { config = routeros_wifi_datapath.cctv.name }
+  security = { config = routeros_wifi_security.cctv.name }
+}
+
+resource "routeros_wifi_configuration" "voip" {
+  name     = "voip-ax"
+  ssid     = "VOIP"
+  country  = var.country
+  mode     = "ap"
+  disabled = true
+  datapath = { config = routeros_wifi_datapath.voip.name }
+  security = { config = routeros_wifi_security.voip.name }
 }
 
 resource "routeros_wifi_configuration" "guest" {
@@ -100,14 +124,16 @@ resource "routeros_wifi_configuration" "guest" {
   ssid     = "GUEST"
   country  = var.country
   mode     = "ap"
-  datapath = routeros_wifi_datapath.guest.name
+  disabled = true
+  datapath = { config = routeros_wifi_datapath.guest.name }
 }
 
 # --- CAPsMAN service ---
 
 resource "routeros_wifi_capsman" "this" {
-  enabled    = true
-  interfaces = [var.discovery_interface]
+  enabled        = true
+  interfaces     = [var.discovery_interface]
+  ca_certificate = "auto"
 }
 
 # --- Provisioning rules ---
@@ -117,6 +143,7 @@ resource "routeros_wifi_provisioning" "band_2ghz" {
   master_configuration = routeros_wifi_configuration.home.name
   slave_configurations = [
     routeros_wifi_configuration.iot.name,
+    routeros_wifi_configuration.voip.name,
     routeros_wifi_configuration.cctv.name,
     routeros_wifi_configuration.guest.name,
   ]

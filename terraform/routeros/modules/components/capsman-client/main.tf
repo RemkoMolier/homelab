@@ -13,17 +13,11 @@ terraform {
   }
 }
 
-resource "routeros_wifi_datapath" "cap" {
-  name   = "cap"
-  bridge = var.bridge_name
-}
-
 resource "routeros_wifi" "wifi1" {
   name = "wifi1"
   configuration = {
     manager = "capsman"
   }
-  datapath = routeros_wifi_datapath.cap.name
   disabled = false
 }
 
@@ -32,12 +26,10 @@ resource "routeros_wifi" "wifi2" {
   configuration = {
     manager = "capsman"
   }
-  datapath = routeros_wifi_datapath.cap.name
   disabled = false
 }
 
 resource "routeros_wifi_cap" "this" {
   enabled              = true
   discovery_interfaces = [var.discovery_interface]
-  slaves_datapath      = routeros_wifi_datapath.cap.name
 }
