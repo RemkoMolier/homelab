@@ -9,10 +9,13 @@ locals {
   }
 }
 
+# Re-uploads when filename or URL changes. For content updates at the
+# same URL, taint the resource manually:
+#   tofu taint 'module.rb5009.module.router.terraform_data.pxe_upload["netboot.xyz.efi"]'
 resource "terraform_data" "pxe_upload" {
   for_each = local.pxe_files
 
-  triggers_replace = [each.key]
+  triggers_replace = [each.key, each.value]
 
   provisioner "local-exec" {
     interpreter = ["bash", "-c"]
