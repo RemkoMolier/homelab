@@ -1,5 +1,5 @@
 ---
-# Network config is not covered by arensb.truenas — use midclt (ADR-0013)
+# Network config is not covered by arensb.truenas — use midclt (ADR-0017)
 #
 # WARNING: Changing network settings can lock out SSH access.
 # Always have console access ready before applying network changes.
@@ -37,10 +37,11 @@
   loop: "{{ truenas_interfaces }}"
   loop_control:
     label: "{{ item.name }}"
-  register: network_result
-  changed_when: >-
+  when: >-
     (current_iface.mtu | default(0)) | int != item.mtu | int or
     current_addresses != desired_addresses
+  register: network_result
+  changed_when: true
 
 - name: Commit network changes
   ansible.builtin.command:

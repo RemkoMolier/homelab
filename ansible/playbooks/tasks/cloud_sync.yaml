@@ -1,7 +1,10 @@
 ---
-# Cloud sync is not covered by arensb.truenas — use midclt (ADR-0013)
+# Cloud sync is not covered by arensb.truenas — use midclt (ADR-0017)
 
 # --- Cloud credentials ---
+# Note: These tasks only create missing credentials. Credential attribute
+# updates (token rotation, URL changes) require manual deletion and re-creation
+# via midclt or the TrueNAS UI, then re-running this playbook.
 
 - name: Query existing cloud credentials
   ansible.builtin.command:
@@ -10,7 +13,7 @@
   changed_when: false
   no_log: true
 
-- name: Create or update Dropbox credential
+- name: Create Dropbox credential
   ansible.builtin.command:
     cmd: >-
       midclt call cloudsync.credentials.create
@@ -29,7 +32,7 @@
   register: dropbox_cred_created
   changed_when: true
 
-- name: Create or update WebDAV credential
+- name: Create WebDAV credential
   ansible.builtin.command:
     cmd: >-
       midclt call cloudsync.credentials.create
@@ -59,12 +62,27 @@
   when: dropbox_cred_created is changed or webdav_cred_created is changed
 
 # --- Cloud sync tasks ---
+# Note: These tasks only create missing sync tasks. Updates to existing
+# sync task configuration require manual changes via midclt or the TrueNAS UI.
 
 - name: Query existing cloud sync tasks
   ansible.builtin.command:
     cmd: midclt call cloudsync.query
   register: cloud_sync_current
   changed_when: false
+
+- name: Verify credential exists before creating sync task
+  ansible.builtin.fail:
+    msg: >-
+      Credential '{{ item.credential_name }}' not found.
+      Create it first or check the credential name in vars.yaml.
+  loop: "{{ truenas_cloud_sync_tasks }}"
+  loop_control:
+    label: "{{ item.credential_name }}"
+  when: >-
+    cloud_creds_current.stdout | from_json
+    | selectattr('name', 'equalto', item.credential_name)
+    | list | length == 0
 
 - name: Create cloud sync tasks
   ansible.builtin.command:
@@ -75,7 +93,7 @@
     cred_id: >-
       {{ cloud_creds_current.stdout | from_json
          | selectattr('name', 'equalto', item.credential_name)
-         | map(attribute='id') | first | default(none) }}
+         | map(attribute='id') | first }}
     sync_payload:
       description: "{{ item.description }}"
       direction: "{{ item.direction }}"
@@ -97,5 +115,4 @@
     cloud_sync_current.stdout | from_json
     | selectattr('description', 'equalto', item.description)
     | list | length == 0
-  failed_when: cred_id is none
   changed_when: true

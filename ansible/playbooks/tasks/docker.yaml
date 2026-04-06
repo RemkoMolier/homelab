@@ -1,5 +1,5 @@
 ---
-# Docker config is not covered by arensb.truenas — use midclt (ADR-0013)
+# Docker config is not covered by arensb.truenas — use midclt (ADR-0017)
 
 - name: Get current Docker configuration
   ansible.builtin.command:
