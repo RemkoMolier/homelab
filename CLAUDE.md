@@ -17,6 +17,7 @@ Tool versions are managed with [mise](https://mise.jdx.dev/) — see [ADR-0006](
 - Or run `./setup.sh` to do both (used automatically on Claude web)
 - Secrets from `.env.sops.json` are decrypted and loaded automatically by mise (`sops.rops = false` for GPG support)
 - Edit secrets: `sops .env.sops.json`
+- Tool versions are pinned in `mise.toml`; [Renovate](https://github.com/marketplace/renovate) creates update PRs weekly — see [ADR-0015](docs/decisions/0015-use-renovate-for-dependency-updates.md)
 
 ## Infrastructure
 
