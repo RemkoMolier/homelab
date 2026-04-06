@@ -1,7 +1,7 @@
 ---
-status: "accepted"
-date: "2026-04-06"
-decision-makers: "Remko Molier"
+status: accepted
+date: 2026-04-06
+decision-makers: Remko Molier
 ---
 
 # Use GitHub Actions for CI linting
