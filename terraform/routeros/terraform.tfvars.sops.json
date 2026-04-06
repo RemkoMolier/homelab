@@ -3,88 +3,70 @@
 		"rb5009": {
 			"hosturl": "https://172.16.1.10",
 			"insecure": true,
-			"bootstrap_ip": "172.16.1.10",
 			"ip": "172.16.1.10",
 			"secrets": {
-				"username": "ENC[AES256_GCM,data:9l3+v9XqkNib,iv:DI7SVg+Rf0FwCGe2rhp8aSeHBbuO7ifd+9z8Zcbl4C4=,tag:ht8z0qhCgJn6eEf738AjHw==,type:str]",
-				"password": "ENC[AES256_GCM,data:Y+zDehENydPZSuaA+z4yBkcoCd6DWA==,iv:P9ctyIzkWOWWqhAPlytxg52MYXmZkHY1oltiV7XdWCc=,tag:lvvmdCTSX6w/6NkCnfTtNQ==,type:str]",
-				"bootstrap_user": "ENC[AES256_GCM,data:olK951Y=,iv:oyK7E+pgxIa77GH2n+YB+SUaRKKCuM6iLF+b+LLElHA=,tag:oFYQ5gj7JdYdi45kokWzUg==,type:str]",
-				"bootstrap_pass": ""
+				"username": "ENC[AES256_GCM,data:tqA8DWfHWIZ8,iv:APpCqr8n+uY6CnYKnn9cd/NHtD3yJ1sC+FKisWGo0Fs=,tag:apAftrYD91kg/979E/kh7w==,type:str]",
+				"password": "ENC[AES256_GCM,data:nHDLnlA6fS5M971BnNuMAZMgiQaA0g==,iv:TLmjFHJSa6N3Fmfsb04zye1OUc2LteeQvRcTxZ3dPJY=,tag:IuiwFjHJHMknIAcwwx5qsQ==,type:str]"
 			}
 		},
 		"crs309": {
 			"hosturl": "https://172.16.1.11",
 			"insecure": true,
-			"bootstrap_ip": "172.16.1.11",
 			"ip": "172.16.1.11",
 			"secrets": {
-				"username": "ENC[AES256_GCM,data:6u3pZNsrd2S8,iv:ny5xcKF29mr/8516JW4qseEkr0hjGLumJvcU4VFgGCU=,tag:dWrlu5XTS5ykN18mH9IkKw==,type:str]",
-				"password": "ENC[AES256_GCM,data:dZr4Dzq+H4rBDrbCLmOX267JeddLmg==,iv:acwi38S9X2SnUToOrorqgWq8r+3Kqmk2yYJqmYNo/sM=,tag:NxURxCede0ZVmwxgW1PxYw==,type:str]",
-				"bootstrap_user": "ENC[AES256_GCM,data:qevXqdY=,iv:D9jj1NpyZG1wJ1omvuQghTQHK1tqs+4L5RmCMp3RzeU=,tag:dCmns3mpi+tAZkiNn8qw2w==,type:str]",
-				"bootstrap_pass": ""
+				"username": "ENC[AES256_GCM,data:Eh64C2deYpqq,iv:nsKQrhbGwIUDfS9OseviZesRncUpgBaQl3NBVBR057s=,tag:hrbd3/yWpVPhuzLxEhG7KQ==,type:str]",
+				"password": "ENC[AES256_GCM,data:afRyYCoiabcYTgITkkxZ2xfABkHMqQ==,iv:pGKWM3bqzS7FVSqjpZMDIkYDuumevkn8yf8MUvw5YDs=,tag:I+N7jvjcJ3chq8pofKdihg==,type:str]"
 			}
 		},
 		"crs326": {
 			"hosturl": "https://172.16.1.12",
 			"insecure": true,
-			"bootstrap_ip": "172.16.1.12",
 			"ip": "172.16.1.12",
 			"secrets": {
-				"username": "ENC[AES256_GCM,data:af0bkBCNIKRa,iv:76nvLhgfkkuWJ4Mnnwj4IaPq16T+wuuKaMaDSSvf6lg=,tag:HubvdBucx08eIrAUrMQ/yw==,type:str]",
-				"password": "ENC[AES256_GCM,data:L5fvW8Fx0EbG89JTIMEtQto3tT+5TQ==,iv:zsL+Rg68R6za11sdkrRaqOLNCJAsrXvxIb6GkRwi7U0=,tag:z551+jjneR811i79MbLBYg==,type:str]",
-				"bootstrap_user": "ENC[AES256_GCM,data:3FK/xjw=,iv:YB2Emu9A9TcTFaDYTHZosMuWrsZUDueYFWqvO2dZFwA=,tag:Au4gXOw23GJpE5DgN0p8Xg==,type:str]",
-				"bootstrap_pass": ""
+				"username": "ENC[AES256_GCM,data:RrZI7497UsT0,iv:0R79CfQ0kc+zIAeoJa3ktunebKaQjHmk47Q4p2f7/yM=,tag:QNuzS9oRn2u4Bq9S4eCSUw==,type:str]",
+				"password": "ENC[AES256_GCM,data:IQXrIYXjvNR+v+6eN5LzJptPH8k5RA==,iv:fuL6KtzXIvMbES3J38dK8h2/UH4deVeB+YCTBW65xJk=,tag:9mKV7kveaT1Ts1hXymUGSw==,type:str]"
 			}
 		},
 		"crs226": {
 			"hosturl": "https://172.16.1.13",
 			"insecure": true,
-			"bootstrap_ip": "172.16.1.13",
 			"ip": "172.16.1.13",
 			"secrets": {
-				"username": "ENC[AES256_GCM,data:XcYLuruHwEPg,iv:IX9LtBqGYUNMeKofB6RShjmKjFoI4Heps3TmZsr9VgI=,tag:21jlziokkjKoWu1geBb1jg==,type:str]",
-				"password": "ENC[AES256_GCM,data:0YcZGKwELOrWxkyBMHuFBh2jxmGgkg==,iv:D/EMHpNkbqqbXYM15cq504BPemEIUwkEcoSNYWF/aHc=,tag:KC5Yh5jtHvpRhcUwmf19qw==,type:str]",
-				"bootstrap_user": "ENC[AES256_GCM,data:qUDs5bc=,iv:uP0yQXEmoh9ukjKf0v9tG4k5aeKJO551kJoCDomKkHc=,tag:2LH0i+iETS4vRzabRF4/8w==,type:str]",
-				"bootstrap_pass": ""
+				"username": "ENC[AES256_GCM,data:hoXhkHd9cWDW,iv:ru6fBiZzdu13o1WMzeQ3uSd5CuVqYzYMIDqGCfSRBTU=,tag:Y4P0dUV1bfA8FFJqsQRw1g==,type:str]",
+				"password": "ENC[AES256_GCM,data:hTRsQU0EFkxadwANBYFLjRvK3/h53Q==,iv:O/xmoGrBoLcxLx+isMNQxgKnmndxDO7k+yJ21+HnzqE=,tag:4LiJ38NhkmuY4ZBZDU9YVg==,type:str]"
 			}
 		},
 		"hap-ax2-musicroom": {
 			"hosturl": "https://172.16.1.15",
 			"insecure": true,
-			"bootstrap_ip": "172.16.1.15",
 			"ip": "172.16.1.15",
 			"secrets": {
-				"username": "ENC[AES256_GCM,data:F+3Xs5ol4WDs,iv:Z3QmoEYCBugKcthL5nVwtLNEmuJy9r6D/JTMzM5VCuY=,tag:sU9VoV3UP1OYuwlSxEkhWQ==,type:str]",
-				"password": "ENC[AES256_GCM,data:qbbYwjkkhiXYzNOtBGUJ/JYeWyLp5w==,iv:3zKvIAnzXUoUcQ3R51Q+jor9W7lf/SEAERMZHOT53as=,tag:P0VXQ10fDIHntClgFJOVEg==,type:str]",
-				"bootstrap_user": "ENC[AES256_GCM,data:X8oL+GE=,iv:bSvanf3n44JBugYLC1g1iqonsF3yAqDxrlIQqUB8AWE=,tag:+tB9njf9z00TJMuOcvdi1Q==,type:str]",
-				"bootstrap_pass": "ENC[AES256_GCM,data:2QDqQopyznkMReU=,iv:DQ6ZHlvLTgxKV1sR95NF/86GgA7leS1b7taiFPeBkT0=,tag:AHpCwdyljYaewjno2mq7kQ==,type:str]"
+				"username": "ENC[AES256_GCM,data:t0TcGQ+tRN/A,iv:vff1XfkRrRPDlVqqZxmEMRT99d+DKnU99Mnqix4niJs=,tag:6cbsGzkhvQ15YmrMq3kBPQ==,type:str]",
+				"password": "ENC[AES256_GCM,data:WXLR3IhMvcUMLMat2o3s/hn7wqaJ5g==,iv:gJdkQvmupRizWj3/ePzNjIJRUrKArsF1SxuYRHnfLuU=,tag:kxbj83efGWa3o5VFsMmaNg==,type:str]"
 			}
 		},
 		"hap-ax2-kitchen": {
 			"hosturl": "https://172.16.1.16",
 			"insecure": true,
-			"bootstrap_ip": "172.16.1.16",
 			"ip": "172.16.1.16",
 			"secrets": {
-				"username": "ENC[AES256_GCM,data:RZHleCRav4Z9,iv:fKxuO1lSHtvUhb2NyTxFOwpylE/KRm4isskl0CbXAuU=,tag:kl3FauoA0Mp69aOsPYZ2kA==,type:str]",
-				"password": "ENC[AES256_GCM,data:kH+eH3KspbpOyOXyOmmYFU5K7NOulA==,iv:7GJRtn2+LqS6Cx3hpW6YSZKWsRFemQdv4PUHfsP9L5A=,tag:+WcKttdTdoEFQZHz/YvcWw==,type:str]",
-				"bootstrap_user": "ENC[AES256_GCM,data:xG64Uj4=,iv:yt4OkdKIsB//zadTRk9ptahlBJbXpSEc8YZm9yVBpIs=,tag:wbjLqUbYFjmTYtGCaDlwmQ==,type:str]",
-				"bootstrap_pass": ""
+				"username": "ENC[AES256_GCM,data:R3VzsXwgJn4T,iv:wVicIFZaWuZYHbRuoElaOyNbVdX2HIFDin21k+6MRJg=,tag:5/k/g/oglOXuWcRk38XJFw==,type:str]",
+				"password": "ENC[AES256_GCM,data:41a/fgOFegdmf6TOSPw8ngybMV1jMw==,iv:OHKwlr0G54KTK09yqylEEt3XLavwCYmWfYp/OThUHGw=,tag:bgm47sxmSJ6xKgYKtSUXQg==,type:str]"
 			}
 		}
 	},
 	"secrets": {
 		"wifi_passwords": {
-			"mgmt": "ENC[AES256_GCM,data:Nr0xZny2Jm9+k+0=,iv:LKaUvH3onKOW+WEdjH2eH9jn25SyYTW8gENgOgb3Dhc=,tag:llvlajMu7NN0HRmK57LM/Q==,type:str]",
-			"home": "ENC[AES256_GCM,data:P13Wp5PlpJbRhLwAXw==,iv:VLYv/hzvSmQTVJWjCgmVK1I8Vtonf5CMTFWJ9wFQu+4=,tag:tBLb5Ts5NwGxbaEYh6Y32w==,type:str]",
-			"iot": "ENC[AES256_GCM,data:D/B6XF5ieMn92vmV8Z8=,iv:eE1nd0VhACwJc9KvDgj7IvAjf/wUVtmFv280XMQrSzE=,tag:axq1FAThb7pCUvu7l/y6ZQ==,type:str]",
-			"voip": "ENC[AES256_GCM,data:UJPeMB2dZPcPKJHo,iv:fT9okl/Hg/1B7u/yIFafzNAk092yFxyrEq8CC3Dqr8c=,tag:VV73NZsNUYDBpTCB0jO9GA==,type:str]",
-			"cctv": "ENC[AES256_GCM,data:dbrygoo3qjiUDXgs,iv:bSvv7vCA95cH2d0549pmzxt84LzYq0wJEx8c3ck0dWc=,tag:0wX3ao+ryqPfgkGdMijJZg==,type:str]"
+			"mgmt": "ENC[AES256_GCM,data:4/oQypU7+6CZNQs=,iv:+NWopH95TAX8uFF/rzS93VTWRuDEWltEcf4hWl8v4X0=,tag:7Vda7RMfXPpGIBKBWbW8RQ==,type:str]",
+			"home": "ENC[AES256_GCM,data:O8Yl6RbIguSFFd/o5A==,iv:LJurB+cAaH9Zu6KagyOnMtzyCT8BHHXbdIPOGig0/4E=,tag:JKESYS3CvFx2khKvZajcyA==,type:str]",
+			"iot": "ENC[AES256_GCM,data:pbYY1wxDQYwV8NfXO9g=,iv:x1tXqXLTrccoePcvxqfx3/dUYWv2EDWUh1zhp4cPp5E=,tag:qvobMYnxjGCgYaLeoaznAA==,type:str]",
+			"voip": "ENC[AES256_GCM,data:8auvn6RgdOyr5kmx,iv:1LqbGTjzVu+3PIbLnkARSxkI1bN/sArSuvm9+9Hw/sE=,tag:ldKt43bmiGRAEfDVxJI3TQ==,type:str]",
+			"cctv": "ENC[AES256_GCM,data:1u12zZ1l+ixnwB46,iv:78lZf11NmFdoxrGi5K2PQEvXu2WAyeyCJ3rJ4mLuVm4=,tag:6dTIhi9OEQ7b+ODtPn5xSg==,type:str]"
 		},
 		"users": {
 			"remko": {
-				"password": "ENC[AES256_GCM,data:xHH2q+6Vu2diZ5A=,iv:w4y4MMrZ3dasFKBCVtF2Kg+WMiaMKno7EWl4/dGpOAA=,tag:YP1XNoUedYiiuKyMSBaTWw==,type:str]",
-				"group": "ENC[AES256_GCM,data:Di760A==,iv:+kd1u93Iwqv87B9CuzkGIbxCtkyC1z9/G5dPNpN5dfs=,tag:b36xfNr5uQ05/s8tW8A2oQ==,type:str]"
+				"password": "ENC[AES256_GCM,data:GpgQf1hrq4x7ugk=,iv:BZtck2miOHvpZvlC6Ck75kqCpQlu+tE++wuOfCdBeDU=,tag:jjMaa9c+NXoqSTdZHunrCg==,type:str]",
+				"group": "ENC[AES256_GCM,data:/AujTQ==,iv:j4scm6UBwrmYTp8RXdNvevPBUw7Ux4wvRxl8buLAb/A=,tag:fZ6MHewTQ1CloylfmzhLcQ==,type:str]"
 			}
 		}
 	},
@@ -92,15 +74,15 @@
 		"age": [
 			{
 				"recipient": "age12sa9hzgztg0fml5gdznwt7zfz97r98dm7whwjgpxjwryc2sfevzqh2j28y",
-				"enc": "-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByaVlKVDNXcC8vd3RuaXJS\nNStmZjRKOG9PdEtMeXBQOUgvOVRYcyt1eHlrCnA0MmpoL0JUb3J6Qm5XdlRmWmpZ\nWTRnOU9RMmVxdzFQdmdTS0NKMjIrVDAKLS0tIE1YVFhGODAyYkRKbE1pU3Vxb3NU\nTW02eGN3Z3llZjkyanlFNFNjUEJWTjAKYsj/aKAMxwdFR4pHXhwvFYheDub1U4uB\nm68qW4BFCRQC/YQTKsXPeS3rjVVkq090lmpdNBDWD4hNiC8FX8nRBQ==\n-----END AGE ENCRYPTED FILE-----\n"
+				"enc": "-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBxZWRGSnVkam5RUGFsM2tx\nd0YrWllWQktGQ09wTkp0RWdVQ1FSMkdRZFhZClkvcU9Tb3pkN1g3SjlOSGY3d0gy\ndUF2WXl0RVpJQjB3UUNVdkJoZDFrQk0KLS0tIE5tK2lSeWxFVWFsMU0wT0NOUFQ4\nM3BoR1lSYW1rNzBxb3ZpOXpiQlJKTmMKIQz4mxqc5dijc6KeGvcm0EsBREaEAaQC\nqQy5ev5iFXyqrHqbcPVd2/3+fIQ1CUo7xDGQdAf+Wetm3qmBZBj2rw==\n-----END AGE ENCRYPTED FILE-----\n"
 			}
 		],
-		"lastmodified": "2026-04-06T16:54:22Z",
-		"mac": "ENC[AES256_GCM,data:KJKKuMBnBmAv9aNagIG/0vr/yQ1Gyg4jLBRCtj8PSB4bMbjgpPKRdq84YdoikNSywaWLFvKn1Q4TYu3EQuQ+oda/X8ZItUy3NHMYslrejpAl70Bf5ytI6qbPp81i0yhFAMN5GodfeyeJ5Yi3WOeR1Sc+JxGkzG0Kj3o0vKuxgDM=,iv:MEOwoY5x5lJYV8P/nPPgSlH2oE/dN7IQ/ye7TcaVnNw=,tag:LtEK7cmG04vW5aGyOJ5MJQ==,type:str]",
+		"lastmodified": "2026-04-06T18:31:36Z",
+		"mac": "ENC[AES256_GCM,data:CR61SdmqftECmki2xTZ8cjzvQN/4p5oXjgrlpKJAtc3VzEjbsiw+zhiLZxfE6hOWTE5Jj8FMOKtXDfFj0TSA40LIjFVe4bO8TxqDdMZdjejXxOKDD8n0mBPGz4KyvUaVSHAE++5Qffq8947HwUOYynyjPUqTAjOIl1BqeBfAdEY=,iv:Xf1JDH2Hg+ZrT4RAe897X1GMB8zhEHR6FGFFUyBZ9/o=,tag:KxsPs2Dzhet2vq1MoleXdA==,type:str]",
 		"pgp": [
 			{
-				"created_at": "2026-04-06T16:54:22Z",
-				"enc": "-----BEGIN PGP MESSAGE-----\n\nhQIMA12IRFk/1oCEARAAlUt/pXFFYR8Vb3f8AcxUalckqMj4K2VcFjogtyq2uF+T\nsN/G5da1YlpL/2JFJrHsiLKRcWK+bAp0NroK/wWJTVVwQtA32tFw7i/cLGDaLj6U\nK5iZTqeYWjxYb4zwl73CWIzavFp3V8qVVjbPVR0nngYvgLNmkuiHCjms84MzvQRL\nqE1qjCyzoWhYiO6izEjdyeMNC+lUkZnQjDl+Znqv68TxV0VpsZhDxNhAEwestkuu\nbod3DaNImRLky4KQp9xvDx9VM7QgnRwI0IHgVbA+v0XMtpWh5RjSQkhFg5oA3LpT\nVVUcrC1VGdEybXkUMeI1kF3mVRBWFIGFgii+bnHaFkjG0/lL10FvZnwANdSJSEPl\nydS3HqYo8XY+K2rFcn0VJFoJ6nOlAu7bl775WiQYnYH1gP6VkOXMZwAdpriHFCUo\nxcesBQ8T5KFTGrQEOClaTyYXORSqh4vDWDlvCGMN0dES7YRhnr/hDY58IieKPgvo\nXIko1AltIpUHYRo/j8lZ01AFjgdG4wJUierR35P4uydtivVMfrFM1wmOIkFdLnUf\nYNJRryLXvAKE7aHXLqreRJoagR0l1fAIhkMJNw3Vpign/kW+n98T37hOJkqAVVJe\nbRFOXlc6aOdKf7KJAFlR7wocjngJGxmEhrr0QoGJhBeBOCdnvlei/JN62kCBcHzS\nXgHvJbJU3g+fOg1lq0g1Pd71TwOpQKrvXZVeP8gJkEGv02PrI3Jflj0rr6CqvDmJ\nFeIvpisJUUCkdHPkJQf7Bn3+YMb7t2sKLx2+/FJ0/aO3aWpicG1eLQS1+aq72KE=\n=qYqN\n-----END PGP MESSAGE-----",
+				"created_at": "2026-04-06T18:31:36Z",
+				"enc": "-----BEGIN PGP MESSAGE-----\n\nhQIMA12IRFk/1oCEAQ/9F0eT52z7mUmfvYD+HCETlKIO0dkAsSAUEZ7ZLOD0/GTv\nZBeKqGJU5AK4cRb+zmZdrALtEQNTd6qWaRcns/hm1qvMeYt4bSu3y2Nn1fIpnS9d\nbYbW7Qt4BCqmkAvzA0ayoGio3bQfhqjlTCbSy89RtgkhM9ZTx1tkHsUaU07ZCsSN\nHPAn+dQBxIu2ZqASrqZ0LYmzlGu+L0oYQIqf3Npy1kQWpRlNlAf5T3LWY93ejFNg\nF+QRJeCnEbqOV9TSmxON7YJPHueReawtw14jKaWGzgk8r8Cv1/vI84Kav9ruDJ/o\nT2DYklN5mdCtrwGvT1ILFH9NbphF6AoB6w4gXKdpBhEPsxleKtM8jg6VbCkBq1Ax\nWUyCn6lOYXgXV8v0z2pDxzsJuzIIyAtlCu50GIaxKG4li2Ka+f5wKenw+QPlAY3J\nDZr7W16EH8KZ7EGZAXWSbeoRhcJEFGA5RjrB7+a85BptOiR1Im1qxkn/bZSOiJ9h\nwuOlPf/9UWpKYEoR97Df23Aw8YgxAmwhwEnIvQ0k6wvv4LkCsBZ0Wt3G+E0bkRPA\nLLD+9T+OpCCJkWGvqRY1rveAbujQVTiGAFU1HGlp7n/VkVQAIuP08LnSuEQpW2Zc\niL5+U604ljhqZGdhIauPmP28LsOaRgaoTSqlCoyXH9MsvlR70zZlqmS+B81a7bfS\nXgFzxTGnvoxuFf+eO0HTz20soNPUTpnJHK3d4wB/dH35g/nLngJrlkHWEZh/kxvC\naNiGtGEwL01R1aR4ScKKj2+pkMhwerex4FyaW3qSBIWrvo0B9skAw3cSqoQ2vLg=\n=DVfC\n-----END PGP MESSAGE-----",
 				"fp": "1F476D92728DFC65F15E40464F3984ECAE4A5BAF"
 			}
 		],
