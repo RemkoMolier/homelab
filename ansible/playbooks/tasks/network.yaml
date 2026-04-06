@@ -25,11 +25,15 @@
     desired_aliases: >-
       {{ [{"address": item.address, "netmask": item.netmask}]
          + (item.aliases | default([])) }}
-    desired_addresses: >-
-      {{ desired_aliases | map(attribute='address') | list | sort }}
-    current_addresses: >-
+    desired_tuples: >-
+      {{ desired_aliases | map('dict2items')
+         | map('selectattr', 'key', 'in', ['address', 'netmask'])
+         | map('items2dict') | list | sort(attribute='address') }}
+    current_tuples: >-
       {{ (current_iface.aliases | default([]))
-         | map(attribute='address') | list | sort }}
+         | map('dict2items')
+         | map('selectattr', 'key', 'in', ['address', 'netmask'])
+         | map('items2dict') | list | sort(attribute='address') }}
     iface_payload:
       ipv4_dhcp: false
       aliases: "{{ desired_aliases }}"
@@ -38,20 +42,27 @@
   loop_control:
     label: "{{ item.name }}"
   when: >-
-    (current_iface.mtu | default(0)) | int != item.mtu | int or
-    current_addresses != desired_addresses
+    not ansible_check_mode and (
+      (current_iface.mtu | default(0)) | int != item.mtu | int or
+      (current_iface.ipv4_dhcp | default(false)) != false or
+      current_tuples != desired_tuples
+    )
   register: network_result
   changed_when: true
 
 - name: Commit network changes
   ansible.builtin.command:
     cmd: midclt call interface.commit '{"checkin_timeout": 60}'
-  when: network_result is changed
+  when:
+    - not ansible_check_mode
+    - network_result is changed
   register: network_commit
   changed_when: true
 
 - name: Check in network changes (confirm connectivity)
   ansible.builtin.command:
     cmd: midclt call interface.checkin
-  when: network_commit is changed
+  when:
+    - not ansible_check_mode
+    - network_commit is changed
   changed_when: true

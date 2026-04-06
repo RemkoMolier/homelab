@@ -25,6 +25,7 @@
       attributes:
         token: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule-Dropbox'].token }}"
   when: >-
+    not ansible_check_mode and
     cloud_creds_current.stdout | from_json
     | selectattr('name', 'equalto', 'BGSchule-Dropbox')
     | list | length == 0
@@ -46,6 +47,7 @@
         user: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule Cloud'].user }}"
         pass: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule Cloud'].pass }}"
   when: >-
+    not ansible_check_mode and
     cloud_creds_current.stdout | from_json
     | selectattr('name', 'equalto', 'BGSchule Cloud')
     | list | length == 0
@@ -112,6 +114,7 @@
   loop_control:
     label: "{{ item.description }}"
   when: >-
+    not ansible_check_mode and
     cloud_sync_current.stdout | from_json
     | selectattr('description', 'equalto', item.description)
     | list | length == 0

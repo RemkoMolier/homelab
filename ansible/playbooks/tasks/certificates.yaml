@@ -52,6 +52,7 @@
       midclt call system.general.update
       '{"ui_certificate": {{ (cert_query.stdout | from_json)[0].id }}}'
   when: >-
+    not ansible_check_mode and
     cert_query.stdout | from_json | length > 0 and
     (gui_current.stdout | from_json).ui_certificate.id | default(0) !=
     (cert_query.stdout | from_json)[0].id

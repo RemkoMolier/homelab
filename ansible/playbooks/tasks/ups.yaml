@@ -30,6 +30,7 @@
   # return the current password in ups.config. To force a password update,
   # change any other field or run with -e ups_force_update=true.
   when: >-
+    not ansible_check_mode and (
     (ups_force_update | default(false)) or
     current.mode != truenas_ups.mode or
     current.identifier != truenas_ups.identifier or
@@ -40,5 +41,6 @@
     current.monuser != truenas_ups.monuser or
     current.powerdown != truenas_ups.powerdown or
     current.hostsync != truenas_ups.hostsync
+    )
   register: ups_result
   changed_when: true
