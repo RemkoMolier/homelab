@@ -19,13 +19,10 @@ locals {
   # into the routeros_devices map expected by provider blocks and modules.
   routeros_devices = {
     for name, device in local.config["devices"] : name => {
-      hosturl        = device.hosturl
-      insecure       = device.insecure
-      bootstrap_ip   = device.bootstrap_ip
-      username       = device.secrets.username
-      password       = device.secrets.password
-      bootstrap_user = device.secrets.bootstrap_user
-      bootstrap_pass = device.secrets.bootstrap_pass
+      hosturl  = device.hosturl
+      insecure = device.insecure
+      username = device.secrets.username
+      password = device.secrets.password
     }
   }
 
