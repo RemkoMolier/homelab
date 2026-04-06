@@ -31,3 +31,4 @@ When you use a runbook, update this date and add post-incident notes if applicab
 | [Switch-chip VLAN operations](switch-chip-vlan-operations.md) | Operations | Medium | Remko Molier | 2026-04-04 |
 | [Terraform state recovery](terraform-state-recovery.md) | Recovery | Critical | Remko Molier | 2026-04-04 |
 | [Horaco switch setup](horaco-switch-setup.md) | Operations | Medium | Remko Molier | 2026-04-05 |
+| [Rotate age key for SOPS](rotate-age-key.md) | Operations | High | Remko Molier | 2026-04-06 |

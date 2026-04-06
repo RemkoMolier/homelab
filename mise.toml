@@ -16,6 +16,7 @@ sops = "latest"
 lefthook = "latest"
 tflint = "latest"
 trivy = "latest"
+age = "latest"
 
 [hooks.enter]
 shell = "bash"
