@@ -26,6 +26,7 @@ resource "tls_cert_request" "this" {
   }
 
   ip_addresses = [var.device_ip]
+  dns_names    = ["${var.device_name}.${var.domain}"]
 }
 
 resource "tls_locally_signed_cert" "this" {
