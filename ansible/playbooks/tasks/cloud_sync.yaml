@@ -82,6 +82,7 @@
   loop_control:
     label: "{{ item.credential_name }}"
   when: >-
+    not ansible_check_mode and
     cloud_creds_current.stdout | from_json
     | selectattr('name', 'equalto', item.credential_name)
     | list | length == 0

@@ -62,11 +62,12 @@ Expected result: prints the message without asking for a password.
 ### 3. Verify sudo/become access
 
 ```bash
-ssh truenas_admin@172.16.1.2 'sudo midclt call system.info' | python3 -m json.tool
+ssh truenas_admin@172.16.1.2 'sudo -n midclt call system.info'
 ```
 
 Expected result: JSON with system info (hostname, version, uptime).
-If this requires a password, either configure passwordless sudo for `truenas_admin`, or provide the become password interactively when running Ansible (`ansible-playbook --ask-become-pass ...`).
+If it fails with "sudo: a password is required", passwordless sudo is not configured.
+Either configure passwordless sudo for `truenas_admin`, or provide the become password interactively when running Ansible (`ansible-playbook --ask-become-pass ...`).
 
 ### 4. Install Ansible collections
 
