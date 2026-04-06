@@ -2,8 +2,7 @@
 #
 # Architecture:
 #   - locals.tf      — shared VLAN and firewall zone definitions
-#   - providers.tf   — one provider alias per device
-#   - device-*.tf    — per-device module composition with port maps
+#   - device-*.tf    — per-device provider, module composition, and port maps
 #   - modules/       — reusable modules by concern
 #
 # Two-phase lifecycle:
