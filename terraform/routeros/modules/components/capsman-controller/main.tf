@@ -46,6 +46,12 @@ resource "routeros_wifi_datapath" "guest" {
   client_isolation = true
 }
 
+resource "routeros_wifi_datapath" "mgmt" {
+  name    = "mgmt-ax"
+  bridge  = "bridge1"
+  vlan_id = 1
+}
+
 # --- Security profiles ---
 
 resource "routeros_wifi_security" "home" {
@@ -76,6 +82,14 @@ resource "routeros_wifi_security" "cctv" {
   name                 = "cctv"
   authentication_types = ["wpa2-psk", "wpa3-psk"]
   passphrase           = lookup(var.wifi_passwords, "cctv", null)
+  ft                   = false
+  ft_over_ds           = false
+}
+
+resource "routeros_wifi_security" "mgmt" {
+  name                 = "mgmt"
+  authentication_types = ["wpa2-psk", "wpa3-psk"]
+  passphrase           = lookup(var.wifi_passwords, "mgmt", null)
   ft                   = false
   ft_over_ds           = false
 }
@@ -128,6 +142,16 @@ resource "routeros_wifi_configuration" "guest" {
   datapath = { config = routeros_wifi_datapath.guest.name }
 }
 
+resource "routeros_wifi_configuration" "mgmt" {
+  name      = "mgmt-ax"
+  ssid      = "MGMT"
+  country   = var.country
+  mode      = "ap"
+  hide_ssid = true
+  datapath  = { config = routeros_wifi_datapath.mgmt.name }
+  security  = { config = routeros_wifi_security.mgmt.name }
+}
+
 # --- CAPsMAN service ---
 
 resource "routeros_wifi_capsman" "this" {
@@ -146,6 +170,7 @@ resource "routeros_wifi_provisioning" "band_2ghz" {
     routeros_wifi_configuration.voip.name,
     routeros_wifi_configuration.cctv.name,
     routeros_wifi_configuration.guest.name,
+    routeros_wifi_configuration.mgmt.name,
   ]
   supported_bands = ["2ghz-ax"]
   name_format     = "2GHz ax wifi-%I"
@@ -154,7 +179,10 @@ resource "routeros_wifi_provisioning" "band_2ghz" {
 resource "routeros_wifi_provisioning" "band_5ghz" {
   action               = "create-dynamic-enabled"
   master_configuration = routeros_wifi_configuration.home.name
-  slave_configurations = [routeros_wifi_configuration.guest.name]
-  supported_bands      = ["5ghz-ax"]
-  name_format          = "5GHz ax wifi-%I"
+  slave_configurations = [
+    routeros_wifi_configuration.guest.name,
+    routeros_wifi_configuration.mgmt.name,
+  ]
+  supported_bands = ["5ghz-ax"]
+  name_format     = "5GHz ax wifi-%I"
 }
