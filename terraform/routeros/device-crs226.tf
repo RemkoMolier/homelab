@@ -11,7 +11,7 @@ provider "routeros" {
 # Legacy switch-chip VLANs. Hardware trunk managed via SSH.
 
 # Import bootstrap-created resources into Terraform state.
-# Remove these blocks after the first successful apply.
+# Kept as reference for bootstrapping replacement devices.
 import {
   to = module.crs226.module.base.routeros_interface_vlan.management
   id = "name=mgmt"
