@@ -52,7 +52,7 @@ module "base" {
 module "switch" {
   source = "../../components/switch-bridge"
 
-  vlans = var.vlans
+  vlans         = var.vlans
   ports         = var.ports
   bonds         = var.bonds
   default_l2mtu = var.default_l2mtu
