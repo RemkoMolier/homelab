@@ -1,11 +1,22 @@
 # Shared definitions used across all device modules.
 # Change VLANs or firewall zones here — all devices pick up the changes.
 
+data "local_file" "root_ca_cert" {
+  filename = "${path.root}/../../pki/root-ca/ca.crt"
+}
+
+data "local_file" "intermediate_ca_key" {
+  filename = "${path.root}/../../pki/intermediate-ca/ca.key"
+}
+
+data "local_file" "intermediate_ca_cert" {
+  filename = "${path.root}/../../pki/intermediate-ca/ca.crt"
+}
+
 locals {
-  pki_dir                  = "${path.root}/../../pki"
-  root_ca_cert_pem         = file("${local.pki_dir}/root-ca/ca.crt")
-  intermediate_ca_key_pem  = file("${local.pki_dir}/intermediate-ca/ca.key")
-  intermediate_ca_cert_pem = file("${local.pki_dir}/intermediate-ca/ca.crt")
+  root_ca_cert_pem         = data.local_file.root_ca_cert.content
+  intermediate_ca_key_pem  = data.local_file.intermediate_ca_key.content
+  intermediate_ca_cert_pem = data.local_file.intermediate_ca_cert.content
   # Static model labels keep port comments readable without adding
   # cross-device graph dependencies between root modules.
   device_models = {
