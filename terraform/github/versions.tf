@@ -32,6 +32,7 @@ terraform {
 
 provider "github" {
   owner = "RemkoMolier"
+  token = local.secrets["github_token"]
 }
 
 provider "sops" {}
