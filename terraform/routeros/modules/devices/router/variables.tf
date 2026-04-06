@@ -53,6 +53,18 @@ variable "wifi_passwords" {
   default     = {}
 }
 
+variable "vrrp_id_offset" {
+  description = "Offset added to VLAN IDs to derive VRRP virtual router IDs"
+  type        = number
+  default     = 100
+}
+
+variable "vrrp_priority" {
+  description = "VRRP priority (higher wins master election)"
+  type        = number
+  default     = 100
+}
+
 variable "dns_static_records" {
   description = "Map of static DNS records"
   type = map(object({

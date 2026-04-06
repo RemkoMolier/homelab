@@ -46,6 +46,18 @@ variable "ssh_private_key_pem" {
   sensitive   = true
 }
 
+variable "vrrp_id_offset" {
+  description = "Offset added to VLAN IDs to derive VRRP virtual router IDs"
+  type        = number
+  default     = 100
+}
+
+variable "vrrp_priority" {
+  description = "VRRP priority (higher wins master election)"
+  type        = number
+  default     = 100
+}
+
 variable "management_interface" {
   description = "Name of the management VLAN interface (created by device-base)"
   type        = string
