@@ -13,143 +13,47 @@ terraform {
   }
 }
 
+locals {
+  secured_ssids = { for k, v in var.ssids : k => v if length(v.authentication_types) > 0 }
+  bands         = toset(flatten([for ssid in var.ssids : ssid.bands]))
+}
+
 # --- Datapaths (map SSID to VLAN) ---
 
-resource "routeros_wifi_datapath" "home" {
-  name    = "home-ax"
-  bridge  = "bridge1"
-  vlan_id = 10
-}
+resource "routeros_wifi_datapath" "this" {
+  for_each = var.ssids
 
-resource "routeros_wifi_datapath" "iot" {
-  name    = "iot-ax"
-  bridge  = "bridge1"
-  vlan_id = 30
-}
-
-resource "routeros_wifi_datapath" "cctv" {
-  name    = "cctv-ax"
-  bridge  = "bridge1"
-  vlan_id = 50
-}
-
-resource "routeros_wifi_datapath" "voip" {
-  name    = "voip-ax"
-  bridge  = "bridge1"
-  vlan_id = 40
-}
-
-resource "routeros_wifi_datapath" "guest" {
-  name             = "guest-ax"
+  name             = "${each.key}-ax"
   bridge           = "bridge1"
-  vlan_id          = 100
-  client_isolation = true
-}
-
-resource "routeros_wifi_datapath" "mgmt" {
-  name    = "mgmt-ax"
-  bridge  = "bridge1"
-  vlan_id = 1
+  vlan_id          = each.value.vlan_id
+  client_isolation = each.value.client_isolation ? true : null
 }
 
 # --- Security profiles ---
 
-resource "routeros_wifi_security" "home" {
-  name                 = "home"
-  authentication_types = ["wpa2-psk", "wpa3-psk"]
-  passphrase           = lookup(var.wifi_passwords, "home", null)
-  ft                   = false
-  ft_over_ds           = false
-}
+resource "routeros_wifi_security" "this" {
+  for_each = local.secured_ssids
 
-resource "routeros_wifi_security" "iot" {
-  name                 = "iot"
-  authentication_types = ["wpa2-psk"]
-  passphrase           = lookup(var.wifi_passwords, "iot", null)
-  ft                   = false
-  ft_over_ds           = false
-}
-
-resource "routeros_wifi_security" "voip" {
-  name                 = "voip"
-  authentication_types = ["wpa2-psk", "wpa3-psk"]
-  passphrase           = lookup(var.wifi_passwords, "voip", null)
-  ft                   = false
-  ft_over_ds           = false
-}
-
-resource "routeros_wifi_security" "cctv" {
-  name                 = "cctv"
-  authentication_types = ["wpa2-psk", "wpa3-psk"]
-  passphrase           = lookup(var.wifi_passwords, "cctv", null)
-  ft                   = false
-  ft_over_ds           = false
-}
-
-resource "routeros_wifi_security" "mgmt" {
-  name                 = "mgmt"
-  authentication_types = ["wpa2-psk", "wpa3-psk"]
-  passphrase           = lookup(var.wifi_passwords, "mgmt", null)
+  name                 = each.key
+  authentication_types = each.value.authentication_types
+  passphrase           = lookup(var.wifi_passwords, each.key, null)
   ft                   = false
   ft_over_ds           = false
 }
 
 # --- Configurations (SSID + datapath + security) ---
 
-resource "routeros_wifi_configuration" "home" {
-  name     = "home-ax"
-  ssid     = "HOME"
-  country  = var.country
-  mode     = "ap"
-  datapath = { config = routeros_wifi_datapath.home.name }
-  security = { config = routeros_wifi_security.home.name }
-}
+resource "routeros_wifi_configuration" "this" {
+  for_each = var.ssids
 
-resource "routeros_wifi_configuration" "iot" {
-  name     = "iot-ax"
-  ssid     = "IOT"
-  country  = var.country
-  mode     = "ap"
-  datapath = { config = routeros_wifi_datapath.iot.name }
-  security = { config = routeros_wifi_security.iot.name }
-}
-
-resource "routeros_wifi_configuration" "cctv" {
-  name     = "cctv-ax"
-  ssid     = "CCTV"
-  country  = var.country
-  mode     = "ap"
-  datapath = { config = routeros_wifi_datapath.cctv.name }
-  security = { config = routeros_wifi_security.cctv.name }
-}
-
-resource "routeros_wifi_configuration" "voip" {
-  name     = "voip-ax"
-  ssid     = "VOIP"
-  country  = var.country
-  mode     = "ap"
-  disabled = true
-  datapath = { config = routeros_wifi_datapath.voip.name }
-  security = { config = routeros_wifi_security.voip.name }
-}
-
-resource "routeros_wifi_configuration" "guest" {
-  name     = "guest-ax"
-  ssid     = "GUEST"
-  country  = var.country
-  mode     = "ap"
-  disabled = true
-  datapath = { config = routeros_wifi_datapath.guest.name }
-}
-
-resource "routeros_wifi_configuration" "mgmt" {
-  name      = "mgmt-ax"
-  ssid      = "MGMT"
+  name      = "${each.key}-ax"
+  ssid      = each.value.ssid
   country   = var.country
   mode      = "ap"
-  hide_ssid = true
-  datapath  = { config = routeros_wifi_datapath.mgmt.name }
-  security  = { config = routeros_wifi_security.mgmt.name }
+  hide_ssid = each.value.hide_ssid ? true : null
+  disabled  = each.value.disabled ? true : null
+  datapath  = { config = routeros_wifi_datapath.this[each.key].name }
+  security  = contains(keys(local.secured_ssids), each.key) ? { config = routeros_wifi_security.this[each.key].name } : null
 }
 
 # --- CAPsMAN service ---
@@ -162,27 +66,112 @@ resource "routeros_wifi_capsman" "this" {
 
 # --- Provisioning rules ---
 
-resource "routeros_wifi_provisioning" "band_2ghz" {
+resource "routeros_wifi_provisioning" "this" {
+  for_each = local.bands
+
   action               = "create-dynamic-enabled"
-  master_configuration = routeros_wifi_configuration.home.name
+  master_configuration = routeros_wifi_configuration.this[var.master_ssid].name
   slave_configurations = [
-    routeros_wifi_configuration.iot.name,
-    routeros_wifi_configuration.voip.name,
-    routeros_wifi_configuration.cctv.name,
-    routeros_wifi_configuration.guest.name,
-    routeros_wifi_configuration.mgmt.name,
+    for k, v in var.ssids : routeros_wifi_configuration.this[k].name
+    if contains(v.bands, each.key) && k != var.master_ssid
   ]
-  supported_bands = ["2ghz-ax"]
-  name_format     = "2GHz ax wifi-%I"
+  supported_bands = [each.key]
+  name_format     = "${replace(each.key, "ghz-", "GHz ")} wifi-%I"
 }
 
-resource "routeros_wifi_provisioning" "band_5ghz" {
-  action               = "create-dynamic-enabled"
-  master_configuration = routeros_wifi_configuration.home.name
-  slave_configurations = [
-    routeros_wifi_configuration.guest.name,
-    routeros_wifi_configuration.mgmt.name,
-  ]
-  supported_bands = ["5ghz-ax"]
-  name_format     = "5GHz ax wifi-%I"
+# --- State moves (named resources → for_each) ---
+
+moved {
+  from = routeros_wifi_datapath.home
+  to   = routeros_wifi_datapath.this["home"]
+}
+
+moved {
+  from = routeros_wifi_datapath.iot
+  to   = routeros_wifi_datapath.this["iot"]
+}
+
+moved {
+  from = routeros_wifi_datapath.cctv
+  to   = routeros_wifi_datapath.this["cctv"]
+}
+
+moved {
+  from = routeros_wifi_datapath.voip
+  to   = routeros_wifi_datapath.this["voip"]
+}
+
+moved {
+  from = routeros_wifi_datapath.guest
+  to   = routeros_wifi_datapath.this["guest"]
+}
+
+moved {
+  from = routeros_wifi_datapath.mgmt
+  to   = routeros_wifi_datapath.this["mgmt"]
+}
+
+moved {
+  from = routeros_wifi_security.home
+  to   = routeros_wifi_security.this["home"]
+}
+
+moved {
+  from = routeros_wifi_security.iot
+  to   = routeros_wifi_security.this["iot"]
+}
+
+moved {
+  from = routeros_wifi_security.voip
+  to   = routeros_wifi_security.this["voip"]
+}
+
+moved {
+  from = routeros_wifi_security.cctv
+  to   = routeros_wifi_security.this["cctv"]
+}
+
+moved {
+  from = routeros_wifi_security.mgmt
+  to   = routeros_wifi_security.this["mgmt"]
+}
+
+moved {
+  from = routeros_wifi_configuration.home
+  to   = routeros_wifi_configuration.this["home"]
+}
+
+moved {
+  from = routeros_wifi_configuration.iot
+  to   = routeros_wifi_configuration.this["iot"]
+}
+
+moved {
+  from = routeros_wifi_configuration.cctv
+  to   = routeros_wifi_configuration.this["cctv"]
+}
+
+moved {
+  from = routeros_wifi_configuration.voip
+  to   = routeros_wifi_configuration.this["voip"]
+}
+
+moved {
+  from = routeros_wifi_configuration.guest
+  to   = routeros_wifi_configuration.this["guest"]
+}
+
+moved {
+  from = routeros_wifi_configuration.mgmt
+  to   = routeros_wifi_configuration.this["mgmt"]
+}
+
+moved {
+  from = routeros_wifi_provisioning.band_2ghz
+  to   = routeros_wifi_provisioning.this["2ghz-ax"]
+}
+
+moved {
+  from = routeros_wifi_provisioning.band_5ghz
+  to   = routeros_wifi_provisioning.this["5ghz-ax"]
 }

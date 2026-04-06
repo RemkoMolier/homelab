@@ -87,6 +87,8 @@ module "router" {
 module "capsman" {
   source = "../../components/capsman-controller"
 
+  ssids          = var.ssids
+  master_ssid    = var.master_ssid
   wifi_passwords = var.wifi_passwords
 
   depends_on = [module.router]
