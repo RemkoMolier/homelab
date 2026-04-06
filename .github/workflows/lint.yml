@@ -19,8 +19,8 @@ jobs:
     env:
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v4
         with:
           install_args: "sops node npm:markdownlint-cli2 npm:markdownlint-sentences-per-line"
       - run: mise run lint:markdown
@@ -31,8 +31,8 @@ jobs:
     env:
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v4
         with:
           install_args: "sops opentofu tflint trivy"
 
@@ -43,7 +43,7 @@ jobs:
     name: Secret scanning
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
@@ -55,5 +55,5 @@ jobs:
     name: SOPS encryption check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: scripts/check-sops-encryption.sh
