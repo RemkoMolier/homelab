@@ -32,3 +32,4 @@ When you use a runbook, update this date and add post-incident notes if applicab
 | [Terraform state recovery](terraform-state-recovery.md) | Recovery | Critical | Remko Molier | 2026-04-04 |
 | [Horaco switch setup](horaco-switch-setup.md) | Operations | Medium | Remko Molier | 2026-04-05 |
 | [Rotate age key for SOPS](rotate-age-key.md) | Operations | High | Remko Molier | 2026-04-06 |
+| [TrueNAS Ansible bootstrap](truenas-ansible-bootstrap.md) | Onboarding | Medium | Remko Molier | 2026-04-06 |
