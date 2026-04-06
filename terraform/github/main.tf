@@ -52,10 +52,10 @@ resource "github_branch_protection" "main" {
   required_status_checks {
     strict = true
     contexts = [
-      "Lint / Markdown",
-      "Lint / Terraform",
-      "Lint / Secret scanning",
-      "Lint / SOPS encryption check",
+      "Markdown",
+      "Terraform",
+      "Secret scanning",
+      "SOPS encryption check",
     ]
   }
 
