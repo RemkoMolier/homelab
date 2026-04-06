@@ -4,3 +4,5 @@ all:
       hosts:
         truenas.home.molier.net:
           ansible_host: 172.16.1.2
+          ansible_user: truenas_admin
+          ansible_become: true
