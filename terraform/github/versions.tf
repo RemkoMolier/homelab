@@ -6,6 +6,10 @@ terraform {
       source  = "integrations/github"
       version = "~> 6.11"
     }
+    sops = {
+      source  = "carlpett/sops"
+      version = "~> 1.1"
+    }
   }
 
   encryption {
@@ -29,3 +33,5 @@ terraform {
 provider "github" {
   owner = "RemkoMolier"
 }
+
+provider "sops" {}

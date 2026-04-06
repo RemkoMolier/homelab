@@ -1,0 +1,24 @@
+{
+	"secrets": {
+		"sops_age_key": "ENC[AES256_GCM,data:Q9KB8EaoWa/X1rVQISW/FXkPLzgTgfmxFPkEIDOPZ9KiVycjdWBolwdM7rLhXDdtoPdcDDXIqkXG9h4I/F6YSY0yJpRVU59Twmc=,iv:2KjHLA7EZJd0X5u2eld36AmUmK6Qpi7hJQCweaWfqV8=,tag:iura3BbKjPtFCj+caAB4mw==,type:str]"
+	},
+	"sops": {
+		"age": [
+			{
+				"recipient": "age12sa9hzgztg0fml5gdznwt7zfz97r98dm7whwjgpxjwryc2sfevzqh2j28y",
+				"enc": "-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyWlQxdGlYWmVWSEszWFdl\nR2ZrT3VyOWRZNENiODlBQUd3THlpNC92SkNJCmVKRWZjTlBDMndCWDUzdXdrYXQx\nY2NYald0bWlQblhLb2ZFT2JSQUt5K00KLS0tIHU1RUFpaklGS2FzaXJ6bmxBUzNW\nVFdWc0lFYmU2TFRkL28wUVpQYzJ1ancK+SQxtleS87yNkw8SwvNlMfmDTZz7Qpxr\neoHs7ZmrE6RdEF93tgjMnqs/Uu9lY5VbnzQGPvJ33wLw66T+1UIVQw==\n-----END AGE ENCRYPTED FILE-----\n"
+			}
+		],
+		"lastmodified": "2026-04-06T14:54:36Z",
+		"mac": "ENC[AES256_GCM,data:jiqrh3RcegJxw+SLzHXEsW5Is3IJ+ACR+Ej65JIROFCvEc4YLCm82bOq5VdwhR/kw744a18BIvbhMPenGO7YY9AlpBXIaeOwoKTIBIY+HGQ5qoS+eiJJed2W1VoKXUOhyMtL93wki+XgtuxZIXngayzrF1qiPrk79SjNAbm7sHI=,iv:96DUkT+qbO22wrv/btq8+JSlgEtJx4kK8sUI9jdhFYk=,tag:56NScbQnd4MmHVKnvJVjVQ==,type:str]",
+		"pgp": [
+			{
+				"created_at": "2026-04-06T14:54:36Z",
+				"enc": "-----BEGIN PGP MESSAGE-----\n\nhQIMA12IRFk/1oCEAQ//QbIoO8u2atMrglQ1xqF2P9BS2QRjCI9ZsF50wFpB4rAB\nNYR0QMujgCPeOSGMvAYErT8B4YHyMREZsx6kOugRywZ4mA6ADI/JNXDW/3yCLGzv\ndi/osOrBzJBAtxCocI+/Wt801gQhMaFx4ySZ7J6L1gPbppgucY3ONm7eaxy+nZoi\nhc0/6iiufz0EzBKxmGfBKYxIBhxhPu8u4i87HdCvtQGYaj0erkTBVTTMeUh/GMWm\nO8gPNSPckSv5C+rEx9hC3tjtAKb+7lnYhMbMDifAT9Y8xCSOUGyvN1/eyk9W8C1l\ngo8bAnd8Sy62VBG6q0oe5UhuUWa+u00AqpdiJMiaF/qa5nEa2Ggrl7HUn5r1DQ5B\nHtot49q+UYX+YbM04YEav83KB5znbCRz5EUiManSlrH3x2SIK7mBv4jN8+x0AalF\nCPCTYVqyYcjiAze7GL2mrcMfV/HVrlFVb7EevxKvYlNAGfJet1SOjvI2jF0MQkdP\n1FMahdTgGXUKzIiMQV/PQzTNBuF35HliJAN/DPvRsXxU+Ako/JcggwCoyRLgB1pX\nNbt8kULY/8ylvpo/evC+PWiC7FMrTSQm/ZbXmb2aCBXoIPFrxvm6dKhbjklnhLqy\nq78uYWOj04rYFKMv2dSY4SKvLnu2s4b+mAICgyUwyhqxOxf5UKXckad3pUAce8HS\nXgG5CYwq93q1BdEI05Dn+tFl6oXNZGFC/DnFkLDhjwf4MaQnMvCDwaKb+Yp9PQCh\nfCdQb4CGR1UJK0qMrHDSBtTtnK0A5fKenX2nK2WoaKuyAVbzI0iHgN3zGSrUNVA=\n=okWL\n-----END PGP MESSAGE-----",
+				"fp": "1F476D92728DFC65F15E40464F3984ECAE4A5BAF"
+			}
+		],
+		"encrypted_regex": "^secrets$",
+		"version": "3.12.2"
+	}
+}

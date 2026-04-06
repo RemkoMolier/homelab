@@ -34,7 +34,7 @@ resource "github_repository" "homelab" {
 resource "github_actions_secret" "sops_age_key" {
   repository      = github_repository.homelab.name
   secret_name     = "SOPS_AGE_KEY"
-  plaintext_value = var.sops_age_key
+  plaintext_value = local.secrets["sops_age_key"]
 }
 
 resource "github_branch_protection" "main" {
