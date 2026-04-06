@@ -16,6 +16,7 @@ resource "github_repository" "homelab" {
   # Branch hygiene
   delete_branch_on_merge = true
   allow_update_branch    = true
+  allow_auto_merge       = true
 
   # Security
   vulnerability_alerts = true
