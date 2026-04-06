@@ -32,42 +32,71 @@ description = "Lint markdown files"
 run = "markdownlint-cli2 '**/*.md'"
 
 [tasks."lint:terraform"]
-description = "Lint and validate Terraform config"
-dir = "terraform/routeros"
-depends = ["lint:terraform:fmt", "lint:terraform:validate", "lint:terraform:tflint", "lint:terraform:trivy"]
-
-[tasks."lint:terraform:terraform:init"]
-description = "Initialize OpenTofu providers"
-dir = "terraform/routeros"
-run = """
-tofu init
-"""
+description = "Lint and validate all Terraform configs"
+depends = ["lint:terraform:fmt", "lint:terraform:routeros", "lint:terraform:github", "lint:terraform:trivy"]
 
 [tasks."lint:terraform:fmt"]
-description = "Check Terraform formatting"
-dir = "terraform/routeros"
-run = "tofu fmt -check -recursive"
+description = "Check Terraform formatting (all modules)"
+run = "tofu fmt -check -recursive terraform/"
 
-[tasks."lint:terraform:validate"]
-description = "Validate Terraform configuration"
+# --- routeros module ---
+
+[tasks."lint:terraform:routeros"]
+description = "Validate and lint terraform/routeros"
+depends = ["lint:terraform:routeros:validate", "lint:terraform:routeros:tflint"]
+
+[tasks."lint:terraform:routeros:init"]
+description = "Initialize routeros providers"
 dir = "terraform/routeros"
-depends = ["lint:terraform:terraform:init"]
+run = "tofu init"
+
+[tasks."lint:terraform:routeros:validate"]
+description = "Validate routeros configuration"
+dir = "terraform/routeros"
+depends = ["lint:terraform:routeros:init"]
 run = "tofu validate"
 
-[tasks."lint:terraform:tflint:init"]
-description = "Initialize OpenTofu providers"
+[tasks."lint:terraform:routeros:tflint:init"]
+description = "Initialize TFLint for routeros"
 dir = "terraform/routeros"
-run = """
-tflint --init
-"""
+run = "tflint --init"
 
-[tasks."lint:terraform:tflint"]
-description = "Run TFLint"
+[tasks."lint:terraform:routeros:tflint"]
+description = "Run TFLint on routeros"
 dir = "terraform/routeros"
-depends = ["lint:terraform:tflint:init"]
+depends = ["lint:terraform:routeros:tflint:init"]
 run = "tflint --recursive"
 
+# --- github module ---
+
+[tasks."lint:terraform:github"]
+description = "Validate and lint terraform/github"
+depends = ["lint:terraform:github:validate", "lint:terraform:github:tflint"]
+
+[tasks."lint:terraform:github:init"]
+description = "Initialize github providers"
+dir = "terraform/github"
+run = "tofu init"
+
+[tasks."lint:terraform:github:validate"]
+description = "Validate github configuration"
+dir = "terraform/github"
+depends = ["lint:terraform:github:init"]
+run = "tofu validate"
+
+[tasks."lint:terraform:github:tflint:init"]
+description = "Initialize TFLint for github"
+dir = "terraform/github"
+run = "tflint --init"
+
+[tasks."lint:terraform:github:tflint"]
+description = "Run TFLint on github"
+dir = "terraform/github"
+depends = ["lint:terraform:github:tflint:init"]
+run = "tflint --recursive"
+
+# --- shared ---
+
 [tasks."lint:terraform:trivy"]
-description = "Run Trivy security scan on Terraform"
-dir = "terraform/routeros"
-run = "trivy config --severity HIGH,CRITICAL --exit-code 1 ."
+description = "Run Trivy security scan on all Terraform"
+run = "trivy config --severity HIGH,CRITICAL --exit-code 1 --ignorefile terraform/github/.trivyignore terraform/"
