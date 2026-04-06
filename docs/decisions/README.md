@@ -29,3 +29,5 @@ Skip trivial or easily reversible choices.
 | [ADR-0010](0010-internal-pki-with-offline-root-ca.md) | Use an internal PKI with an offline root CA | accepted | 2026-04-03 |
 | [ADR-0011](0011-use-lefthook-for-pre-commit-linting.md) | Use lefthook for pre-commit linting | accepted | 2026-04-04 |
 | [ADR-0012](0012-use-github-actions-for-ci-linting.md) | Use GitHub Actions for CI linting | accepted | 2026-04-06 |
+| [ADR-0013](0013-use-gitleaks-for-secret-scanning.md) | Use gitleaks for secret scanning | accepted | 2026-04-06 |
+| [ADR-0014](0014-manage-github-repo-settings-with-opentofu.md) | Manage GitHub repo settings with OpenTofu | accepted | 2026-04-06 |
