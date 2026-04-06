@@ -59,10 +59,26 @@
   register: network_commit
   changed_when: true
 
-- name: Check in network changes (confirm connectivity)
+- name: Wait for SSH connectivity after network changes
+  ansible.builtin.wait_for:
+    host: "{{ ansible_host | default(inventory_hostname) }}"
+    port: "{{ ansible_port | default(22) }}"
+    timeout: 30
+    delay: 5
+    state: started
+  delegate_to: localhost
+  become: false
+  when:
+    - not ansible_check_mode
+    - network_commit is changed
+  register: network_ssh_check
+  changed_when: false
+
+- name: Check in network changes after connectivity confirmed
   ansible.builtin.command:
     cmd: midclt call interface.checkin
   when:
     - not ansible_check_mode
     - network_commit is changed
+    - network_ssh_check is succeeded
   changed_when: true
