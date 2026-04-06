@@ -140,18 +140,9 @@ module "rb5009" {
 
   dhcp_leases = {
     # Management (VLAN 1)
-    "crs309"          = { address = "172.16.1.11", mac_address = "C4:AD:34:05:6C:A9", server = "management", comment = "CRS309-1G-8S+IN" }
-    "crs326"          = { address = "172.16.1.12", mac_address = "B8:69:F4:34:94:B0", server = "management", comment = "CRS326-24G-2S+RM" }
-    "crs226"          = { address = "172.16.1.13", mac_address = "4C:5E:0C:9C:14:E8", server = "management", comment = "CRS226-24G-2S+RM" }
-    "hap-ax3"         = { address = "172.16.1.14", mac_address = "78:9A:18:8C:1E:A8", server = "management", comment = "hAP AX3" }
-    "hap-ax2-living"  = { address = "172.16.1.15", mac_address = "48:A9:8A:98:34:DC", server = "management", comment = "hAP AX2 - Living Room" }
-    "hap-ax2-kitchen" = { address = "172.16.1.16", mac_address = "48:A9:8A:95:C6:AC", server = "management", comment = "hAP AX2 - Kitchen" }
-    "crs310"          = { address = "172.16.1.17", mac_address = "78:9A:18:D5:5C:C0", server = "management", comment = "CRS310-8G+2S+" }
-    "horaco-10g"      = { address = "172.16.1.20", mac_address = "1C:2A:A3:1E:7E:94", server = "management", comment = "Horaco 8-port 10G" }
-    "horaco-2g5"      = { address = "172.16.1.21", mac_address = "78:D8:00:32:AF:E9", server = "management", comment = "Horaco 8-port 2.5G" }
-    "c2758-ipmi"      = { address = "172.16.1.30", mac_address = "0C:C4:7A:AD:BA:07", server = "management", comment = "C2758 IPMI" }
-    "epyc-ipmi"       = { address = "172.16.1.31", mac_address = "D8:5E:D3:12:51:95", server = "management", comment = "Epyc3151 IPMI" }
-    "homelab-git"     = { address = "172.16.1.3", mac_address = "00:16:3E:6C:68:66", server = "management", comment = "Homelab Git" }
+    "c2758-ipmi"  = { address = "172.16.1.30", mac_address = "0C:C4:7A:AD:BA:07", server = "management", comment = "C2758 IPMI" }
+    "epyc-ipmi"   = { address = "172.16.1.31", mac_address = "D8:5E:D3:12:51:95", server = "management", comment = "Epyc3151 IPMI" }
+    "homelab-git" = { address = "172.16.1.3", mac_address = "00:16:3E:6C:68:66", server = "management", comment = "Homelab Git" }
 
     # Home (VLAN 10)
     "appletv-living"    = { address = "172.16.10.10", mac_address = "50:DE:06:82:95:91", server = "home", comment = "LivingRoom AppleTV" }
