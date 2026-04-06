@@ -128,11 +128,7 @@ locals {
       ssid                 = "MGMT"
       vlan_id              = local.vlans.management.id
       hide_ssid            = true
-      # Keep disabled and without auth types until wifi_passwords["mgmt"] is
-      # provisioned in secrets; authentication_types = [] prevents a security
-      # profile from being created with a null passphrase in the meantime.
-      authentication_types = []
-      disabled             = true
+      authentication_types = ["wpa2-psk", "wpa3-psk"]
     }
   }
 
