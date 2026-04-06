@@ -1,5 +1,5 @@
 ---
-# UPS is not covered by arensb.truenas — use midclt (ADR-0013)
+# UPS is not covered by arensb.truenas — use midclt (ADR-0017)
 
 - name: Get current UPS configuration
   ansible.builtin.command:
@@ -26,7 +26,11 @@
       powerdown: "{{ truenas_ups.powerdown }}"
       hostsync: "{{ truenas_ups.hostsync }}"
   no_log: true
+  # Note: monpwd is always sent but cannot be compared — TrueNAS does not
+  # return the current password in ups.config. To force a password update,
+  # change any other field or run with -e ups_force_update=true.
   when: >-
+    (ups_force_update | default(false)) or
     current.mode != truenas_ups.mode or
     current.identifier != truenas_ups.identifier or
     current.driver != truenas_ups.driver or
