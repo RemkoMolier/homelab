@@ -8,6 +8,7 @@
     cmd: midclt call cloudsync.credentials.query
   register: cloud_creds_current
   changed_when: false
+  no_log: true
 
 - name: Create or update Dropbox credential
   ansible.builtin.command:
@@ -25,6 +26,7 @@
     | selectattr('name', 'equalto', 'BGSchule-Dropbox')
     | list | length == 0
   no_log: true
+  register: dropbox_cred_created
 
 - name: Create or update WebDAV credential
   ansible.builtin.command:
@@ -44,6 +46,15 @@
     | selectattr('name', 'equalto', 'BGSchule Cloud')
     | list | length == 0
   no_log: true
+  register: webdav_cred_created
+
+- name: Refresh cloud credentials after creates
+  ansible.builtin.command:
+    cmd: midclt call cloudsync.credentials.query
+  register: cloud_creds_current
+  changed_when: false
+  no_log: true
+  when: dropbox_cred_created is changed or webdav_cred_created is changed
 
 # --- Cloud sync tasks ---
 

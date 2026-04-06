@@ -11,7 +11,8 @@
     - name: Load SOPS-encrypted secrets
       ansible.builtin.set_fact:
         truenas_secrets: >-
-          {{ lookup('community.sops.sops', 'ansible/inventory/host_vars/'
+          {{ lookup('community.sops.sops',
+             inventory_dir + '/host_vars/'
              + inventory_hostname + '/secrets.sops.yaml')
              | from_yaml }}
       delegate_to: localhost

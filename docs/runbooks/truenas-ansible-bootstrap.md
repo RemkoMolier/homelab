@@ -85,7 +85,7 @@ sops -e -i ansible/inventory/host_vars/truenas.home.molier.net/secrets.sops.yaml
 ### 6. Test the playbook in check mode
 
 ```bash
-cd /home/remko/Development/RemkoMolier/homelab
+# From the repo root
 ansible-playbook ansible/playbooks/truenas.yaml -i ansible/inventory/hosts.yaml --check --diff
 ```
 
