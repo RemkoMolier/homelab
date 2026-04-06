@@ -1,5 +1,5 @@
 [env]
-_.file = { path = ".env.sops.json", tools = true }
+_.file = { path = ".env.sops.json", tools = true, optional = true }
 
 [settings]
 sops.rops = false
