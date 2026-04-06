@@ -25,11 +25,11 @@
     desired_aliases: >-
       {{ [{"address": item.address, "netmask": item.netmask}]
          + (item.aliases | default([])) }}
-    current_aliases: >-
-      {{ current_iface.get('aliases', [])
-         | map(attribute='address')
-         | list
-         | default([]) }}
+    desired_addresses: >-
+      {{ desired_aliases | map(attribute='address') | list | sort }}
+    current_addresses: >-
+      {{ (current_iface.aliases | default([]))
+         | map(attribute='address') | list | sort }}
     iface_payload:
       ipv4_dhcp: false
       aliases: "{{ desired_aliases }}"
@@ -39,8 +39,8 @@
     label: "{{ item.name }}"
   register: network_result
   changed_when: >-
-    current_iface.get('mtu', 0) | int != item.mtu | int or
-    current_aliases | sort != desired_aliases | map(attribute='address') | list | sort
+    (current_iface.mtu | default(0)) | int != item.mtu | int or
+    current_addresses != desired_addresses
 
 - name: Commit network changes
   ansible.builtin.command:

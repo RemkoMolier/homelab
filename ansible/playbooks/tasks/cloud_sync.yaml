@@ -27,6 +27,7 @@
     | list | length == 0
   no_log: true
   register: dropbox_cred_created
+  changed_when: true
 
 - name: Create or update WebDAV credential
   ansible.builtin.command:
@@ -47,6 +48,7 @@
     | list | length == 0
   no_log: true
   register: webdav_cred_created
+  changed_when: true
 
 - name: Refresh cloud credentials after creates
   ansible.builtin.command:
@@ -73,7 +75,7 @@
     cred_id: >-
       {{ cloud_creds_current.stdout | from_json
          | selectattr('name', 'equalto', item.credential_name)
-         | map(attribute='id') | first }}
+         | map(attribute='id') | first | default(none) }}
     sync_payload:
       description: "{{ item.description }}"
       direction: "{{ item.direction }}"
@@ -95,3 +97,5 @@
     cloud_sync_current.stdout | from_json
     | selectattr('description', 'equalto', item.description)
     | list | length == 0
+  failed_when: cred_id is none
+  changed_when: true
