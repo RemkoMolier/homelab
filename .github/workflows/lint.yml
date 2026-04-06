@@ -1,0 +1,53 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  markdown:
+    name: Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          install_args: "node npm:markdownlint-cli2 npm:markdownlint-sentences-per-line"
+      - run: mise run lint:markdown
+
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform/routeros
+    env:
+      TF_VAR_state_passphrase: "ci-dummy-passphrase-not-used"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          install_args: "opentofu tflint trivy"
+
+      - name: Check formatting
+        run: tofu fmt -check -recursive
+
+      - name: Init providers
+        run: tofu init -backend=false
+
+      - name: Validate configuration
+        run: tofu validate
+
+      - name: Init TFLint plugins
+        run: tflint --init
+
+      - name: Run TFLint
+        run: tflint --recursive
+
+      - name: Run Trivy security scan
+        run: trivy config .
