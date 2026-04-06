@@ -11,6 +11,7 @@ permissions:
 
 env:
   SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+  MISE_VERBOSE: "1"
 
 jobs:
   markdown:
