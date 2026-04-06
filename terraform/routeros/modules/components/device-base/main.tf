@@ -140,6 +140,7 @@ resource "routeros_system_user" "users" {
 resource "routeros_system_user" "admin" {
   name     = "admin"
   group    = "full"
+  password = var.admin_password
   disabled = true
 
   depends_on = [

@@ -112,6 +112,7 @@ module "rb5009" {
   intermediate_ca_key_pem  = local.intermediate_ca_key_pem
   intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
   terraform_user_name      = local.routeros_devices["rb5009"].username
+  admin_password           = module.rb5009_bootstrap.admin_passwords["rb5009"]
   users                    = local.users
 
   wan_interfaces = {

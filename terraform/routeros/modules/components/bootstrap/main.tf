@@ -26,6 +26,10 @@ terraform {
       source  = "hashicorp/local"
       version = "~> 2.5"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
+    }
   }
 }
 
@@ -41,6 +45,14 @@ data "external" "device_status" {
   }
 }
 
+# Random admin password per device — replaces the hardcoded "bootstrap" password.
+# Stored in encrypted state; the bootstrap .rsc script uses it for initial setup.
+resource "random_password" "admin" {
+  for_each = var.devices
+  length   = 16
+  special  = false
+}
+
 # Generate the bootstrap .rsc script for each device.
 locals {
   bootstrap_scripts = {
@@ -52,6 +64,7 @@ locals {
       gateway              = v.gateway
       tf_user              = v.username
       tf_pass              = v.password
+      admin_pass           = random_password.admin[k].result
       bridge_protocol_mode = v.bridge_protocol_mode
       vlan_mode            = v.vlan_mode
     })

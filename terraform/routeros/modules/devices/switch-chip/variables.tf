@@ -97,6 +97,12 @@ variable "terraform_user_name" {
   default     = "terraform"
 }
 
+variable "admin_password" {
+  description = "Password for the disabled admin account"
+  type        = string
+  sensitive   = true
+}
+
 variable "users" {
   description = "Map of user accounts to create on the device"
   type = map(object({

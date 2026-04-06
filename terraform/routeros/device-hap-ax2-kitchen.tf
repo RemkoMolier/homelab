@@ -102,6 +102,7 @@ module "hap_ax2_kitchen" {
   intermediate_ca_key_pem  = local.intermediate_ca_key_pem
   intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
   terraform_user_name      = local.routeros_devices["hap-ax2-kitchen"].username
+  admin_password           = module.hap_ax2_kitchen_bootstrap.admin_passwords["hap-ax2-kitchen"]
   vlans                    = local.vlans
   users                    = local.users
   ports                    = local.hap_ax2_kitchen_ports
