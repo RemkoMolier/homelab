@@ -13,6 +13,8 @@ jobs:
   markdown:
     name: Markdown
     runs-on: ubuntu-latest
+    env:
+      MISE_PROFILE: ci
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
@@ -24,6 +26,7 @@ jobs:
     name: Terraform
     runs-on: ubuntu-latest
     env:
+      MISE_PROFILE: ci
       TF_VAR_state_passphrase: "ci-dummy-passphrase-not-used"
     steps:
       - uses: actions/checkout@v4
