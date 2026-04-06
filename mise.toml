@@ -5,19 +5,19 @@ _.file = { path = ".env.sops.json", tools = true, optional = true }
 sops.rops = false
 
 [tools]
-node = "lts"
-"npm:markdownlint-cli2" = "latest"
-"npm:markdownlint-sentences-per-line" = "latest"
-"npm:@commitlint/cli" = "latest"
-"npm:@commitlint/config-conventional" = "latest"
-opentofu = "latest"
-"pipx:ansible-core" = "latest"
-sops = "latest"
-lefthook = "latest"
-tflint = "latest"
-trivy = "latest"
-age = "latest"
-gitleaks = "latest"
+node = "24"
+"npm:markdownlint-cli2" = "0.22"
+"npm:markdownlint-sentences-per-line" = "0.1"
+"npm:@commitlint/cli" = "20"
+"npm:@commitlint/config-conventional" = "20"
+opentofu = "1.11"
+"pipx:ansible-core" = "2.20"
+sops = "3.12"
+lefthook = "2.1"
+tflint = "0.61"
+trivy = "0.69"
+age = "1.3"
+gitleaks = "8.30"
 
 [hooks.enter]
 shell = "bash"
