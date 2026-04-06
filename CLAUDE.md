@@ -23,7 +23,7 @@ Tool versions are managed with [mise](https://mise.jdx.dev/) — see [ADR-0006](
 
 The repository manages homelab infrastructure with two tools — see [ADR-0008](docs/decisions/0008-split-tooling-opentofu-and-ansible.md):
 
-- **OpenTofu** (`terraform/routeros/`) — network device configuration (MikroTik, Horaco switches)
+- **OpenTofu** (`terraform/routeros/`) — network device configuration (MikroTik)
 - **OpenTofu** (`terraform/github/`) — GitHub repository settings ([ADR-0014](docs/decisions/0014-manage-github-repo-settings-with-opentofu.md))
 - **Ansible** (`ansible/`) — TrueNAS SCALE configuration (see [bootstrap runbook](docs/runbooks/truenas-ansible-bootstrap.md))
 
@@ -60,7 +60,6 @@ terraform/routeros/
       certificates/                    TLS cert from intermediate CA
       device-base/                     Identity, IP, NTP, services, hardening
       router/                          Firewall, NAT, DNS, DHCP, VRRP, PXE
-      routeros-raw/                    REST API escape hatch (restapi provider)
       switch-bridge/                   Bridge VLAN filtering from port maps
       switch-chip/                     Legacy CRS2xx switch-chip VLANs
     devices/                         Compositions
