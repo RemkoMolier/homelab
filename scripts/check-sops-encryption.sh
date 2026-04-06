@@ -18,7 +18,8 @@ errors=0
 
 # Locate repository root and .sops.yaml
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null || echo "${SCRIPT_DIR}/..")"
+REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null)" \
+  || { echo "ERROR: not inside a git repository."; exit 1; }
 SOPS_YAML="${REPO_ROOT}/.sops.yaml"
 
 if [[ ! -f "${SOPS_YAML}" ]]; then
@@ -37,11 +38,16 @@ for m in re.finditer(r\"path_regex:\s*['\\\"]?([^'\\\"\\n]+)['\\\"]?\", content)
 " "${SOPS_YAML}"
 )
 
+if [[ ${#SOPS_PATTERNS[@]} -eq 0 ]]; then
+  echo "No path_regex entries found in ${SOPS_YAML}; nothing to check."
+  exit 0
+fi
+
 # Return 0 if the file path matches any SOPS creation rule pattern.
-# .sops.yaml itself is always excluded (it is the config, not an encrypted file).
+# The .sops.yaml config file itself is always excluded.
 is_sops_file() {
   local file="${1#./}"
-  [[ "$(basename "${file}")" == ".sops.yaml" ]] && return 1
+  [[ "${REPO_ROOT}/${file}" -ef "${SOPS_YAML}" ]] && return 1
   python3 -c "
 import re, sys
 path, patterns = sys.argv[1], sys.argv[2:]
