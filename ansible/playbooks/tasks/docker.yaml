@@ -19,9 +19,11 @@
       enable_image_updates: "{{ truenas_docker.enable_image_updates }}"
       address_pools: "{{ truenas_docker.address_pools }}"
   when: >-
-    current.pool != truenas_docker.pool or
-    current.enable_image_updates != truenas_docker.enable_image_updates or
-    current.address_pools | default([]) | sort(attribute='base') !=
-    truenas_docker.address_pools | sort(attribute='base')
+    not ansible_check_mode and (
+      current.pool != truenas_docker.pool or
+      current.enable_image_updates != truenas_docker.enable_image_updates or
+      current.address_pools | default([]) | sort(attribute='base') !=
+      truenas_docker.address_pools | sort(attribute='base')
+    )
   register: docker_result
   changed_when: true
