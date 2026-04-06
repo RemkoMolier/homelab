@@ -1,0 +1,5 @@
+# Repository is intentionally public (free branch protection, community visibility)
+GIT-0001
+
+# Signed commits not required — would block automated PRs (Renovate, Copilot)
+GIT-0004
