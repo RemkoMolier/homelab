@@ -26,7 +26,7 @@ resource "routeros_wifi_datapath" "this" {
   name             = "${each.key}-ax"
   bridge           = "bridge1"
   vlan_id          = each.value.vlan_id
-  client_isolation = each.value.client_isolation ? true : null
+  client_isolation = each.value.client_isolation
 }
 
 # --- Security profiles ---
@@ -60,8 +60,8 @@ resource "routeros_wifi_configuration" "this" {
   ssid      = each.value.ssid
   country   = var.country
   mode      = "ap"
-  hide_ssid = each.value.hide_ssid ? true : null
-  disabled  = each.value.disabled ? true : null
+  hide_ssid = each.value.hide_ssid
+  disabled  = each.value.disabled
   datapath  = { config = routeros_wifi_datapath.this[each.key].name }
   security  = contains(keys(local.secured_ssids), each.key) ? { config = routeros_wifi_security.this[each.key].name } : null
 }
@@ -94,96 +94,4 @@ resource "routeros_wifi_provisioning" "this" {
       error_message = "var.master_ssid must be the key of one of the entries in var.ssids."
     }
   }
-}
-
-# --- State moves (named resources → for_each) ---
-
-moved {
-  from = routeros_wifi_datapath.home
-  to   = routeros_wifi_datapath.this["home"]
-}
-
-moved {
-  from = routeros_wifi_datapath.iot
-  to   = routeros_wifi_datapath.this["iot"]
-}
-
-moved {
-  from = routeros_wifi_datapath.cctv
-  to   = routeros_wifi_datapath.this["cctv"]
-}
-
-moved {
-  from = routeros_wifi_datapath.voip
-  to   = routeros_wifi_datapath.this["voip"]
-}
-
-moved {
-  from = routeros_wifi_datapath.guest
-  to   = routeros_wifi_datapath.this["guest"]
-}
-
-moved {
-  from = routeros_wifi_datapath.mgmt
-  to   = routeros_wifi_datapath.this["mgmt"]
-}
-
-moved {
-  from = routeros_wifi_security.home
-  to   = routeros_wifi_security.this["home"]
-}
-
-moved {
-  from = routeros_wifi_security.iot
-  to   = routeros_wifi_security.this["iot"]
-}
-
-moved {
-  from = routeros_wifi_security.voip
-  to   = routeros_wifi_security.this["voip"]
-}
-
-moved {
-  from = routeros_wifi_security.cctv
-  to   = routeros_wifi_security.this["cctv"]
-}
-
-moved {
-  from = routeros_wifi_configuration.home
-  to   = routeros_wifi_configuration.this["home"]
-}
-
-moved {
-  from = routeros_wifi_configuration.iot
-  to   = routeros_wifi_configuration.this["iot"]
-}
-
-moved {
-  from = routeros_wifi_configuration.cctv
-  to   = routeros_wifi_configuration.this["cctv"]
-}
-
-moved {
-  from = routeros_wifi_configuration.voip
-  to   = routeros_wifi_configuration.this["voip"]
-}
-
-moved {
-  from = routeros_wifi_configuration.guest
-  to   = routeros_wifi_configuration.this["guest"]
-}
-
-moved {
-  from = routeros_wifi_configuration.mgmt
-  to   = routeros_wifi_configuration.this["mgmt"]
-}
-
-moved {
-  from = routeros_wifi_provisioning.band_2ghz
-  to   = routeros_wifi_provisioning.this["2ghz-ax"]
-}
-
-moved {
-  from = routeros_wifi_provisioning.band_5ghz
-  to   = routeros_wifi_provisioning.this["5ghz-ax"]
 }
