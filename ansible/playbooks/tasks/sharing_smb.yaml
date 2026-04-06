@@ -1,0 +1,13 @@
+---
+- name: Manage SMB shares
+  arensb.truenas.sharing_smb:
+    name: "{{ item.name }}"
+    path: "{{ item.path }}"
+    purpose: "{{ item.purpose | default(omit) }}"
+    browsable: "{{ item.browsable | default(true) }}"
+    timemachine: "{{ item.timemachine | default(false) }}"
+    path_suffix: "{{ item.path_suffix | default(omit) }}"
+    state: present
+  loop: "{{ truenas_smb_shares }}"
+  loop_control:
+    label: "{{ item.name }}"

@@ -1,0 +1,42 @@
+---
+# Network config is not covered by arensb.truenas — use midclt (ADR-0013)
+#
+# WARNING: Changing network settings can lock out SSH access.
+# Always have console access ready before applying network changes.
+# Run with --tags network separately and verify connectivity after each change.
+
+- name: Get current network interfaces
+  ansible.builtin.command:
+    cmd: midclt call interface.query
+  register: network_current
+  changed_when: false
+
+- name: Configure network interfaces
+  ansible.builtin.command:
+    cmd: >-
+      midclt call interface.update
+      '{{ item.name }}'
+      '{{ iface_payload | to_json }}'
+  vars:
+    iface_payload:
+      ipv4_dhcp: false
+      aliases: >-
+        {{ [{"address": item.address, "netmask": item.netmask}]
+           + (item.aliases | default([])) }}
+      mtu: "{{ item.mtu }}"
+  loop: "{{ truenas_interfaces }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: network_result
+  changed_when: network_result.rc == 0
+
+- name: Commit network changes
+  ansible.builtin.command:
+    cmd: midclt call interface.commit '{"checkin_timeout": 60}'
+  when: network_result is changed
+  register: network_commit
+
+- name: Check in network changes (confirm connectivity)
+  ansible.builtin.command:
+    cmd: midclt call interface.checkin
+  when: network_commit is changed

@@ -1,0 +1,32 @@
+---
+# UPS is not covered by arensb.truenas — use midclt (ADR-0013)
+
+- name: Get current UPS configuration
+  ansible.builtin.command:
+    cmd: midclt call ups.config
+  register: ups_current
+  changed_when: false
+
+- name: Configure UPS
+  ansible.builtin.command:
+    cmd: >-
+      midclt call ups.update
+      '{{ ups_payload | to_json }}'
+  vars:
+    ups_payload:
+      mode: "{{ truenas_ups.mode }}"
+      identifier: "{{ truenas_ups.identifier }}"
+      driver: "{{ truenas_ups.driver }}"
+      port: "{{ truenas_ups.port }}"
+      shutdown: "{{ truenas_ups.shutdown }}"
+      shutdowntimer: "{{ truenas_ups.shutdowntimer }}"
+      monuser: "{{ truenas_ups.monuser }}"
+      monpwd: "{{ truenas_secrets.secrets.ups_monpwd }}"
+      powerdown: "{{ truenas_ups.powerdown }}"
+      hostsync: "{{ truenas_ups.hostsync }}"
+  no_log: true
+  register: ups_result
+  changed_when: >-
+    (ups_current.stdout | from_json).mode != truenas_ups.mode or
+    (ups_current.stdout | from_json).identifier != truenas_ups.identifier or
+    (ups_current.stdout | from_json).driver != truenas_ups.driver

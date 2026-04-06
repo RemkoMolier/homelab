@@ -1,0 +1,18 @@
+---
+- name: Manage users
+  arensb.truenas.user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    group: "{{ item.group }}"
+    comment: "{{ item.full_name }}"
+    email: "{{ item.email | default(omit) }}"
+    home: "{{ item.home }}"
+    shell: "{{ item.shell | default('/usr/sbin/nologin') }}"
+    smb: "{{ item.smb | default(false) }}"
+    password: "{{ truenas_secrets.secrets.user_passwords[item.name] }}"
+    password_disabled: "{{ item.password_disabled | default(false) }}"
+    state: present
+  loop: "{{ truenas_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: true

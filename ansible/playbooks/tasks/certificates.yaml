@@ -1,0 +1,30 @@
+---
+- name: Import TLS certificate from intermediate CA
+  arensb.truenas.certificate:
+    name: "{{ truenas_cert_name }}"
+    certificate: "{{ lookup('file', pki_cert_path) }}"
+    private_key: "{{ lookup('file', pki_key_path) }}"
+    state: present
+  vars:
+    pki_cert_path: "{{ playbook_dir }}/../../pki/intermediate-ca/issued/{{ truenas_cert_name }}.crt"
+    pki_key_path: "{{ playbook_dir }}/../../pki/intermediate-ca/private/{{ truenas_cert_name }}.key"
+  no_log: true
+  register: cert_result
+
+- name: Get certificate ID for GUI assignment
+  ansible.builtin.command:
+    cmd: >-
+      midclt call certificate.query
+      '[["name", "=", "{{ truenas_cert_name }}"]]'
+      '{"select": ["id"]}'
+  register: cert_query
+  changed_when: false
+
+- name: Set GUI certificate
+  ansible.builtin.command:
+    cmd: >-
+      midclt call system.general.update
+      '{"ui_certificate": {{ (cert_query.stdout | from_json)[0].id }}}'
+  when: cert_query.stdout | from_json | length > 0
+  register: gui_cert_result
+  changed_when: gui_cert_result.rc == 0

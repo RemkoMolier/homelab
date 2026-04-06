@@ -1,0 +1,10 @@
+---
+- name: Manage ZFS datasets
+  arensb.truenas.filesystem:
+    name: "{{ item.name }}"
+    type: FILESYSTEM
+    comment: "{{ item.comment | default(omit) }}"
+    state: present
+  loop: "{{ truenas_datasets }}"
+  loop_control:
+    label: "{{ item.name }}"

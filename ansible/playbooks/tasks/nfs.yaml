@@ -1,0 +1,5 @@
+---
+- name: Configure NFS service
+  arensb.truenas.nfs:
+    protocols: "{{ truenas_nfs_protocols }}"
+    bindip: "{{ truenas_nfs_bindip }}"

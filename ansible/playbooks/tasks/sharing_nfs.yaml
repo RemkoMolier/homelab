@@ -1,0 +1,11 @@
+---
+- name: Manage NFS shares
+  arensb.truenas.sharing_nfs:
+    path: "{{ item.path }}"
+    maproot_user: "{{ item.maproot_user | default(omit) }}"
+    maproot_group: "{{ item.maproot_group | default(omit) }}"
+    enabled: "{{ item.enabled | default(true) }}"
+    state: present
+  loop: "{{ truenas_nfs_shares }}"
+  loop_control:
+    label: "{{ item.path }}"

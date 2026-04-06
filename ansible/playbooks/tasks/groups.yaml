@@ -1,0 +1,10 @@
+---
+- name: Manage groups
+  arensb.truenas.group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid }}"
+    smb: "{{ item.smb | default(false) }}"
+    state: present
+  loop: "{{ truenas_groups }}"
+  loop_control:
+    label: "{{ item.name }}"

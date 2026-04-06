@@ -1,0 +1,22 @@
+---
+# Docker config is not covered by arensb.truenas — use midclt (ADR-0013)
+
+- name: Get current Docker configuration
+  ansible.builtin.command:
+    cmd: midclt call docker.config
+  register: docker_current
+  changed_when: false
+
+- name: Configure Docker
+  ansible.builtin.command:
+    cmd: >-
+      midclt call docker.update
+      '{{ docker_payload | to_json }}'
+  vars:
+    docker_payload:
+      pool: "{{ truenas_docker.pool }}"
+      enable_image_updates: "{{ truenas_docker.enable_image_updates }}"
+      address_pools: "{{ truenas_docker.address_pools }}"
+  when: (docker_current.stdout | from_json).pool != truenas_docker.pool
+  register: docker_result
+  changed_when: docker_result.rc == 0

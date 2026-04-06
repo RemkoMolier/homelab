@@ -1,0 +1,9 @@
+---
+- name: Manage services
+  arensb.truenas.service:
+    name: "{{ item.name }}"
+    enabled: "{{ item.enabled }}"
+    state: "{{ item.state }}"
+  loop: "{{ truenas_services }}"
+  loop_control:
+    label: "{{ item.name }}"

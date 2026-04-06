@@ -4,9 +4,72 @@
   gather_facts: false
   collections:
     - arensb.truenas
+  environment:
+    middleware_method: client
 
-  tasks: []
-  # TODO: Add TrueNAS configuration tasks
-  #   - Datasets
-  #   - SMB/NFS shares
-  #   - Services
+  tasks:
+    - name: Load SOPS-encrypted secrets
+      ansible.builtin.set_fact:
+        truenas_secrets: >-
+          {{ lookup('community.sops.sops', 'ansible/inventory/host_vars/'
+             + inventory_hostname + '/secrets.sops.yaml')
+             | from_yaml }}
+      delegate_to: localhost
+      become: false
+      no_log: true
+
+    - name: System configuration
+      ansible.builtin.include_tasks: tasks/system.yaml
+      tags: [system]
+
+    - name: Certificate management
+      ansible.builtin.include_tasks: tasks/certificates.yaml
+      tags: [certificates]
+
+    - name: Groups
+      ansible.builtin.include_tasks: tasks/groups.yaml
+      tags: [users, groups]
+
+    - name: Users
+      ansible.builtin.include_tasks: tasks/users.yaml
+      tags: [users]
+
+    - name: ZFS datasets
+      ansible.builtin.include_tasks: tasks/datasets.yaml
+      tags: [datasets]
+
+    - name: SMB shares
+      ansible.builtin.include_tasks: tasks/sharing_smb.yaml
+      tags: [shares, smb]
+
+    - name: NFS shares
+      ansible.builtin.include_tasks: tasks/sharing_nfs.yaml
+      tags: [shares, nfs]
+
+    - name: NFS service configuration
+      ansible.builtin.include_tasks: tasks/nfs.yaml
+      tags: [services, nfs]
+
+    - name: Services
+      ansible.builtin.include_tasks: tasks/services.yaml
+      tags: [services]
+
+    - name: Scrub tasks
+      ansible.builtin.include_tasks: tasks/scrub.yaml
+      tags: [scrub]
+
+    - name: UPS configuration
+      ansible.builtin.include_tasks: tasks/ups.yaml
+      tags: [ups]
+
+    - name: Cloud sync
+      ansible.builtin.include_tasks: tasks/cloud_sync.yaml
+      tags: [cloud_sync]
+
+    - name: Docker configuration
+      ansible.builtin.include_tasks: tasks/docker.yaml
+      tags: [docker]
+
+    - name: Network configuration
+      ansible.builtin.include_tasks: tasks/network.yaml
+      tags: [network]

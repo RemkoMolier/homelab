@@ -1,0 +1,86 @@
+---
+# Cloud sync is not covered by arensb.truenas — use midclt (ADR-0013)
+
+# --- Cloud credentials ---
+
+- name: Query existing cloud credentials
+  ansible.builtin.command:
+    cmd: midclt call cloudsync.credentials.query
+  register: cloud_creds_current
+  changed_when: false
+
+- name: Create or update Dropbox credential
+  ansible.builtin.command:
+    cmd: >-
+      midclt call cloudsync.credentials.create
+      '{{ cred_payload | to_json }}'
+  vars:
+    cred_payload:
+      name: BGSchule-Dropbox
+      provider: DROPBOX
+      attributes:
+        token: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule-Dropbox'].token }}"
+  when: >-
+    cloud_creds_current.stdout | from_json
+    | selectattr('name', 'equalto', 'BGSchule-Dropbox')
+    | list | length == 0
+  no_log: true
+
+- name: Create or update WebDAV credential
+  ansible.builtin.command:
+    cmd: >-
+      midclt call cloudsync.credentials.create
+      '{{ cred_payload | to_json }}'
+  vars:
+    cred_payload:
+      name: BGSchule Cloud
+      provider: WEBDAV
+      attributes:
+        url: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule Cloud'].url }}"
+        user: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule Cloud'].user }}"
+        pass: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule Cloud'].pass }}"
+  when: >-
+    cloud_creds_current.stdout | from_json
+    | selectattr('name', 'equalto', 'BGSchule Cloud')
+    | list | length == 0
+  no_log: true
+
+# --- Cloud sync tasks ---
+
+- name: Query existing cloud sync tasks
+  ansible.builtin.command:
+    cmd: midclt call cloudsync.query
+  register: cloud_sync_current
+  changed_when: false
+
+- name: Create cloud sync tasks
+  ansible.builtin.command:
+    cmd: >-
+      midclt call cloudsync.create
+      '{{ sync_payload | to_json }}'
+  vars:
+    cred_id: >-
+      {{ cloud_creds_current.stdout | from_json
+         | selectattr('name', 'equalto', item.credential_name)
+         | map(attribute='id') | first }}
+    sync_payload:
+      description: "{{ item.description }}"
+      direction: "{{ item.direction }}"
+      transfer_mode: "{{ item.transfer_mode }}"
+      path: "{{ item.path }}"
+      credentials: "{{ cred_id | int }}"
+      attributes: "{{ item.attributes }}"
+      schedule:
+        minute: "{{ item.schedule.minute }}"
+        hour: "{{ item.schedule.hour }}"
+        dom: "{{ item.schedule.dom }}"
+        month: "{{ item.schedule.month }}"
+        dow: "{{ item.schedule.dow }}"
+      enabled: "{{ item.enabled }}"
+  loop: "{{ truenas_cloud_sync_tasks }}"
+  loop_control:
+    label: "{{ item.description }}"
+  when: >-
+    cloud_sync_current.stdout | from_json
+    | selectattr('description', 'equalto', item.description)
+    | list | length == 0
