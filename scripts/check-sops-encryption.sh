@@ -8,12 +8,46 @@
 #   All leaf values must be SOPS ENC blobs or empty.
 #
 # Usage: scripts/check-sops-encryption.sh [file ...]
-#   With no arguments, checks all SOPS files in the repository.
+#   With no arguments, checks all SOPS files tracked by git.
+#   File patterns are read from .sops.yaml in the repository root.
 
 set -euo pipefail
 
 ENC_PATTERN='^ENC\[AES256_GCM,data:.+,iv:.+,tag:.+,type:(str|int|float|bytes|bool|comment)\]$'
 errors=0
+
+# Locate repository root and .sops.yaml
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null || echo "${SCRIPT_DIR}/..")"
+SOPS_YAML="${REPO_ROOT}/.sops.yaml"
+
+if [[ ! -f "${SOPS_YAML}" ]]; then
+  echo "No .sops.yaml found at ${SOPS_YAML}; nothing to check."
+  exit 0
+fi
+
+# Extract path_regex patterns from .sops.yaml
+mapfile -t SOPS_PATTERNS < <(
+  python3 -c "
+import re, sys
+with open(sys.argv[1]) as f:
+    content = f.read()
+for m in re.finditer(r\"path_regex:\s*['\\\"]?([^'\\\"\\n]+)['\\\"]?\", content):
+    print(m.group(1).strip())
+" "${SOPS_YAML}"
+)
+
+# Return 0 if the file path matches any SOPS creation rule pattern.
+# .sops.yaml itself is always excluded (it is the config, not an encrypted file).
+is_sops_file() {
+  local file="${1#./}"
+  [[ "$(basename "${file}")" == ".sops.yaml" ]] && return 1
+  python3 -c "
+import re, sys
+path, patterns = sys.argv[1], sys.argv[2:]
+sys.exit(0 if any(re.search(p, path) for p in patterns) else 1)
+" "${file}" "${SOPS_PATTERNS[@]}"
+}
 
 check_all_values() {
   local file="$1"
@@ -97,9 +131,18 @@ with open('$file') as f:
 
 # Collect files to check
 if [[ $# -gt 0 ]]; then
-  files=("$@")
+  files=()
+  for f in "$@"; do
+    is_sops_file "$f" && files+=("$f") || true
+  done
 else
-  mapfile -t files < <(find . \( -name '*.sops.json' -o -name '*.sops.yaml' \) ! -name '.sops.yaml' 2>/dev/null | sort)
+  mapfile -t files < <(
+    git -C "${REPO_ROOT}" ls-files \
+      | while IFS= read -r f; do
+          [[ -f "${REPO_ROOT}/${f}" ]] && is_sops_file "${f}" && echo "${REPO_ROOT}/${f}" || true
+        done \
+      | sort
+  )
 fi
 
 for file in "${files[@]}"; do
