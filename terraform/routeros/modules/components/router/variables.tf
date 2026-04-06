@@ -52,8 +52,8 @@ variable "vrrp_id_offset" {
   default     = 100
 
   validation {
-    condition     = var.vrrp_id_offset >= 0 && var.vrrp_id_offset <= 254
-    error_message = "VRRP ID offset must be between 0 and 254 (VRID range is 1–255)."
+    condition     = var.vrrp_id_offset >= 0 && var.vrrp_id_offset <= 254 && floor(var.vrrp_id_offset) == var.vrrp_id_offset
+    error_message = "VRRP ID offset must be an integer between 0 and 254 (VRID range is 1–255)."
   }
 }
 
@@ -63,8 +63,8 @@ variable "vrrp_priority" {
   default     = 100
 
   validation {
-    condition     = var.vrrp_priority >= 1 && var.vrrp_priority <= 254
-    error_message = "VRRP priority must be between 1 and 254."
+    condition     = var.vrrp_priority >= 1 && var.vrrp_priority <= 254 && floor(var.vrrp_priority) == var.vrrp_priority
+    error_message = "VRRP priority must be an integer between 1 and 254."
   }
 }
 
