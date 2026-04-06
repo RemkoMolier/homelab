@@ -6,3 +6,8 @@ pre-commit:
     lint-terraform:
       glob: "terraform/**/*.tf"
       run: mise run lint:terraform:fmt
+    secret-scan:
+      run: mise exec -- gitleaks protect --staged --config .gitleaks.toml --redact
+    sops-check:
+      glob: "*.sops.{json,yaml}"
+      run: scripts/check-sops-encryption.sh {staged_files}
