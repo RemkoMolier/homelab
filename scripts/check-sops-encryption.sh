@@ -166,11 +166,20 @@ find_secrets(data)
   return 0
 }
 
+# Convert a path to repo-relative form for pattern matching
+to_repo_relative() {
+  local abs
+  abs="$(cd "$(dirname "$1")" 2>/dev/null && pwd)/$(basename "$1")"
+  echo "${abs#"${REPO_ROOT}/"}"
+}
+
 # Collect files to check
 if [[ $# -gt 0 ]]; then
   files=()
   for f in "$@"; do
-    is_sops_file "$f" && files+=("$f") || true
+    local_rel="$(to_repo_relative "$f")"
+    local_abs="${REPO_ROOT}/${local_rel}"
+    is_sops_file "${local_rel}" && files+=("${local_abs}") || true
   done
 else
   mapfile -t files < <(
