@@ -4,7 +4,6 @@ variable "devices" {
     hosturl              = string
     username             = string
     password             = string
-    insecure             = optional(bool, false)
     ip                   = string
     prefix_length        = optional(number, 24)
     management_subnet    = optional(string, "172.16.1.0/24")
