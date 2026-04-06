@@ -55,17 +55,39 @@ sys.exit(0 if any(re.search(p, path) for p in patterns) else 1)
 " "${file}" "${SOPS_PATTERNS[@]}"
 }
 
+# Load a JSON or YAML file and return parsed data
+load_file() {
+  python3 -c "
+import json, sys, os
+
+path = sys.argv[1]
+ext = os.path.splitext(path)[1].lower()
+
+with open(path) as f:
+    if ext in ('.yaml', '.yml'):
+        try:
+            import yaml
+        except ImportError:
+            print('ERROR: PyYAML not installed; cannot check YAML files', file=sys.stderr)
+            sys.exit(2)
+        data = yaml.safe_load(f)
+    else:
+        data = json.load(f)
+
+json.dump(data, sys.stdout)
+" "$1"
+}
+
 check_all_values() {
   local file="$1"
   local plaintext
-  plaintext=$(python3 -c "
-import json, sys
+  plaintext=$(load_file "$file" | python3 -c "
+import json, sys, re
+
+ENC = re.compile(r'''${ENC_PATTERN}''')
 
 def check(obj, path=''):
     if isinstance(obj, dict):
-        # Skip SOPS metadata
-        if 'sops' == path.split('.')[-1]:
-            return
         for k, v in obj.items():
             if k == 'sops':
                 continue
@@ -73,13 +95,17 @@ def check(obj, path=''):
     elif isinstance(obj, list):
         for i, v in enumerate(obj):
             check(v, f'{path}[{i}]')
-    elif isinstance(obj, str) and obj != '':
-        import re
-        if not re.match(r'''${ENC_PATTERN}''', obj):
+    elif isinstance(obj, str):
+        if obj == '':
+            return
+        if not ENC.match(obj):
             print(f'{path}: {obj[:40]}...' if len(obj) > 40 else f'{path}: {obj}')
+    elif obj is not None:
+        rendered = json.dumps(obj)
+        print(f'{path}: {rendered}')
 
-with open('$file') as f:
-    check(json.load(f))
+data = json.load(sys.stdin)
+check(data)
 " 2>&1)
 
   if [[ -n "$plaintext" ]]; then
@@ -93,7 +119,7 @@ with open('$file') as f:
 check_secrets_keys() {
   local file="$1"
   local plaintext
-  plaintext=$(python3 -c "
+  plaintext=$(load_file "$file" | python3 -c "
 import json, sys, re
 
 ENC = re.compile(r'''${ENC_PATTERN}''')
@@ -105,9 +131,14 @@ def check_leaves(obj, path):
     elif isinstance(obj, list):
         for i, v in enumerate(obj):
             check_leaves(v, f'{path}[{i}]')
-    elif isinstance(obj, str) and obj != '':
+    elif isinstance(obj, str):
+        if obj == '':
+            return
         if not ENC.match(obj):
             print(f'{path}: {obj[:40]}...' if len(obj) > 40 else f'{path}: {obj}')
+    elif obj is not None:
+        rendered = json.dumps(obj)
+        print(f'{path}: {rendered}')
 
 def find_secrets(obj, path=''):
     if isinstance(obj, dict):
@@ -123,8 +154,8 @@ def find_secrets(obj, path=''):
         for i, v in enumerate(obj):
             find_secrets(v, f'{path}[{i}]')
 
-with open('$file') as f:
-    find_secrets(json.load(f))
+data = json.load(sys.stdin)
+find_secrets(data)
 " 2>&1)
 
   if [[ -n "$plaintext" ]]; then
@@ -155,15 +186,15 @@ for file in "${files[@]}"; do
   # Skip files that don't exist (deleted in working tree)
   [[ -f "$file" ]] || continue
 
-  # Skip non-JSON/YAML files
-  [[ "$file" == *.json || "$file" == *.yaml ]] || continue
+  # Skip unsupported file types
+  [[ "$file" == *.json || "$file" == *.yaml || "$file" == *.yml ]] || continue
 
   basename=$(basename "$file")
 
   if [[ "$basename" == .env.sops.* ]]; then
     # Full encryption — check all values
     check_all_values "$file" || ((errors++))
-  elif [[ "$file" == *.sops.json || "$file" == *.sops.yaml ]]; then
+  elif [[ "$file" == *.sops.json || "$file" == *.sops.yaml || "$file" == *.sops.yml ]]; then
     # Partial encryption — check only secrets keys
     check_secrets_keys "$file" || ((errors++))
   fi

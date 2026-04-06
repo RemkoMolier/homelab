@@ -40,7 +40,7 @@ depends = ["lint:terraform:fmt", "lint:terraform:validate", "lint:terraform:tfli
 description = "Initialize OpenTofu providers"
 dir = "terraform/routeros"
 run = """
-tofu init --upgrade
+tofu init
 """
 
 [tasks."lint:terraform:fmt"]
