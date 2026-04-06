@@ -52,7 +52,7 @@ sops .env.sops.json
 
 The repository manages homelab infrastructure with two tools — see [ADR-0008](docs/decisions/0008-split-tooling-opentofu-and-ansible.md):
 
-- **OpenTofu** (`terraform/`) — network device configuration (MikroTik, Horaco switches)
+- **OpenTofu** (`terraform/`) — network device configuration (MikroTik)
 - **Ansible** (`ansible/`) — TrueNAS SCALE configuration
 
 ### Secrets management
