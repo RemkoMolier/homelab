@@ -125,12 +125,14 @@ locals {
       bands                = ["2ghz-ax", "5ghz-ax"]
     }
     mgmt = {
-      ssid      = "MGMT"
-      vlan_id   = local.vlans.management.id
-      hide_ssid = true
-      # Keep disabled until wifi_passwords["mgmt"] is provisioned in secrets;
-      # otherwise the WPA2/WPA3 PSK security profile resolves a null passphrase.
-      disabled = true
+      ssid                 = "MGMT"
+      vlan_id              = local.vlans.management.id
+      hide_ssid            = true
+      # Keep disabled and without auth types until wifi_passwords["mgmt"] is
+      # provisioned in secrets; authentication_types = [] prevents a security
+      # profile from being created with a null passphrase in the meantime.
+      authentication_types = []
+      disabled             = true
     }
   }
 

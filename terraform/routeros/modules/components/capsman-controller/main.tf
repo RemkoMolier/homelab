@@ -39,6 +39,16 @@ resource "routeros_wifi_security" "this" {
   passphrase           = lookup(var.wifi_passwords, each.key, null)
   ft                   = false
   ft_over_ds           = false
+
+  lifecycle {
+    precondition {
+      condition = (
+        lookup(var.wifi_passwords, each.key, null) != null &&
+        trimspace(lookup(var.wifi_passwords, each.key, "")) != ""
+      )
+      error_message = "SSID \"${each.key}\" has authentication_types configured, but no non-empty passphrase was provided in var.wifi_passwords. Either add a password for this SSID or set authentication_types = [] to leave it unsecured."
+    }
+  }
 }
 
 # --- Configurations (SSID + datapath + security) ---
@@ -70,10 +80,10 @@ resource "routeros_wifi_provisioning" "this" {
   for_each = local.bands
 
   action               = "create-dynamic-enabled"
-  master_configuration = routeros_wifi_configuration.this[var.master_ssid].name
+  master_configuration = try(routeros_wifi_configuration.this[var.master_ssid].name, null)
   slave_configurations = [
     for k, v in var.ssids : routeros_wifi_configuration.this[k].name
-    if contains(v.bands, each.key) && k != var.master_ssid
+    if contains(coalesce(v.bands, []), each.key) && k != var.master_ssid
   ]
   supported_bands = [each.key]
   name_format     = "${replace(each.key, "ghz-", "GHz ")} wifi-%I"
