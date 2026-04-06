@@ -1,9 +1,13 @@
 variable "vlans" {
   description = "Map of VLAN definitions (from locals)"
   type = map(object({
-    id      = number
-    name    = string
-    comment = string
+    id             = number
+    name           = string
+    comment        = string
+    subnet         = optional(string)
+    gateway        = optional(string)
+    router_address = optional(string)
+    pool           = optional(string)
   }))
 }
 

@@ -52,11 +52,7 @@ module "base" {
 module "switch" {
   source = "../../components/switch-bridge"
 
-  vlans = { for k, v in var.vlans : k => {
-    id      = v.id
-    name    = v.name
-    comment = v.comment
-  } }
+  vlans = var.vlans
   ports         = var.ports
   bonds         = var.bonds
   default_l2mtu = var.default_l2mtu
@@ -76,6 +72,8 @@ module "router" {
   wan_interfaces     = var.wan_interfaces
   dns_static_records = var.dns_static_records
   dhcp_leases        = var.dhcp_leases
+  vrrp_id_offset     = var.vrrp_id_offset
+  vrrp_priority      = var.vrrp_priority
 
   ssh_host            = var.ip
   ssh_user            = var.terraform_user_name
