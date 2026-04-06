@@ -1,0 +1,15 @@
+[extend]
+useDefault = true
+
+# Allow SOPS-encrypted values — these are envelope-encrypted, not real secrets
+[[allowlists]]
+description = "SOPS-encrypted values in SOPS files"
+condition = "AND"
+regexTarget = "secret"
+regexes = [
+  '''ENC\[AES256_GCM,data:[A-Za-z0-9+/=]+,iv:[A-Za-z0-9+/=]+,tag:[A-Za-z0-9+/=]+,type:(str|int|float|bytes|bool|comment)\]''',
+]
+paths = [
+  '''\.sops\.(json|yaml)$''',
+  '''\.env\.sops\.json$''',
+]
