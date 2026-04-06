@@ -25,7 +25,7 @@ The repository manages homelab infrastructure with two tools — see [ADR-0008](
 
 - **OpenTofu** (`terraform/routeros/`) — network device configuration (MikroTik, Horaco switches)
 - **OpenTofu** (`terraform/github/`) — GitHub repository settings ([ADR-0014](docs/decisions/0014-manage-github-repo-settings-with-opentofu.md))
-- **Ansible** (`ansible/`) — TrueNAS SCALE configuration
+- **Ansible** (`ansible/`) — TrueNAS SCALE configuration (see [bootstrap runbook](docs/runbooks/truenas-ansible-bootstrap.md))
 
 ### Secrets
 
@@ -69,6 +69,44 @@ terraform/routeros/
       switch/                          cert + base + switch-bridge
       switch-chip/                     cert + base + switch-chip
 ```
+
+### Ansible structure
+
+```text
+ansible/
+  requirements.yaml                    Collection dependencies (arensb.truenas, community.sops)
+  inventory/
+    hosts.yaml                         TrueNAS host definition
+    host_vars/
+      truenas.home.molier.net/
+        vars.yaml                      Plaintext config (IPs, paths, users, shares)
+        secrets.sops.yaml              SOPS-encrypted credentials (encrypted_regex: "^secrets$")
+  playbooks/
+    truenas.yaml                       Main playbook — includes all task files
+    tasks/
+      system.yaml                        Hostname, timezone, DNS
+      certificates.yaml                  TLS cert from intermediate CA + GUI assignment
+      groups.yaml                        Local groups
+      users.yaml                         Local users
+      datasets.yaml                      ZFS datasets
+      sharing_smb.yaml                   SMB shares
+      sharing_nfs.yaml                   NFS exports
+      nfs.yaml                           NFS service config
+      services.yaml                      Service enable/start
+      scrub.yaml                         ZFS scrub schedules
+      ups.yaml                           UPS/NUT config (midclt)
+      cloud_sync.yaml                    Cloud credentials + sync tasks (midclt)
+      docker.yaml                        Docker pool config (midclt)
+      network.yaml                       Interface IPs, VLANs, MTU (midclt)
+```
+
+Run the playbook:
+
+```bash
+ansible-playbook ansible/playbooks/truenas.yaml -i ansible/inventory/hosts.yaml
+```
+
+Run specific sections with tags: `--tags users`, `--tags shares`, `--tags certificates`, `--tags network`.
 
 ### Per-device apply
 
