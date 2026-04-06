@@ -1,0 +1,10 @@
+---
+- name: Manage scrub tasks
+  arensb.truenas.pool_scrub_task:
+    pool: "{{ item.pool }}"
+    threshold: "{{ item.threshold }}"
+    enabled: true
+    state: present
+  loop: "{{ truenas_scrub_tasks }}"
+  loop_control:
+    label: "{{ item.pool }}"
