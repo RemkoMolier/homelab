@@ -14,7 +14,7 @@ Run `./setup.sh` or install manually: `curl https://mise.run | sh && mise instal
 
 ## Infrastructure
 
-- **OpenTofu** (`terraform/`) — MikroTik switch configuration
+- **OpenTofu** (`terraform/`) — MikroTik network device configuration (routers, switches, APs) and GitHub repo settings
 - **Ansible** (`ansible/`) — TrueNAS SCALE configuration
 - **SOPS** — encrypts `secrets` keys in `*.sops.json` / `*.sops.yaml` files (GPG)
 - **git-crypt** — encrypts CA private keys (`pki/**/*.key`)
