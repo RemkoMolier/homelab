@@ -1,0 +1,201 @@
+# TrueNAS SCALE configuration — plaintext values
+# Secrets are in secrets.sops.yaml (same directory)
+
+# --- System ---
+truenas_hostname: truenas
+truenas_domain: home.molier.net
+truenas_timezone: Europe/Berlin
+truenas_nameserver: 172.16.1.1
+truenas_gui_port: 80
+truenas_gui_https_port: 443
+
+# --- Network ---
+truenas_interfaces:
+  - name: enp6s0
+    address: 172.16.1.2
+    netmask: 24
+    mtu: 9216
+    aliases:
+      - address: 172.16.1.3
+        netmask: 24
+      - address: 172.16.1.4
+        netmask: 24
+  - name: vlan10
+    address: 172.16.10.2
+    netmask: 24
+    mtu: 1500
+
+# --- NFS service ---
+truenas_nfs_bindip: 172.16.1.2
+truenas_nfs_protocols:
+  - NFSV3
+  - NFSV4
+
+# --- Groups ---
+truenas_groups:
+  - name: family
+    gid: 3000
+    smb: true
+
+# --- Users ---
+truenas_users:
+  - name: remko
+    uid: 3000
+    group: family
+    full_name: Remko Molier
+    email: remko@molier.net
+    home: /mnt/storage/personal/remko
+    shell: /usr/bin/zsh
+    smb: true
+    password_disabled: false
+  - name: daria-karmina
+    uid: 3001
+    group: family
+    full_name: Daria-Karmina Iossifova-Molier
+    email: daria-karmina@molier.net
+    home: /mnt/storage/personal/daria-karmina
+    shell: /usr/sbin/nologin
+    smb: true
+    password_disabled: false
+
+# --- ZFS pools (not managed — listed for reference) ---
+# Pools are created manually; Ansible manages datasets within them.
+# - storage (main data)
+# - attic (backups)
+# - nvme (apps/docker)
+# - ssd (fast storage)
+
+# --- Datasets ---
+truenas_datasets:
+  - name: storage/personal
+    comment: Personal home directories
+  - name: storage/personal/remko
+    comment: Remko home
+  - name: storage/personal/daria-karmina
+    comment: Daria-Karmina home
+  - name: storage/shared
+    comment: Family shared data
+  - name: attic/backup
+    comment: Backup root
+  - name: attic/backup/timemachine
+    comment: Time Machine backups
+  - name: attic/backup/bgschule
+    comment: BGSchule Dropbox sync
+
+# --- SMB shares ---
+truenas_smb_shares:
+  - name: personal
+    path: /mnt/storage/personal
+    purpose: PRIVATE_DATASETS_SHARE
+    browsable: true
+    path_suffix: "%U"
+    timemachine: false
+  - name: shared
+    path: /mnt/storage/shared
+    purpose: MULTIPROTOCOL_SHARE
+    browsable: true
+    timemachine: false
+  - name: timemachine
+    path: /mnt/attic/backup/timemachine
+    purpose: TIMEMACHINE_SHARE
+    browsable: true
+    timemachine: true
+    path_suffix: "%U"
+
+# --- NFS shares ---
+truenas_nfs_shares:
+  - path: /mnt/storage/personal
+    enabled: true
+  - path: /mnt/storage/shared
+    maproot_user: root
+    maproot_group: family
+    enabled: true
+
+# --- Services ---
+truenas_services:
+  - name: cifs
+    enabled: true
+    state: started
+  - name: nfs
+    enabled: true
+    state: started
+  - name: ssh
+    enabled: true
+    state: started
+  - name: ups
+    enabled: true
+    state: started
+
+# --- UPS ---
+truenas_ups:
+  mode: MASTER
+  identifier: ups
+  driver: "usbhid-ups$Smart-UPS (USB)"
+  port: auto
+  shutdown: batt
+  shutdowntimer: 30
+  monuser: upsmon
+  powerdown: false
+  hostsync: 15
+
+# --- Scrub tasks ---
+truenas_scrub_tasks:
+  - pool: storage
+    threshold: 35
+  - pool: attic
+    threshold: 35
+  - pool: nvme
+    threshold: 35
+  - pool: ssd
+    threshold: 35
+
+# --- Cloud sync ---
+truenas_cloud_credentials:
+  - name: BGSchule-Dropbox
+    provider: DROPBOX
+  - name: BGSchule Cloud
+    provider: WEBDAV
+
+truenas_cloud_sync_tasks:
+  - description: "Dropbox - /mnt/attic/backup/bgschule"
+    direction: PULL
+    transfer_mode: SYNC
+    path: /mnt/attic/backup/bgschule
+    credential_name: BGSchule-Dropbox
+    attributes:
+      folder: /
+      chunk_size: 96
+    schedule:
+      minute: "0"
+      hour: "*"
+      dom: "*"
+      month: "*"
+      dow: "*"
+    enabled: true
+  - description: "WebDAV - /mnt/attic/backup/bgschule"
+    direction: PUSH
+    transfer_mode: SYNC
+    path: /mnt/attic/backup/bgschule
+    credential_name: BGSchule Cloud
+    attributes:
+      folder: "/BG SCHULE/08_Archiv/Dropbox/bgschule"
+    schedule:
+      minute: "30"
+      hour: "*"
+      dom: "*"
+      month: "*"
+      dow: "*"
+    enabled: true
+
+# --- Docker ---
+truenas_docker:
+  pool: nvme
+  enable_image_updates: true
+  address_pools:
+    - base: "172.17.0.0/12"
+      size: 24
+    - base: "fdd0::/48"
+      size: 64
+
+# --- Certificates ---
+truenas_cert_name: truenas-home-molier-net
