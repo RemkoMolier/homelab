@@ -1,4 +1,22 @@
 ---
+- name: Check TLS certificate exists
+  ansible.builtin.stat:
+    path: "{{ pki_cert_path }}"
+  vars:
+    pki_cert_path: "{{ playbook_dir }}/../../pki/intermediate-ca/issued/{{ truenas_cert_name }}.crt"
+  delegate_to: localhost
+  become: false
+  register: cert_file
+
+- name: Fail if TLS certificate has not been issued
+  ansible.builtin.fail:
+    msg: >-
+      Certificate not found at {{ pki_cert_path }}.
+      Issue it first — see docs/runbooks/pki-intermediate-ca.md.
+  vars:
+    pki_cert_path: "{{ playbook_dir }}/../../pki/intermediate-ca/issued/{{ truenas_cert_name }}.crt"
+  when: not cert_file.stat.exists
+
 - name: Import TLS certificate from intermediate CA
   arensb.truenas.certificate:
     name: "{{ truenas_cert_name }}"
