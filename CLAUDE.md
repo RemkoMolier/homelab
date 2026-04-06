@@ -22,7 +22,8 @@ Tool versions are managed with [mise](https://mise.jdx.dev/) — see [ADR-0006](
 
 The repository manages homelab infrastructure with two tools — see [ADR-0008](docs/decisions/0008-split-tooling-opentofu-and-ansible.md):
 
-- **OpenTofu** (`terraform/`) — network device configuration (MikroTik, Horaco switches)
+- **OpenTofu** (`terraform/routeros/`) — network device configuration (MikroTik, Horaco switches)
+- **OpenTofu** (`terraform/github/`) — GitHub repository settings ([ADR-0014](docs/decisions/0014-manage-github-repo-settings-with-opentofu.md))
 - **Ansible** (`ansible/`) — TrueNAS SCALE configuration
 
 ### Secrets
@@ -88,6 +89,8 @@ Available targets: `crs226_apply`, `crs309_apply`, `crs326_apply`, `hap_ax2_kitc
 - Run `mise run lint:markdown` for markdown only
 - Run `mise run lint:terraform` for terraform only (fmt, validate, tflint, trivy)
 - Pre-commit hook runs `mise run lint` automatically via [lefthook](https://github.com/evilmartians/lefthook)
+- Secret scanning: `gitleaks protect --staged` runs in pre-commit + CI — see [ADR-0013](docs/decisions/0013-use-gitleaks-for-secret-scanning.md)
+- SOPS validation: `scripts/check-sops-encryption.sh` verifies all `secrets` values are encrypted
 
 ### Commit discipline
 
