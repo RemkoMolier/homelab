@@ -32,3 +32,5 @@ Skip trivial or easily reversible choices.
 | [ADR-0013](0013-use-gitleaks-for-secret-scanning.md) | Use gitleaks for secret scanning | accepted | 2026-04-06 |
 | [ADR-0014](0014-manage-github-repo-settings-with-opentofu.md) | Manage GitHub repo settings with OpenTofu | accepted | 2026-04-06 |
 | [ADR-0015](0015-use-renovate-for-dependency-updates.md) | Use Renovate for automated dependency updates | accepted | 2026-04-06 |
+| [ADR-0016](0016-ansible-variable-structure.md) | Use plaintext YAML with SOPS encrypted secrets for Ansible | accepted | 2026-04-06 |
+| [ADR-0017](0017-use-midclt-for-uncovered-truenas-areas.md) | Use midclt for uncovered TrueNAS configuration areas | accepted | 2026-04-06 |
