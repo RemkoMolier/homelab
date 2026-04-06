@@ -17,6 +17,7 @@ lefthook = "latest"
 tflint = "latest"
 trivy = "latest"
 age = "latest"
+gitleaks = "latest"
 
 [hooks.enter]
 shell = "bash"
