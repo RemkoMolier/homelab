@@ -1,0 +1,45 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "schedule": [
+    "before 9am on Monday"
+  ],
+  "timezone": "Europe/Berlin",
+  "automerge": true,
+  "automergeType": "pr",
+  "platformAutomerge": true,
+  "packageRules": [
+    {
+      "description": "Group all mise tool updates into a single PR",
+      "matchManagers": [
+        "mise"
+      ],
+      "groupName": "mise tools",
+      "automerge": true
+    },
+    {
+      "description": "Group all GitHub Actions updates",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions",
+      "automerge": true
+    },
+    {
+      "description": "OpenTofu providers",
+      "matchManagers": [
+        "terraform"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Ansible collections",
+      "matchManagers": [
+        "ansible-galaxy"
+      ],
+      "automerge": true
+    }
+  ]
+}
