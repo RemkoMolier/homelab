@@ -142,6 +142,11 @@ variable "admin_password" {
   description = "Password for the disabled admin account (set to prevent use of a known default)"
   type        = string
   sensitive   = true
+
+  validation {
+    condition     = length(var.admin_password) >= 8
+    error_message = "Admin password must be at least 8 characters."
+  }
 }
 
 variable "users" {
