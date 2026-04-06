@@ -18,7 +18,7 @@ provider "routeros" {
 #   sfp+1      — Trunk to CRS309
 
 # Import bootstrap-created resources into Terraform state.
-# Remove these blocks after the first successful apply.
+# Kept as reference for bootstrapping replacement devices.
 
 # device-base imports
 import {

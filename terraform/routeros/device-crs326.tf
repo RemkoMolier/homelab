@@ -51,7 +51,7 @@ locals {
 }
 
 # Import bootstrap-created resources into Terraform state.
-# Remove these blocks after the first successful apply.
+# Kept as reference for bootstrapping replacement devices.
 import {
   to = module.crs326.module.base.routeros_interface_vlan.management
   id = "name=mgmt"
