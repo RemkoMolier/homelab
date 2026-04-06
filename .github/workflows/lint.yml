@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+
 jobs:
   markdown:
     name: Markdown
@@ -24,7 +27,6 @@ jobs:
     name: Terraform
     runs-on: ubuntu-latest
     env:
-      SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
       TF_VAR_state_passphrase: "ci-dummy-passphrase-not-used"
     steps:
       - uses: actions/checkout@v4
