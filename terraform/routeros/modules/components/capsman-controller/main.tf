@@ -14,8 +14,8 @@ terraform {
 }
 
 locals {
-  secured_ssids = { for k, v in var.ssids : k => v if length(v.authentication_types) > 0 }
-  bands         = toset(flatten([for ssid in var.ssids : ssid.bands]))
+  secured_ssids = { for k, v in var.ssids : k => v if length(coalesce(v.authentication_types, [])) > 0 }
+  bands         = toset(flatten([for ssid in var.ssids : coalesce(ssid.bands, [])]))
 }
 
 # --- Datapaths (map SSID to VLAN) ---
@@ -77,6 +77,13 @@ resource "routeros_wifi_provisioning" "this" {
   ]
   supported_bands = [each.key]
   name_format     = "${replace(each.key, "ghz-", "GHz ")} wifi-%I"
+
+  lifecycle {
+    precondition {
+      condition     = contains(keys(var.ssids), var.master_ssid)
+      error_message = "var.master_ssid must be the key of one of the entries in var.ssids."
+    }
+  }
 }
 
 # --- State moves (named resources → for_each) ---

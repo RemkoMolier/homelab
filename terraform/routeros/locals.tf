@@ -128,6 +128,9 @@ locals {
       ssid      = "MGMT"
       vlan_id   = local.vlans.management.id
       hide_ssid = true
+      # Keep disabled until wifi_passwords["mgmt"] is provisioned in secrets;
+      # otherwise the WPA2/WPA3 PSK security profile resolves a null passphrase.
+      disabled = true
     }
   }
 
