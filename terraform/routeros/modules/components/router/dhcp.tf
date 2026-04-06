@@ -11,6 +11,8 @@ resource "routeros_ip_pool" "vlans" {
 }
 
 # --- DHCP servers ---
+# Bound to VRRP interfaces so DHCP follows the VRRP master.
+# On a backup router, DHCP stays inactive until it wins election.
 
 resource "routeros_ip_dhcp_server" "vlans" {
   for_each = var.vlans
