@@ -50,12 +50,22 @@ variable "vrrp_id_offset" {
   description = "Offset added to VLAN IDs to derive VRRP virtual router IDs"
   type        = number
   default     = 100
+
+  validation {
+    condition     = var.vrrp_id_offset >= 0 && var.vrrp_id_offset <= 254
+    error_message = "VRRP ID offset must be between 0 and 254 (VRID range is 1–255)."
+  }
 }
 
 variable "vrrp_priority" {
   description = "VRRP priority (higher wins master election)"
   type        = number
   default     = 100
+
+  validation {
+    condition     = var.vrrp_priority >= 1 && var.vrrp_priority <= 254
+    error_message = "VRRP priority must be between 1 and 254."
+  }
 }
 
 variable "management_interface" {

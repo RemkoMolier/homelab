@@ -10,5 +10,12 @@ resource "routeros_interface_vrrp" "vlans" {
   priority  = var.vrrp_priority
   comment   = "VRRP (VLAN ${each.value.id})"
 
+  lifecycle {
+    precondition {
+      condition     = each.value.id + var.vrrp_id_offset >= 1 && each.value.id + var.vrrp_id_offset <= 255
+      error_message = "VRID for VLAN ${each.value.id} is ${each.value.id + var.vrrp_id_offset}, which is outside the valid range 1–255."
+    }
+  }
+
   depends_on = [routeros_interface_vlan.vlans]
 }
