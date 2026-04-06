@@ -15,7 +15,7 @@ data "local_file" "intermediate_ca_cert" {
 
 locals {
   root_ca_cert_pem         = data.local_file.root_ca_cert.content
-  intermediate_ca_key_pem  = data.local_file.intermediate_ca_key.content
+  intermediate_ca_key_pem  = sensitive(data.local_file.intermediate_ca_key.content)
   intermediate_ca_cert_pem = data.local_file.intermediate_ca_cert.content
   # Static model labels keep port comments readable without adding
   # cross-device graph dependencies between root modules.
