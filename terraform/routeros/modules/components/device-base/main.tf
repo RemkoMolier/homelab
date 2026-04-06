@@ -122,7 +122,7 @@ resource "routeros_system_user_group" "groups" {
   for_each = local.custom_groups
 
   name   = each.value
-  policy = local.custom_group_policies[each.value]
+  policy = lookup(local.custom_group_policies, each.value, toset([]))
 
   lifecycle {
     precondition {
