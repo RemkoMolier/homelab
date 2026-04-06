@@ -66,7 +66,7 @@ ssh truenas_admin@172.16.1.2 'sudo midclt call system.info' | python3 -m json.to
 ```
 
 Expected result: JSON with system info (hostname, version, uptime).
-If this requires a password, add `truenas_admin` to passwordless sudo or set `ansible_become_password` in the SOPS secrets file.
+If this requires a password, either configure passwordless sudo for `truenas_admin`, or provide the become password interactively when running Ansible (`ansible-playbook --ask-become-pass ...`).
 
 ### 4. Install Ansible collections
 
