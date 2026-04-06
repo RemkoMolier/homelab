@@ -122,6 +122,8 @@ module "rb5009" {
 
   vlans          = local.vlans
   firewall_zones = local.firewall_zones
+  ssids          = local.ssids
+  master_ssid    = local.master_ssid
   wifi_passwords = local.wifi_passwords
 
   dns_static_records = {

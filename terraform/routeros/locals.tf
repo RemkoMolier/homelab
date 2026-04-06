@@ -93,6 +93,46 @@ locals {
 
   # device_ips, routeros_devices, and wifi_passwords come from secrets.tf
 
+  # WiFi SSID definitions — fed to the CAPsMAN controller module
+  ssids = {
+    home = {
+      ssid    = "HOME"
+      vlan_id = local.vlans.home.id
+    }
+    iot = {
+      ssid                 = "IOT"
+      vlan_id              = local.vlans.iot.id
+      authentication_types = ["wpa2-psk"]
+      bands                = ["2ghz-ax"]
+    }
+    cctv = {
+      ssid    = "CCTV"
+      vlan_id = local.vlans.cctv.id
+      bands   = ["2ghz-ax"]
+    }
+    voip = {
+      ssid     = "VOIP"
+      vlan_id  = local.vlans.voip.id
+      disabled = true
+      bands    = ["2ghz-ax"]
+    }
+    guest = {
+      ssid                 = "GUEST"
+      vlan_id              = local.vlans.guest.id
+      disabled             = true
+      client_isolation     = true
+      authentication_types = []
+      bands                = ["2ghz-ax", "5ghz-ax"]
+    }
+    mgmt = {
+      ssid      = "MGMT"
+      vlan_id   = local.vlans.management.id
+      hide_ssid = true
+    }
+  }
+
+  master_ssid = "home"
+
   # Firewall zones — used by the router module to build interface lists
   firewall_zones = {
     trusted  = ["management"]  # Full access to everything
