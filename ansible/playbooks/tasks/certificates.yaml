@@ -50,10 +50,13 @@
   ansible.builtin.command:
     cmd: >-
       midclt call system.general.update
-      '{"ui_certificate": {{ (cert_query.stdout | from_json)[0].id }}}'
+      '{"ui_certificate": {{ desired_cert_id }}}'
+  vars:
+    desired_cert: "{{ (cert_query.stdout | from_json | first) | default({}) }}"
+    desired_cert_id: "{{ desired_cert.id | default(0) }}"
   when: >-
     not ansible_check_mode and
-    cert_query.stdout | from_json | length > 0 and
-    (gui_current.stdout | from_json).ui_certificate.id | default(0) !=
-    (cert_query.stdout | from_json)[0].id
+    desired_cert_id | int != 0 and
+    (gui_current.stdout | from_json).ui_certificate.id | default(0) | int !=
+    desired_cert_id | int
   changed_when: true
