@@ -136,7 +136,7 @@ locals {
     }
   }
 
-  master_ssid = "home"
+  master_ssid = "mgmt"
 
   # Firewall zones — used by the router module to build interface lists
   firewall_zones = {
