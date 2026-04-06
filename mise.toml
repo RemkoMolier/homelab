@@ -62,4 +62,4 @@ run = "tflint --recursive"
 [tasks."lint:terraform:trivy"]
 description = "Run Trivy security scan on Terraform"
 dir = "terraform/routeros"
-run = "trivy config ."
+run = "trivy config --severity HIGH,CRITICAL --exit-code 1 ."
