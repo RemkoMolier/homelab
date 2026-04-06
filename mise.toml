@@ -34,6 +34,14 @@ description = "Lint and validate Terraform config"
 dir = "terraform/routeros"
 depends = ["lint:terraform:fmt", "lint:terraform:validate", "lint:terraform:tflint", "lint:terraform:trivy"]
 
+[tasks."lint:terraform:init"]
+description = "Initialize OpenTofu providers and TFLint plugins for linting"
+dir = "terraform/routeros"
+run = """
+tofu init -backend=false
+tflint --init
+"""
+
 [tasks."lint:terraform:fmt"]
 description = "Check Terraform formatting"
 dir = "terraform/routeros"
@@ -42,11 +50,13 @@ run = "tofu fmt -check -recursive"
 [tasks."lint:terraform:validate"]
 description = "Validate Terraform configuration"
 dir = "terraform/routeros"
+depends = ["lint:terraform:init"]
 run = "tofu validate"
 
 [tasks."lint:terraform:tflint"]
 description = "Run TFLint"
 dir = "terraform/routeros"
+depends = ["lint:terraform:init"]
 run = "tflint --recursive"
 
 [tasks."lint:terraform:trivy"]
