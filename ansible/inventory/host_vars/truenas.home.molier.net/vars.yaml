@@ -146,6 +146,15 @@ truenas_scrub_tasks:
   - pool: ssd
     threshold: 35
 
+# --- Cloud credentials ---
+# Credential attributes (tokens, passwords) are in secrets.sops.yaml
+# under secrets.cloud_credentials.<name>
+truenas_cloud_credentials:
+  - name: BGSchule-Dropbox
+    provider: DROPBOX
+  - name: BGSchule Cloud
+    provider: WEBDAV
+
 # --- Cloud sync ---
 truenas_cloud_sync_tasks:
   - description: "Dropbox - /mnt/attic/backup/bgschule"

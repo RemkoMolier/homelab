@@ -13,46 +13,26 @@
   changed_when: false
   no_log: true
 
-- name: Create Dropbox credential
+- name: Create cloud credential
   ansible.builtin.command:
     cmd: >-
       midclt call cloudsync.credentials.create
       '{{ cred_payload | to_json }}'
   vars:
     cred_payload:
-      name: BGSchule-Dropbox
-      provider: DROPBOX
-      attributes:
-        token: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule-Dropbox'].token }}"
+      name: "{{ item.name }}"
+      provider: "{{ item.provider }}"
+      attributes: "{{ truenas_secrets.secrets.cloud_credentials[item.name] }}"
+  loop: "{{ truenas_cloud_credentials }}"
+  loop_control:
+    label: "{{ item.name }}"
   when: >-
     not ansible_check_mode and
     cloud_creds_current.stdout | from_json
-    | selectattr('name', 'equalto', 'BGSchule-Dropbox')
+    | selectattr('name', 'equalto', item.name)
     | list | length == 0
   no_log: true
-  register: dropbox_cred_created
-  changed_when: true
-
-- name: Create WebDAV credential
-  ansible.builtin.command:
-    cmd: >-
-      midclt call cloudsync.credentials.create
-      '{{ cred_payload | to_json }}'
-  vars:
-    cred_payload:
-      name: BGSchule Cloud
-      provider: WEBDAV
-      attributes:
-        url: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule Cloud'].url }}"
-        user: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule Cloud'].user }}"
-        pass: "{{ truenas_secrets.secrets.cloud_credentials['BGSchule Cloud'].pass }}"
-  when: >-
-    not ansible_check_mode and
-    cloud_creds_current.stdout | from_json
-    | selectattr('name', 'equalto', 'BGSchule Cloud')
-    | list | length == 0
-  no_log: true
-  register: webdav_cred_created
+  register: cloud_creds_created
   changed_when: true
 
 - name: Refresh cloud credentials after creates
@@ -61,7 +41,7 @@
   register: cloud_creds_current
   changed_when: false
   no_log: true
-  when: dropbox_cred_created is changed or webdav_cred_created is changed
+  when: cloud_creds_created is changed
 
 # --- Cloud sync tasks ---
 # Note: These tasks only create missing sync tasks. Updates to existing
