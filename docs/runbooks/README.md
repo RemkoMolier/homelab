@@ -33,3 +33,4 @@ When you use a runbook, update this date and add post-incident notes if applicab
 | [Horaco switch setup](horaco-switch-setup.md) | Operations | Medium | Remko Molier | 2026-04-05 |
 | [Rotate age key for SOPS](rotate-age-key.md) | Operations | High | Remko Molier | 2026-04-06 |
 | [TrueNAS Ansible bootstrap](truenas-ansible-bootstrap.md) | Onboarding | Medium | Remko Molier | 2026-04-06 |
+| [PXE boot file update](pxe-boot-update.md) | Operations | Low | Remko Molier | 2026-04-06 |
