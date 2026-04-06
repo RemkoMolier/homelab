@@ -34,6 +34,7 @@
   no_log: true
   register: cloud_creds_created
   changed_when: true
+  failed_when: cloud_creds_created.rc != 0
 
 - name: Refresh cloud credentials after creates
   ansible.builtin.command:
@@ -99,4 +100,6 @@
     cloud_sync_current.stdout | from_json
     | selectattr('description', 'equalto', item.description)
     | list | length == 0
+  register: cloud_sync_created
   changed_when: true
+  failed_when: cloud_sync_created.rc != 0

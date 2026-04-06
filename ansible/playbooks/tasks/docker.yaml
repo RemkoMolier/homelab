@@ -27,3 +27,4 @@
     )
   register: docker_result
   changed_when: true
+  failed_when: docker_result.rc != 0 or 'error' in (docker_result.stderr | default(''))
