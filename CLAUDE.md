@@ -184,3 +184,4 @@ Before proposing an approach, check existing ADRs in `docs/decisions/` and stand
 - `/standard [topic|scan]` - Capture an enforceable standard, or scan decisions for missing standards
 - `/runbook [topic|scan]` - Capture an operational runbook, or scan for services/procedures that lack runbooks
 - `/commit` - Analyze working tree changes and create atomic conventional commits
+- `/review [PR#]` - Code review: posts inline comments on a PR, or discusses findings locally for working tree changes
