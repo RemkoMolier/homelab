@@ -14,6 +14,10 @@ terraform {
       source  = "carlpett/sops"
       version = "~> 1.1"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5"
+    }
   }
 
   encryption {
