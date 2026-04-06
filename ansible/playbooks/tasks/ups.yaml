@@ -13,6 +13,7 @@
       midclt call ups.update
       '{{ ups_payload | to_json }}'
   vars:
+    current: "{{ ups_current.stdout | from_json }}"
     ups_payload:
       mode: "{{ truenas_ups.mode }}"
       identifier: "{{ truenas_ups.identifier }}"
@@ -25,8 +26,15 @@
       powerdown: "{{ truenas_ups.powerdown }}"
       hostsync: "{{ truenas_ups.hostsync }}"
   no_log: true
+  when: >-
+    current.mode != truenas_ups.mode or
+    current.identifier != truenas_ups.identifier or
+    current.driver != truenas_ups.driver or
+    current.port != truenas_ups.port or
+    current.shutdown != truenas_ups.shutdown or
+    current.shutdowntimer != truenas_ups.shutdowntimer or
+    current.monuser != truenas_ups.monuser or
+    current.powerdown != truenas_ups.powerdown or
+    current.hostsync != truenas_ups.hostsync
   register: ups_result
-  changed_when: >-
-    (ups_current.stdout | from_json).mode != truenas_ups.mode or
-    (ups_current.stdout | from_json).identifier != truenas_ups.identifier or
-    (ups_current.stdout | from_json).driver != truenas_ups.driver
+  changed_when: true

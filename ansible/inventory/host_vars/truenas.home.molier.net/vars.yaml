@@ -6,9 +6,6 @@ truenas_hostname: truenas
 truenas_domain: home.molier.net
 truenas_timezone: Europe/Berlin
 truenas_nameserver: 172.16.1.1
-truenas_gui_port: 80
-truenas_gui_https_port: 443
-
 # --- Network ---
 truenas_interfaces:
   - name: enp6s0
@@ -150,12 +147,6 @@ truenas_scrub_tasks:
     threshold: 35
 
 # --- Cloud sync ---
-truenas_cloud_credentials:
-  - name: BGSchule-Dropbox
-    provider: DROPBOX
-  - name: BGSchule Cloud
-    provider: WEBDAV
-
 truenas_cloud_sync_tasks:
   - description: "Dropbox - /mnt/attic/backup/bgschule"
     direction: PULL

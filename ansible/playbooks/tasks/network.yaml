@@ -18,25 +18,39 @@
       '{{ item.name }}'
       '{{ iface_payload | to_json }}'
   vars:
+    current_iface: >-
+      {{ network_current.stdout | from_json
+         | selectattr('name', 'equalto', item.name)
+         | first | default({}) }}
+    desired_aliases: >-
+      {{ [{"address": item.address, "netmask": item.netmask}]
+         + (item.aliases | default([])) }}
+    current_aliases: >-
+      {{ current_iface.get('aliases', [])
+         | map(attribute='address')
+         | list
+         | default([]) }}
     iface_payload:
       ipv4_dhcp: false
-      aliases: >-
-        {{ [{"address": item.address, "netmask": item.netmask}]
-           + (item.aliases | default([])) }}
+      aliases: "{{ desired_aliases }}"
       mtu: "{{ item.mtu }}"
   loop: "{{ truenas_interfaces }}"
   loop_control:
     label: "{{ item.name }}"
   register: network_result
-  changed_when: network_result.rc == 0
+  changed_when: >-
+    current_iface.get('mtu', 0) | int != item.mtu | int or
+    current_aliases | sort != desired_aliases | map(attribute='address') | list | sort
 
 - name: Commit network changes
   ansible.builtin.command:
     cmd: midclt call interface.commit '{"checkin_timeout": 60}'
   when: network_result is changed
   register: network_commit
+  changed_when: true
 
 - name: Check in network changes (confirm connectivity)
   ansible.builtin.command:
     cmd: midclt call interface.checkin
   when: network_commit is changed
+  changed_when: true

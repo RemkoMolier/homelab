@@ -20,11 +20,19 @@
   register: cert_query
   changed_when: false
 
+- name: Get current GUI certificate
+  ansible.builtin.command:
+    cmd: midclt call system.general.config
+  register: gui_current
+  changed_when: false
+
 - name: Set GUI certificate
   ansible.builtin.command:
     cmd: >-
       midclt call system.general.update
       '{"ui_certificate": {{ (cert_query.stdout | from_json)[0].id }}}'
-  when: cert_query.stdout | from_json | length > 0
-  register: gui_cert_result
-  changed_when: gui_cert_result.rc == 0
+  when: >-
+    cert_query.stdout | from_json | length > 0 and
+    (gui_current.stdout | from_json).ui_certificate.id | default(0) !=
+    (cert_query.stdout | from_json)[0].id
+  changed_when: true

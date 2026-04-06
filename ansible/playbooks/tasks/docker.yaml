@@ -13,10 +13,15 @@
       midclt call docker.update
       '{{ docker_payload | to_json }}'
   vars:
+    current: "{{ docker_current.stdout | from_json }}"
     docker_payload:
       pool: "{{ truenas_docker.pool }}"
       enable_image_updates: "{{ truenas_docker.enable_image_updates }}"
       address_pools: "{{ truenas_docker.address_pools }}"
-  when: (docker_current.stdout | from_json).pool != truenas_docker.pool
+  when: >-
+    current.pool != truenas_docker.pool or
+    current.enable_image_updates != truenas_docker.enable_image_updates or
+    current.address_pools | default([]) | sort(attribute='base') !=
+    truenas_docker.address_pools | sort(attribute='base')
   register: docker_result
-  changed_when: docker_result.rc == 0
+  changed_when: true

@@ -3,17 +3,32 @@
   arensb.truenas.hostname:
     name: "{{ truenas_hostname }}"
 
+- name: Get current system general settings
+  ansible.builtin.command:
+    cmd: midclt call system.general.config
+  register: system_general_current
+  changed_when: false
+
 - name: Configure system general settings
   ansible.builtin.command:
     cmd: >-
       midclt call system.general.update
       '{{ system_general_payload | to_json }}'
   vars:
+    current: "{{ system_general_current.stdout | from_json }}"
     system_general_payload:
       timezone: "{{ truenas_timezone }}"
       ui_httpsredirect: true
-  register: system_general_result
-  changed_when: system_general_result.rc == 0
+  when: >-
+    current.timezone != truenas_timezone or
+    current.ui_httpsredirect != true
+  changed_when: true
+
+- name: Get current DNS configuration
+  ansible.builtin.command:
+    cmd: midclt call network.configuration.config
+  register: dns_current
+  changed_when: false
 
 - name: Configure DNS
   ansible.builtin.command:
@@ -21,9 +36,13 @@
       midclt call network.configuration.update
       '{{ dns_payload | to_json }}'
   vars:
+    current: "{{ dns_current.stdout | from_json }}"
     dns_payload:
       hostname: "{{ truenas_hostname }}"
       domain: "{{ truenas_domain }}"
       nameserver1: "{{ truenas_nameserver }}"
-  register: dns_result
-  changed_when: dns_result.rc == 0
+  when: >-
+    current.hostname != truenas_hostname or
+    current.domain != truenas_domain or
+    current.nameserver1 != truenas_nameserver
+  changed_when: true
