@@ -65,6 +65,12 @@ variable "vrrp_priority" {
   default     = 100
 }
 
+variable "admin_password" {
+  description = "Password for the disabled admin account"
+  type        = string
+  sensitive   = true
+}
+
 variable "dns_static_records" {
   description = "Map of static DNS records"
   type = map(object({

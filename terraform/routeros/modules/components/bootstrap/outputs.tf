@@ -11,3 +11,11 @@ output "bootstrap_files" {
     for k, v in local_sensitive_file.bootstrap : k => v.filename
   }
 }
+
+output "admin_passwords" {
+  description = "Random admin passwords per device (for device-base to enforce)"
+  value = {
+    for k, v in random_password.admin : k => v.result
+  }
+  sensitive = true
+}

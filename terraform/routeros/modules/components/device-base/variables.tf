@@ -138,6 +138,12 @@ variable "default_route" {
   default     = null
 }
 
+variable "admin_password" {
+  description = "Password for the disabled admin account (set to prevent use of a known default)"
+  type        = string
+  sensitive   = true
+}
+
 variable "users" {
   description = "Map of user accounts to create on the device"
   type = map(object({

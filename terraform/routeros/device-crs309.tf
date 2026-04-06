@@ -94,6 +94,7 @@ module "crs309" {
   intermediate_ca_key_pem  = local.intermediate_ca_key_pem
   intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
   terraform_user_name      = local.routeros_devices["crs309"].username
+  admin_password           = module.crs309_bootstrap.admin_passwords["crs309"]
   vlans                    = local.vlans
   users                    = local.users
   ports                    = local.crs309_ports

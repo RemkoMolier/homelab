@@ -43,6 +43,7 @@ module "base" {
   management_subnet         = var.management_subnet
   terraform_host            = var.terraform_host
   terraform_user_name       = var.terraform_user_name
+  admin_password            = var.admin_password
   users                     = var.users
   wan_interfaces            = var.wan_interfaces
   device_ip                 = var.ip

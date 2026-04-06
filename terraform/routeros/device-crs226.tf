@@ -65,6 +65,7 @@ module "crs226" {
   intermediate_ca_key_pem  = local.intermediate_ca_key_pem
   intermediate_ca_cert_pem = local.intermediate_ca_cert_pem
   terraform_user_name      = local.routeros_devices["crs226"].username
+  admin_password           = module.crs226_bootstrap.admin_passwords["crs226"]
   vlans                    = local.vlans
   users                    = local.users
 
