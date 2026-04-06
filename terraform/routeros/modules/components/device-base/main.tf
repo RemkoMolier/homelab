@@ -123,6 +123,13 @@ resource "routeros_system_user_group" "groups" {
 
   name   = each.value
   policy = local.custom_group_policies[each.value]
+
+  lifecycle {
+    precondition {
+      condition     = contains(keys(local.custom_group_policies), each.value)
+      error_message = "Group \"${each.value}\" has no policy defined in custom_group_policies. Valid custom groups: ${join(", ", keys(local.custom_group_policies))}."
+    }
+  }
 }
 
 # --- User accounts ---
