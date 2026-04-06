@@ -149,11 +149,6 @@ moved {
 }
 
 moved {
-  from = routeros_wifi_security.mgmt
-  to   = routeros_wifi_security.this["mgmt"]
-}
-
-moved {
   from = routeros_wifi_configuration.home
   to   = routeros_wifi_configuration.this["home"]
 }
