@@ -23,12 +23,12 @@ locals {
 
   crs309_trunk_ports = {
     for name, port in local.crs309_ports : name => port
-    if !lookup(port, "disabled", false) && length(lookup(port, "vlans", [])) > 0 && lookup(port, "pvid", null) == null
+    if !lookup(port, "disabled", false) && lookup(port, "bridge", true) && lookup(port, "bond", null) == null && length(lookup(port, "vlans", [])) > 0 && lookup(port, "pvid", null) == null
   }
 
   crs309_access_ports = {
     for name, port in local.crs309_ports : name => port
-    if !lookup(port, "disabled", false) && lookup(port, "pvid", null) != null
+    if !lookup(port, "disabled", false) && lookup(port, "bridge", true) && lookup(port, "bond", null) == null && lookup(port, "pvid", null) != null
   }
 }
 
