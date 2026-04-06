@@ -67,12 +67,12 @@ locals {
 
   rb5009_trunk_ports = {
     for name, port in local.rb5009_ports : name => port
-    if !lookup(port, "disabled", false) && length(lookup(port, "vlans", [])) > 0 && lookup(port, "pvid", null) == null && lookup(port, "bridge", true)
+    if !lookup(port, "disabled", false) && lookup(port, "bridge", true) && lookup(port, "bond", null) == null && length(lookup(port, "vlans", [])) > 0 && lookup(port, "pvid", null) == null
   }
 
   rb5009_access_ports = {
     for name, port in local.rb5009_ports : name => port
-    if !lookup(port, "disabled", false) && lookup(port, "pvid", null) != null && lookup(port, "bridge", true)
+    if !lookup(port, "disabled", false) && lookup(port, "bridge", true) && lookup(port, "bond", null) == null && lookup(port, "pvid", null) != null
   }
 }
 
