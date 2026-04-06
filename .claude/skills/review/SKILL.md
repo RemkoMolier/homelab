@@ -83,13 +83,16 @@ Skip categories that don't apply to the change (e.g., skip "Performance" for a d
 - **Error handling**: Missing error checks, swallowed errors, unhelpful error messages, missing rollback on failure
 - **IaC state concerns**: Unintended resource destruction (check plan implications), missing lifecycle blocks, state drift risk, missing depends_on
 - **Idempotency** (Ansible): Tasks that aren't idempotent, missing `changed_when`/`failed_when` on command tasks, `no_log: true` missing on sensitive tasks
+- **Create vs update mismatch**: Tasks named "create or update" that only create (missing update path), or `changed_when` that doesn't cover all mutable fields (especially secrets — if a password changes but `changed_when` only compares non-secret fields, the update is silently skipped)
+- **Check mode safety**: `ansible.builtin.command`/`shell` tasks execute even with `--check` — if the PR test plan says "run with `--check --diff`", mutating command tasks need `when: not ansible_check_mode` guards
 
 #### Medium — Recommended
 
 - **Complexity**: Functions doing too many things, deeply nested logic, code that requires extensive comments to understand
 - **Missing tests**: New functionality without tests, changed behavior without updated tests
 - **Documentation gaps**: Public APIs without docs, complex logic without explaining comments, missing ADR for significant decisions
-- **Naming**: Misleading names, inconsistent conventions, abbreviations that harm readability
+- **Reference accuracy**: Comments citing ADR numbers, doc links, or external references — verify they point to the correct document (e.g., ADR-0013 vs ADR-0017)
+- **Naming**: Misleading names, inconsistent conventions, abbreviations that harm readability — task/function names must match their actual behavior (e.g., a task named "create or update" that only creates is misleading)
 
 #### Low — Suggestions
 
@@ -112,10 +115,13 @@ Apply these when reviewing Terraform, Ansible, or SOPS files:
 
 **Ansible:**
 
-- Tasks have descriptive names
+- Tasks have descriptive names that match their actual behavior
 - Fully qualified collection names (FQCNs) used
 - `no_log: true` on tasks handling passwords, keys, or tokens
 - Command/shell tasks have `changed_when` / `failed_when`
+- `changed_when` covers ALL fields that could change, including secrets — if a password field is excluded from comparison because you can't read the current value, document why and note the limitation
+- Command/shell tasks that mutate state are guarded with `when: not ansible_check_mode` so `--check` mode doesn't execute real changes
+- Create-only tasks are not named "create or update" — if update logic is missing, the name should say "create" and a comment should note the limitation
 - Variables follow naming conventions
 
 **SOPS:**
