@@ -49,6 +49,7 @@
     )
   register: network_result
   changed_when: true
+  failed_when: network_result.rc != 0 or 'error' in (network_result.stderr | default(''))
 
 - name: Commit network changes
   ansible.builtin.command:
@@ -58,6 +59,7 @@
     - network_result is changed
   register: network_commit
   changed_when: true
+  failed_when: network_commit.rc != 0 or 'error' in (network_commit.stderr | default(''))
 
 - name: Wait for SSH connectivity after network changes
   ansible.builtin.wait_for:
@@ -81,4 +83,6 @@
     - not ansible_check_mode
     - network_commit is changed
     - network_ssh_check is succeeded
+  register: network_checkin
   changed_when: true
+  failed_when: network_checkin.rc != 0 or 'error' in (network_checkin.stderr | default(''))

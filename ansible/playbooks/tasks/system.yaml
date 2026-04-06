@@ -24,7 +24,9 @@
       current.timezone != truenas_timezone or
       current.ui_httpsredirect != true
     )
+  register: system_general_result
   changed_when: true
+  failed_when: system_general_result.rc != 0 or 'error' in (system_general_result.stderr | default(''))
 
 - name: Get current DNS configuration
   ansible.builtin.command:
@@ -49,4 +51,6 @@
       current.domain != truenas_domain or
       current.nameserver1 != truenas_nameserver
     )
+  register: dns_result
   changed_when: true
+  failed_when: dns_result.rc != 0 or 'error' in (dns_result.stderr | default(''))

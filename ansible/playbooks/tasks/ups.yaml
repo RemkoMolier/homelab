@@ -44,3 +44,4 @@
     )
   register: ups_result
   changed_when: true
+  failed_when: ups_result.rc != 0 or 'error' in (ups_result.stderr | default(''))

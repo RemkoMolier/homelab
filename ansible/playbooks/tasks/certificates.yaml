@@ -59,4 +59,6 @@
     desired_cert_id | int != 0 and
     (gui_current.stdout | from_json).ui_certificate.id | default(0) | int !=
     desired_cert_id | int
+  register: gui_cert_result
   changed_when: true
+  failed_when: gui_cert_result.rc != 0 or 'error' in (gui_cert_result.stderr | default(''))
