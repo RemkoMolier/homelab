@@ -20,7 +20,7 @@ locals {
 
   hap_ax2_musicroom_trunk_ports = {
     for name, port in local.hap_ax2_musicroom_ports : name => port
-    if !lookup(port, "disabled", false) && length(lookup(port, "vlans", [])) > 0 && lookup(port, "pvid", null) == null
+    if !lookup(port, "disabled", false) && lookup(port, "bridge", true) && lookup(port, "bond", null) == null && length(lookup(port, "vlans", [])) > 0 && lookup(port, "pvid", null) == null
   }
 
   hap_ax2_musicroom_access_ports = {
