@@ -52,7 +52,8 @@ This means the file structure remains readable — only values under keys named 
 ### Confirmation
 
 `sops -d ansible/inventory/host_vars/truenas.home.molier.net/secrets.sops.yaml` decrypts successfully.
-Ansible playbook loads both files automatically from `host_vars/`.
+Ansible auto-loads the plaintext `vars.yaml` file from `host_vars/`.
+The `secrets.sops.yaml` file is explicitly decrypted at runtime via the `community.sops.sops` lookup and stored under `truenas_secrets`.
 
 ## Pros and Cons of the Options
 
