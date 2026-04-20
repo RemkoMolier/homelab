@@ -2,4 +2,4 @@ collections:
   - name: arensb.truenas
     version: "1.14.4"
   - name: community.sops
-    version: "2.2.7"
+    version: "2.3.0"
