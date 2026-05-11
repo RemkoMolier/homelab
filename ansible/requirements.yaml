@@ -1,5 +1,5 @@
 collections:
   - name: arensb.truenas
-    version: "1.14.4"
+    version: "2.0.3"
   - name: community.sops
     version: "2.3.0"
