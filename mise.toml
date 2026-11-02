@@ -5,7 +5,7 @@ _.file = { path = ".env.sops.json", tools = true, optional = true }
 sops.rops = false
 
 [tools]
-node = "24"
+node = "26"
 "npm:markdownlint-cli2" = "0.23"
 "npm:markdownlint-sentences-per-line" = "0.1"
 "npm:@commitlint/cli" = "21"
